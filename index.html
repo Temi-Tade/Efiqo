@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/flashcard/style.css">
+    <link rel="stylesheet" href="" class="userdef"></link>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/fontawesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+    <title>Ace It!</title>
+</head>
+<body>
+    <main>
+        <header>
+            <h1>Ace It!</h1>
+            <nav>
+                <ul type="none">
+                    <li><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn" title="Toggle Theme" value="device"></button></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section id="content">
+            <section id="sidebar" class="desktop">
+                <div>
+                    <div class="btn-wrap">
+                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create New Study Material <i class="fa-solid fa-caret-down"></i></button>
+                    </div>
+
+                    <div id="options" class="collapse">
+                        <ul type="none">
+                            <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set<i class="fa-solid fa-flashcard"></i></button></li>
+                            <!-- <li><button>New Quiz <i class="fa-soild fa-quiz"></i></button></li> -->
+                        </ul>
+                    </div>
+
+                    <!-- only show this if user is registered -->
+                    <div class="user-profile-wrap">
+                        <div class="user-profile" ></div>
+                        <button id="view-profile-btn" onclick="VIEW_PROFILE()">View My Profile <i class="fa-solid fa-user"></i></button>
+                    </div>
+            </section>
+
+            <section id="intro">
+                <h2>Ace It!</h2>
+                <div id="text-effect">
+                    <p id="dynamic">Simple.</p>
+                </div>
+    
+                <div id="about">
+                    <p>Study actively, Remember passively.</p>
+                </div>
+
+                <div class="mobile">
+                    <div class="btn-wrap">
+                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create New Study Material <i class="fa-solid fa-caret-down"></i></button>
+                    </div>
+
+                    <div id="options" class="collapse">
+                        <ul type="none">
+                            <li><button onclick="window.open(`./assets/flashcard/index.html`)">New Flashcard Set<i class="fa-solid fa-flashcard"></i></button></li>
+                            <!-- <li><button>New Quiz <i class="fa-soild fa-quiz"></i></button></li> -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="recent" class="deskop">
+                <h3>My Sets <span class="fa-solid fa-file"></span></h3>
+                <ul type="none"></ul>
+            </section>
+        </section>
+
+        <section id="snapshots_wrap">
+            <h2>Study smart while you study hard...</h2>
+            <h4>Top academic performaces requires students to study smart as they study hard. With our study tool, improve how you approach studying and ace them courses!</h4>
+            <div id="snapshots">
+                <ul type="none" id="snapshots_list"></ul>
+            </div>
+           
+            <!-- <div id="get-started">
+                <button>GET STARTED <span class="fa-solid fa-caret-right"></span></button>
+            </div> -->
+        </section>
+
+        <section id="modalbg">
+            <div id="modal">{text}</div>
+        </section>
+
+        <footer>
+            <div id="footer-top">
+                <div id="contact">
+                    <h4>CONTACT</h4>
+                    <small><em>(For feedback, bug reports and improvements)</em></small>
+                    <p><a href="tel:+2348135189838" class="fa-solid fa-phone">+234 813 518 9838</a></p>
+                    <ul type="none">
+                        <li><a href="mailto:dev.mode006@gmail.com" class="fa-solid fa-envelope"></a></li>
+                        <li><a href="https://x.com/Js_cipher/" class="fa-brands fa-x-twitter"></a></li>
+                        <li><a href="https://github.com/Temi-Tade/" class="fa-brands fa-github"></a></li>
+                        <li><a href="https://t.me/kintade_/" class="fa-brands fa-telegram"></a></li>
+                    </ul>
+                </div>
+    
+                <div id="footer-top-col-2">
+                    <div class="footer-btn-wrap">
+                        <button onclick="INIT_SHARE()" class="transparent-btn">Share Ace It! <span class="fa-solid fa-share"></span></button>
+                    </div>
+
+                    <div class="footer-btn-wrap">
+                        <button onclick="INIT_DONATE()" class="transparent-btn">Support Ace It! <span class="fa-solid fa-donate"></span></button>
+                    </div>
+                </div>
+    
+                <div id="footer-top-col-3">
+                    <h1>Ace It!</h1>
+                </div>
+            </div>
+            <hr/>
+            <div id="footer-bottom">
+                <ul type="none">
+                    <li><button class="transparent-btn" onclick="DISPLAY_TERMS()"><small>Terms of Use</small></button></li>
+                </ul>
+            </div>
+
+            <div id="copyright">
+                <p>
+                    <span>&copy;TenderLuxe 2024. All rights reserved.</span>
+                </p>
+
+            </div>
+        </footer>
+    </main>
+
+    <script src="./assets/js/userdata.js"></script>
+    <script src="./assets/js/index.js"></script>
+    <script src="./assets/js/snapshots.js"></script>
+    <script src="./assets/js/profile.js"></script>
+</body>
+</html>
+
+<!-- 
+    prospective features:
+    - user profile page
+        - update lastLogin for every login
+    - integrate firebase
+    - disable flashcard form submit btn
+    - allow user to create new set/go back to home page at the end of one set
+    - ipad mobile view
+ -->
