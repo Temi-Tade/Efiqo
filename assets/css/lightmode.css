@@ -8,8 +8,12 @@ html, footer, #snapshots_wrap{
     color: var(--textcol);
 }
 
-header nav ul li button{
-    color: red;
+header nav ul li{
+    border-radius: .25rem;
+}
+
+header nav ul li:hover {
+    background-color: #ccc7
 }
 
 #recent ul li button{
@@ -66,4 +70,27 @@ footer #contact a{
 #modal a{
     color: var(--textcol);
     text-decoration: underline;
+}
+
+hr{
+    color: #777;
+}
+
+/* styles for flashcard page */
+input, textarea{
+    border: 1.75px solid var(--textcol);
+    color: var(--textcol);
+}
+
+::placeholder{
+    color: #3337;
+}
+
+:disabled{
+    background-color: #3337;
+    color: var(--bgcol);
+}
+
+.pfp-field label{
+    color: var(--bgcol);
 }

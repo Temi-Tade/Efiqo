@@ -2,7 +2,7 @@ let data;
 let blob;
 let file;
 
-function FETCH_USER_PROFILE(){
+function FETCH_USER_PROFILE(btn){
     var request = indexedDB.open("ace-it");
     request.onsuccess = function(){
         var trx = request.result.transaction("user_data");
@@ -14,7 +14,7 @@ function FETCH_USER_PROFILE(){
             if (data.length > 0) {
                 //set pfp
                 document.querySelector(".user-profile").innerHTML = `
-                    <img src='${data[0].pfp.url}' alt="User PFP" width="100" loading='lazy'/>
+                    <img src='${data[0].pfp.url}' alt="User PFP" width="150" loading='lazy' draggable="false"/>
                     <h5>${data[0].userName}</h5>
                 `;
                 document.querySelector("#view-profile-btn").disabled = false;
@@ -27,12 +27,15 @@ function FETCH_USER_PROFILE(){
                     } else {
                         document.querySelector("link.userdef").href = "";
                     }
+                    btn.setAttribute("class", "fa-solid fa-palette transparent-btn");
                     // CREATE_MODAL("TOGGLE THEME: Device");
                 }else if(theme === "dark"){
                     document.querySelector("link.userdef").href = "";
+                    btn.setAttribute("class", "fa-solid fa-moon transparent-btn");
                     // CREATE_MODAL("TOGGLE THEME: Dark");
                 }else{
-                    document.querySelector("link.userdef").href = "./assets/css/lightmode.css"
+                    document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
+                    btn.setAttribute("class", "fa-solid fa-sun transparent-btn");
                     // CREATE_MODAL("TOGGLE THEME: Light");
                 }
             }else{
@@ -50,14 +53,17 @@ function VIEW_PROFILE() {
             <div class='edit-profile-btn-wrap'>
                 <button class="transparent-btn" id="edit-profile" type='button'>Edit Profile <i class='fa-solid fa-edit'></i></button>
             </div>
+
             <h4>MY PROFILE</h4>
-            <h5>Personal Information</h5><br>
+
             <div class='field pfp-field'>
-                <img id="avatar" src='${data[0].pfp.url}' alt="User Avatar" width='100' loading='lazy'/>
-                <label for='pfp'>Upload Avatar</label>
+                <img id="avatar" src='${data[0].pfp.url}' alt="User Avatar" width='150' loading='lazy' draggable="false"/>
+                <label for='pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
                 <input type='file' name='pfp' id='pfp' value='${data[0].pfp.file.name}' disabled/>
             </div>
 
+            <h5>Personal Information</h5><br>
+            
             <div class='field'>
                 <label for='uname'>USER NAME</label>
                 <input type='text' name='uname' id='uname' value='${data[0].userName}' disabled/>
@@ -83,6 +89,17 @@ function VIEW_PROFILE() {
                 </select>
             </div>
 
+            <h5>Contact Information</h5>
+            <div class='field'>
+                <label for='email'>EMAIL ADDRESS</label>
+                <input type='email' name='email' id='email' inputmode=email value='${data[0].email}' disabled/>
+            </div>
+
+            <div class='field'>
+                <label for='tel'>PHONE NUMBER (with country code)</label>
+                <input type='tel' name='tel' id='tel' inputmode='tel'  value='${data[0].tel}' disabled/>
+            </div>
+
             <h5>Academic Information</h5>
             <div class='field'>
                <label for='edu_level'>CURRENT LEVEL OF EDUCATION</label>
@@ -98,7 +115,7 @@ function VIEW_PROFILE() {
             </div>
 
             <div class='field update-field'>
-                <button>Update <i class='fa-solid fa-refresh'></i></button>
+                <button>Update Profile <i class='fa-solid fa-refresh'></i></button>
             </div>
         </form>    
     `);
@@ -146,6 +163,8 @@ function VIEW_PROFILE() {
                 data[0].fullName = parent.querySelector("#fname").value;
                 data[0].dob = parent.querySelector("#dob").value;
                 data[0].gender = parent.querySelector("#gender").value;
+                data[0].email = parent.querySelector("#email").value;
+                data[0].tel = parent.querySelector("#tel").value;
                 data[0].level = parent.querySelector("#edu_level").value;
                 data[0].pfp.url = blob || data[0].pfp.url;
                 data[0].pfp.file = file || data[0].pfp.file;
@@ -164,4 +183,4 @@ function VIEW_PROFILE() {
     }
 };
 
-FETCH_USER_PROFILE();
+FETCH_USER_PROFILE(document.querySelector("header nav ul li button"));

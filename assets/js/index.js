@@ -219,10 +219,8 @@ function TOGGLE_THEME(btn) {
     if (themeIndex > themes.length - 1) {
         themeIndex = 0;
         btn.value = themes[themeIndex];
-        console.log(btn.value, themeIndex);
     }else{
         btn.value = themes[themeIndex];
-        console.log(btn.value, themeIndex);
     }
 
     if (btn.value === "device") {
@@ -234,9 +232,12 @@ function TOGGLE_THEME(btn) {
         CREATE_MODAL("TOGGLE THEME: System Default");
     }else if(btn.value === "dark"){
         document.querySelector("link.userdef").href = "";
+        btn.setAttribute("class", "fa-solid fa-moon transparent-btn");
         CREATE_MODAL("TOGGLE THEME: Dark");
+
     }else{
-        document.querySelector("link.userdef").href = "./assets/css/lightmode.css"
+        document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
+        btn.setAttribute("class", "fa-solid fa-sun transparent-btn");
         CREATE_MODAL("TOGGLE THEME: Light");
     }
     setTimeout(() => {

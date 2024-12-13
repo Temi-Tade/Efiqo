@@ -20,6 +20,8 @@ if ("indexedDB" in window) {
             fullName: "",
             gender: "",
             dob: "",
+            email: "",
+            tel: "",
             level: ""
         }
 
@@ -30,6 +32,21 @@ if ("indexedDB" in window) {
         //check if user profile exists
         keys.onsuccess = async function(ev){
             if (await ev.target.result.length >= 1) {
+                var theme = ev.target.result[0].theme;
+                if (theme === "device") {
+                    if (window.matchMedia("(prefers-color-scheme: light)")) {
+                        document.querySelector("link.userdef").href = "../css/lightmode.css"
+                    } else {
+                        document.querySelector("link.userdef").href = "";
+                    }
+                    // CREATE_MODAL("TOGGLE THEME: Device");
+                }else if(theme === "dark"){
+                    document.querySelector("link.userdef").href = "";
+                    // CREATE_MODAL("TOGGLE THEME: Dark");
+                }else{
+                    document.querySelector("link.userdef").href = "../css/lightmode.css"
+                    // CREATE_MODAL("TOGGLE THEME: Light");
+                }
                 return;
             } else {
                 CREATE_MODAL(`

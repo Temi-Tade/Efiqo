@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     transition: .25s;
     letter-spacing: .95px;
 }
@@ -41,8 +41,9 @@
 html{
     background-color: var(--bgcolor);
     color: var(--text-color);
-    font-family: Ubuntu;
+    font-family: Ubuntu, sans-serif;
     scroll-behavior: smooth;
+    user-select: none;
 }
 
 header{
@@ -53,8 +54,12 @@ header{
     box-shadow: 1px 1px 1px #7777;
 }
 
-header nav ul li button:hover{
-    background-color: red;
+header nav ul li{
+    border-radius: .25rem;
+}
+
+header nav ul li:hover {
+    background-color: #7777
 }
 
 button{
@@ -243,6 +248,10 @@ img{
 
 #user-profile-form{
     position: relative;
+}
+
+#user-profile-form h5{
+    padding-top: 2rem;
 }
 
 .edit-profile-btn-wrap{
