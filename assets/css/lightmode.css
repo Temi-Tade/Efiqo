@@ -24,13 +24,12 @@ header nav ul li:hover {
     background-color: #ccc;
 }
 
-
 #recent ul li:nth-child(odd){
     background-color: #ccc7;
 }
 
 .collapse ul{
-    background-color: #ccc;
+    background-color: #cccf;
 }
 
 #snapshots_wrap{
@@ -93,4 +92,17 @@ input, textarea{
 
 .pfp-field label{
     color: var(--bgcol);
+}
+
+/* flashcard page styles */
+#flashcard-data{
+    background-color: #ccc9;
+}
+
+.card-wrap{
+    background-color: #ccc5;
+}
+
+.card{
+    border: .5px solid #7777;
 }

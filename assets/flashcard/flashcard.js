@@ -263,8 +263,7 @@ const GO_TO_NEXT_CARD = () => {
                 CREATE_MODAL(`
                     <p class='error-head'>You have reached the last Flashcard.</p>
                     <div class='end-of'>
-                        <button>Home</button>
-                        <button>Create New Set</button>
+                        <button onclick='history.go(-1)'>Go to Home <i class='fa-solid fa-home'></i></button>
                     </div>
                 `);
             }else{
@@ -313,7 +312,7 @@ if (sessionStorage.getItem("ace-it temp data")) {
     document.querySelector("#flashcard-name").style.display = "none";
     
     var session = JSON.parse(sessionStorage.getItem("ace-it temp data"));
-    document.querySelector("h1").innerHTML = "";
+    // document.querySelector("h1").innerHTML = "";
     document.querySelector("#info h2").innerHTML = session.name;
     document.querySelector("#info em").innerHTML = session.desc;
 

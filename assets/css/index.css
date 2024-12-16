@@ -54,8 +54,17 @@ header{
     box-shadow: 1px 1px 1px #7777;
 }
 
+header nav ul{
+    display: flex;
+}
+
 header nav ul li{
     border-radius: .25rem;
+}
+
+header nav ul li button{
+    font-size: 1.25rem;
+    padding: .5rem;
 }
 
 header nav ul li:hover {
@@ -436,6 +445,37 @@ footer #copyright span{
     #recent{
         padding: .5rem;
         margin: 0;
+    }
+    
+    #modal form .field{
+        flex-direction: column;
+        margin: 1rem auto;
+    }
+
+    #modal form .field label{
+        width: 100%;
+        text-align: left;
+    }
+
+    #modal form input{
+        margin: .25rem;
+    }
+
+    #user-profile-form h5{
+        padding: 0;
+    }
+
+    .edit-profile-btn-wrap{
+        position: relative;
+    }
+
+   .pfp-field label{
+        width: 50% !important;
+        text-align: center !important;
+    }
+
+    #snapshots_wrap h4{
+        text-align: justify;
     }
 
     /* #recent button{

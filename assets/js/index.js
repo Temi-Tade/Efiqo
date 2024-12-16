@@ -3,12 +3,6 @@ const words = ["Simple", "Sleek", "Effective"];
 let charIndex = 0;
 let wordIndex = 0;
 let isDeleting = false;
-let themeIndex = 0;
-var themes = ["device", "light", "dark"];
-
-function SET_THEME(){
-
-}
 
 const CREATE_MODAL = (text) => {
     document.querySelector("#modalbg").style.display = "block"
@@ -212,53 +206,4 @@ function DISPLAY_TERMS(){
             <p>&nbsp;For further enquires, contact us at <a href="mailto:dev.mode006@gmail.com">dev.mode006@gmail.com</a></p>
         </div>
     `);
-}
-
-function TOGGLE_THEME(btn) {
-    themeIndex += 1;
-    if (themeIndex > themes.length - 1) {
-        themeIndex = 0;
-        btn.value = themes[themeIndex];
-    }else{
-        btn.value = themes[themeIndex];
-    }
-
-    if (btn.value === "device") {
-        if (window.matchMedia("(prefers-color-scheme: light)")) {
-            document.querySelector("link.userdef").href = "./assets/css/lightmode.css"
-        } else {
-            document.querySelector("link.userdef").href = "";
-        }
-        CREATE_MODAL("TOGGLE THEME: System Default");
-    }else if(btn.value === "dark"){
-        document.querySelector("link.userdef").href = "";
-        btn.setAttribute("class", "fa-solid fa-moon transparent-btn");
-        CREATE_MODAL("TOGGLE THEME: Dark");
-
-    }else{
-        document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
-        btn.setAttribute("class", "fa-solid fa-sun transparent-btn");
-        CREATE_MODAL("TOGGLE THEME: Light");
-    }
-    setTimeout(() => {
-        document.querySelector("#modalbg").style.display = "none"
-    }, 1500);
-
-    var request = indexedDB.open("ace-it");
-
-    request.onsuccess = function(){
-        var trx = request.result.transaction("user_data", "readwrite");
-        var objectStore = trx.objectStore("user_data");
-        var userData = objectStore.getAll(); 
-
-        userData.onsuccess = async function(e){
-            var data = e.target.result;
-            data[0].theme = btn.value;
-            try {
-                objectStore.put(data[0]);
-            } catch (error) {
-                console.log(error.message);
-            }
-        }
-    }
 }

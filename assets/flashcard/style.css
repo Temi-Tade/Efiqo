@@ -191,6 +191,10 @@ legend {
     padding: 1rem;
 }
 
+#modal form{
+    padding: 0;
+}
+
 .card-wrap {
     padding: .125rem;
     height: 20rem;
@@ -314,5 +318,14 @@ form h3 {
     .number {
         text-align: center;
         transform: translateY(-3rem);
+    }
+
+    .end-of{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .end-of button{
+        margin: 1rem auto;
     }
 }

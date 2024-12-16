@@ -18,26 +18,6 @@ function FETCH_USER_PROFILE(btn){
                     <h5>${data[0].userName}</h5>
                 `;
                 document.querySelector("#view-profile-btn").disabled = false;
-
-                //set theme
-                var theme = data[0].theme;
-                if (theme === "device") {
-                    if (window.matchMedia("(prefers-color-scheme: light)")) {
-                        document.querySelector("link.userdef").href = "./assets/css/lightmode.css"
-                    } else {
-                        document.querySelector("link.userdef").href = "";
-                    }
-                    btn.setAttribute("class", "fa-solid fa-palette transparent-btn");
-                    // CREATE_MODAL("TOGGLE THEME: Device");
-                }else if(theme === "dark"){
-                    document.querySelector("link.userdef").href = "";
-                    btn.setAttribute("class", "fa-solid fa-moon transparent-btn");
-                    // CREATE_MODAL("TOGGLE THEME: Dark");
-                }else{
-                    document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
-                    btn.setAttribute("class", "fa-solid fa-sun transparent-btn");
-                    // CREATE_MODAL("TOGGLE THEME: Light");
-                }
             }else{
                 document.querySelector("#view-profile-btn").disabled = true;
                 document.querySelector("#view-profile-btn").innerHTML += "<br><small><em>(No Profile Found)<em></small>"
@@ -54,12 +34,12 @@ function VIEW_PROFILE() {
                 <button class="transparent-btn" id="edit-profile" type='button'>Edit Profile <i class='fa-solid fa-edit'></i></button>
             </div>
 
-            <h4>MY PROFILE</h4>
+            <h4>MY PROFILE</h4><br>
 
             <div class='field pfp-field'>
                 <img id="avatar" src='${data[0].pfp.url}' alt="User Avatar" width='150' loading='lazy' draggable="false"/>
-                <label for='pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
-                <input type='file' name='pfp' id='pfp' value='${data[0].pfp.file.name}' disabled/>
+                <label for='pfp' id='upload-pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
+                <input type='file' name='pfp' id='pfp' value='${data[0].pfp.file.name}' accept='*.png, *.jpg, *.jpeg, *.tiff, *.gif, *.webp' disabled/>
             </div>
 
             <h5>Personal Information</h5><br>

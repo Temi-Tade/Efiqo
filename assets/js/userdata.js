@@ -10,7 +10,7 @@ if ("indexedDB" in window) {
     request.onsuccess = function(){
         var user_data = {
             userName: "",
-            theme: "device",
+            theme: "",
             lastLogIn: new Date().toUTCString(),
             userId: crypto.randomUUID(),
             pfp: {
