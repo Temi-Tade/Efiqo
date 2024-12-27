@@ -22,7 +22,7 @@ function RENDER_SHAPSHOTS(snapshots) {
         document.querySelector("#snapshots_list").innerHTML += `
             <li>
                 <div class="snapshot_card">
-                    <img src=${snapshot.image} width="" loading='lazy'/>
+                    <img src=${snapshot.image} width="" loading='lazy' draggable='false'/>
                     <p class="snapshot_text">${snapshot.tagline}</p>
                 </div>
             </li>

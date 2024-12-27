@@ -116,6 +116,7 @@ button:hover{
     max-height: 20rem;
     overflow-y: auto;
     margin-right: .5rem;
+    border-left: .5px inset #cccc;
 }
 
 #recent h3{
@@ -458,7 +459,7 @@ footer #copyright span{
     }
 
     #modal form input{
-        margin: .25rem;
+        margin: .25rem auto;
     }
 
     #user-profile-form h5{
@@ -472,10 +473,6 @@ footer #copyright span{
    .pfp-field label{
         width: 50% !important;
         text-align: center !important;
-    }
-
-    #snapshots_wrap h4{
-        text-align: justify;
     }
 
     /* #recent button{

@@ -16,6 +16,7 @@ const TOGGLE_FORMS = (e, el, other) => {
     var trx = request.result.transaction("flashcards", "readwrite");
     var flashcardObjStore = trx.objectStore("flashcards");
     flashcardObjStore.add(flashcardData);
+    sessionStorage.setItem("ace-it temp data", JSON.stringify(flashcardData));
 
     if (el.style.display === "block") {
         el.style.display = "none";

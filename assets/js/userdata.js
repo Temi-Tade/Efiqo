@@ -8,6 +8,11 @@ if ("indexedDB" in window) {
     }
 
     request.onsuccess = function(){
+        // if (!request.result.objectStoreNames.contains("user_data")) {
+        //     alert()
+        //     request.result.createObjectStore("user_data", {keyPath: "userId"});
+        //     request.result.createObjectStore("flashcards", {keyPath: "id"});
+        // }
         var user_data = {
             userName: "",
             theme: "",
@@ -56,8 +61,9 @@ if ("indexedDB" in window) {
                             <input type="text" name="uname" placeholder="USERNAME"/>
                         </div>
 
-                    <div class="btn-wrap">
-                        <button disabled>Continue</button>
+                        <div class="btn-wrap">
+                            <button disabled>Continue</button>
+                        </div>
                     </form>    
                 `);
 
@@ -93,6 +99,7 @@ if ("indexedDB" in window) {
                     setTimeout(() => {
                         document.querySelector("#modalbg").style.display = "none"
                     }, 490);
+                    history.go(0);
                 }
             }
         }

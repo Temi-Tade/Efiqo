@@ -5,7 +5,7 @@ let wordIndex = 0;
 let isDeleting = false;
 
 const CREATE_MODAL = (text) => {
-    document.querySelector("#modalbg").style.display = "block"
+    document.querySelector("#modalbg").style.display = "block";
     document.querySelector("#modalbg").animate({
         opacity: ["0", "1"],
     }, {
@@ -60,6 +60,7 @@ TYPE_EFFECT();
 
 //get saved flashcards
 function GET_CARDS(){
+    var request = indexedDB.open("ace-it");
     request.onsuccess = function(){
         var trx = request.result.transaction("flashcards");
         var objectStore = trx.objectStore("flashcards");

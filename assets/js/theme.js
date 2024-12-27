@@ -41,7 +41,7 @@ function TOGGLE_THEME(btn) {
     request.onsuccess = function(){
         var trx = request.result.transaction("user_data", "readwrite");
         var objectStore = trx.objectStore("user_data");
-        var userData = objectStore.getAll(); 
+        var userData = objectStore.getAll();
 
         userData.onsuccess = async function(e){
             var data = e.target.result;
@@ -64,7 +64,7 @@ function LOAD_THEME(btn){
         var userData = objectStore.getAll();
         
         userData.onsuccess = async function(ev){
-            var data = await ev.target.result[0];
+            var data = await ev.target.result[0] || {theme: "device"};
             var theme = data.theme;
             if (theme === "device") {
                 if (window.matchMedia("(prefers-color-scheme: light)")) {
