@@ -133,17 +133,23 @@ class Flashcard{
         this.def = def;
     };
     add(){
-        flashcardData.flashcards.push({
-            term: this.term,
-            def: this.def
-        });
-        var trx = request.result.transaction("flashcards", "readwrite");
-        var flashcardObjStore = trx.objectStore("flashcards");
-        var data = flashcardObjStore.get(flashcardData.id);
-
-        data.onsuccess = function(){
-            flashcardData.number = flashcardData.flashcards.length;
-            flashcardObjStore.put(flashcardData);
+        if (flashcardData.flashcards.length >= 20) {
+            CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
+            document.querySelector("#reason").innerHTML = "<h3>You have run out of free flashcards</h3><br/><p>Upgrade to premium to enjoy creating unlimited flashcards.</p><br/>";
+            return;
+        } else {
+            flashcardData.flashcards.push({
+                term: this.term,
+                def: this.def
+            });
+            var trx = request.result.transaction("flashcards", "readwrite");
+            var flashcardObjStore = trx.objectStore("flashcards");
+            var data = flashcardObjStore.get(flashcardData.id);
+    
+            data.onsuccess = function(){
+                flashcardData.number = flashcardData.flashcards.length;
+                flashcardObjStore.put(flashcardData);
+            }   
         }
     }
     delete(ind){

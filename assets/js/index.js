@@ -3,6 +3,8 @@ const words = ["Simple", "Sleek", "Effective"];
 let charIndex = 0;
 let wordIndex = 0;
 let isDeleting = false;
+let profile;
+let flashcardSets;
 
 const CREATE_MODAL = (text) => {
     document.querySelector("#modalbg").style.display = "block";
@@ -69,6 +71,7 @@ function GET_CARDS(){
         
         keys.onsuccess = async function(ev){
             savedData = await ev.target.result;
+            flashcardSets = savedData;
             document.querySelector("#recent ul").innerHTML = "Loading...";
             document.querySelector("#recent ul").innerHTML = "";
 
@@ -108,7 +111,7 @@ function GET_CARDS(){
                             </table>
                             <div id='recent-actions'>
                                 <button id="open-recent">open</button>
-                                <button id="del-recent">delete</button>
+                                <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
                                 </div>
                         </div>
                     `);
@@ -140,7 +143,14 @@ function CREATE_NEW(){
     if (sessionStorage.getItem("ace-it temp data")) {
         sessionStorage.removeItem("ace-it temp data");
     }
-    window.open("./assets/flashcard/index.html", "_parent");
+    if (!profile.isPremiumUser && flashcardSets.length >= 7) {
+        CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
+        document.querySelector("#reason").innerHTML = "<h3>You have run out of free flashcard sets</h3><br/><p>Upgrade to premium to enjoy creating unlimited sets.</p><br/>";
+        return;
+    }else{
+        window.open("./assets/flashcard/index.html", "_parent");
+        console.log("correct");
+    }
 }
 
 GET_CARDS();
@@ -208,3 +218,26 @@ function DISPLAY_TERMS(){
         </div>
     `);
 }
+
+function CHECK_PREMIUM(){
+    var request = indexedDB.open("ace-it");
+
+    request.onsuccess = function() {
+        var trx = request.result.transaction("user_data");
+        var objectStore = trx.objectStore("user_data");
+        var keys = objectStore.getAll();
+
+        keys.onsuccess = async function(ev) {
+            profile = await ev.target.result[0];
+            if (profile) {
+                [...document.querySelectorAll(".premium")].map(el => {
+                    el.style.display = profile.isPremiumUser ? "none" : "block";
+                });
+            } else {
+                return;
+            }
+        }
+    }
+}
+
+CHECK_PREMIUM();

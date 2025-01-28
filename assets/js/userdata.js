@@ -27,7 +27,8 @@ if ("indexedDB" in window) {
             dob: "",
             email: "",
             tel: "",
-            level: ""
+            level: "",
+            isPremiumUser: false,
         }
 
         var trx = request.result.transaction("user_data", "readwrite");

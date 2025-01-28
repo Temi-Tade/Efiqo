@@ -28,6 +28,7 @@ function FETCH_USER_PROFILE(btn){
 
 function VIEW_PROFILE() {
     //todo: convert dob
+    CHECK_PREMIUM();
     try {
         CREATE_MODAL(`
             <form id="user-profile-form" autocomplete="off">
@@ -92,6 +93,10 @@ function VIEW_PROFILE() {
                         <option value="College (Postgrad)">College (Postgrad)</option>
                         <option value="others">Others</option>
                     </select>
+                </div>
+
+                <div class='premium'>
+                    <button type='button' class="transparent-btn">Get Premium <span class="fa-regular fa-star"></span></button>
                 </div>
     
                 <div class='field update-field'>

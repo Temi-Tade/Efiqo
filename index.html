@@ -34,7 +34,7 @@
                     <div id="options" class="collapse">
                         <ul type="none">
                             <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set<i class="fa-solid fa-flashcard"></i></button></li>
-                            <!-- <li><button>New Quiz <i class="fa-soild fa-quiz"></i></button></li> -->
+                            <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming Soon]</button></li>
                         </ul>
                     </div>
 
@@ -63,7 +63,7 @@
                     <div id="options" class="collapse">
                         <ul type="none">
                             <li><button onclick='CREATE_NEW()'>New Flashcard Set<i class="fa-solid fa-flashcard"></i></button></li>
-                            <!-- <li><button>New Quiz <i class="fa-soild fa-quiz"></i></button></li> -->
+                            <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming soon]</button></li>
                         </ul>
                     </div>
                 </div>
@@ -95,8 +95,8 @@
             <div id="footer-top">
                 <div id="contact">
                     <h4>CONTACT</h4>
-                    <small><em>(For feedback, bug reports and improvements)</em></small>
-                    <p><a href="tel:+2348135189838" class="fa-solid fa-phone">+234 813 518 9838</a></p>
+                    <small><em>(For feedback, bug reports and improvements)</em></small><br/>
+                    <p><a href="tel:+2348135189838"><i class="fa-solid fa-phone"></i> +234 813 518 9838</a></p>
                     <ul type="none">
                         <li><a href="mailto:dev.mode006@gmail.com" class="fa-solid fa-envelope"></a></li>
                         <li><a href="https://x.com/Js_cipher/" class="fa-brands fa-x-twitter"></a></li>
@@ -107,11 +107,15 @@
     
                 <div id="footer-top-col-2">
                     <div class="footer-btn-wrap">
-                        <button onclick="INIT_SHARE()" class="transparent-btn">Share Ace It! <span class="fa-solid fa-share"></span></button>
+                        <button onclick="INIT_SHARE()" class="transparent-btn">Share Ace It! <span class="fa-solid fa-share-nodes"></span></button>
                     </div>
 
                     <div class="footer-btn-wrap">
                         <button onclick="window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support Ace It! <span class="fa-solid fa-donate"></span></button>
+                    </div>
+
+                    <div class="footer-btn-wrap premium">
+                        <button class="transparent-btn">Become a Premium User <span class="fa-regular fa-star"></span></button>
                     </div>
                 </div>
     
@@ -133,6 +137,27 @@
 
             </div>
         </footer>
+
+        <section id="get-premium" class="pseudo">
+            <h3 id="reason"></h3>
+            <div id="perks">
+                <ul>
+                    <h4>Free Plan</h4>
+                    <li>7 flashcard sets.</li>
+                    <li>20 flashcards to per set.</li>
+                </ul>
+
+                <ul>
+                    <h4>Premium Plan</h4>
+                    <li>Unlimited flashcard sets.</li>
+                    <li>Unlimited flashcards per set.</li>
+                </ul>
+
+                <div class="get-premium-btn-wrap">
+                    <button>Get Premium <i class="fa-regular fa-star"></i>($4.99)</button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script src="./assets/js/userdata.js"></script>
@@ -151,4 +176,6 @@
     - disable flashcard form submit btn
     - allow user to create new set/go back to home page at the end of one set
     - ipad mobile view
+    - ace it for teachers/educators/instructors
+    - test premium features with pseudo premium account
  -->
