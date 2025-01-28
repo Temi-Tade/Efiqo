@@ -13,7 +13,7 @@ function TOGGLE_THEME(btn) {
 
     if (btn.value === "device") {
         if (window.matchMedia("(prefers-color-scheme: light)")) {
-            document.querySelector("link.userdef").href = "./assets/css/lightmode.css" || "../css/lightmode.css";
+            document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
         } else {
             document.querySelector("link.userdef").href = "";
         }
@@ -26,7 +26,7 @@ function TOGGLE_THEME(btn) {
         btn.innerText = "";
         CREATE_MODAL("TOGGLE THEME: Dark");
     }else{
-        document.querySelector("link.userdef").href = "./assets/css/lightmode.css" || "../css/lightmode.css";
+        document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
         btn.setAttribute("class", "fa-solid fa-sun transparent-btn");
         btn.innerText = "";
         CREATE_MODAL("TOGGLE THEME: Light");
