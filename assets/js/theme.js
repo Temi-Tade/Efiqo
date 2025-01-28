@@ -25,7 +25,6 @@ function TOGGLE_THEME(btn) {
         btn.setAttribute("class", "fa-solid fa-moon transparent-btn");
         btn.innerText = "";
         CREATE_MODAL("TOGGLE THEME: Dark");
-
     }else{
         document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
         btn.setAttribute("class", "fa-solid fa-sun transparent-btn");
