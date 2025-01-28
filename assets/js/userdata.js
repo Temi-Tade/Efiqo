@@ -15,7 +15,7 @@ if ("indexedDB" in window) {
         // }
         var user_data = {
             userName: "",
-            theme: "",
+            theme: "device",
             lastLogIn: new Date().toUTCString(),
             userId: crypto.randomUUID(),
             pfp: {
