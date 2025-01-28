@@ -12,7 +12,7 @@ function TOGGLE_THEME(btn) {
     console.log(btn.value);
 
     if (btn.value === "device") {
-        if (window.matchMedia("(prefers-color-scheme: light)")) {
+        if (window.matchMedia("(prefers-color-scheme: light)").matches) {
             document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
         } else {
             document.querySelector("link.userdef").href = "";
@@ -66,7 +66,7 @@ function LOAD_THEME(btn){
             var data = await ev.target.result[0] || {theme: "device"};
             var theme = data.theme;
             if (theme === "device") {
-                if (window.matchMedia("(prefers-color-scheme: light)")) {
+                if (window.matchMedia("(prefers-color-scheme: light)").matches) {
                     document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
                 } else {
                     document.querySelector("link.userdef").href = "";

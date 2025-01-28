@@ -4,7 +4,7 @@
 }
 
 html, body, footer, #snapshots_wrap{
-    background-color: red;
+    background-color: var(--bgcol);
     color: var(--textcol);
 }
 
