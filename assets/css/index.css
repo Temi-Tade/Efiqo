@@ -19,7 +19,7 @@
 
 ::-webkit-scrollbar{
     /* background-color: #777; */
-    width: .5rem;
+    width: .425rem;
     border-radius: .75rem;
     cursor: pointer;
 }
@@ -58,6 +58,11 @@ header{
     box-shadow: 1px 1px 1px #7777;
 }
 
+header h1{
+    display: flex;
+    align-items: start;
+}
+
 header nav ul{
     display: flex;
 }
@@ -73,6 +78,15 @@ header nav ul li button{
 
 header nav ul li:hover {
     background-color: #7777
+}
+
+header .beta{
+    font-size: .65rem;
+    text-transform: uppercase;
+    background-color: var(--text-color);
+    color: var(--bgcolor);
+    padding: .125rem;
+    border-radius: .25rem 0 .25rem;
 }
 
 button{
@@ -116,7 +130,7 @@ ul{
 
 .expand{
     /* border: .5px dashed; */
-    max-height: 25rem;
+    max-height: 30rem;
     background-color: #333;
 }
 
@@ -129,6 +143,11 @@ ul{
 
 #recent h3{
     text-align: center;
+}
+
+#recent .sets-limit{
+    text-align: center;
+    padding: .5rem;
 }
 
 #no-flashcard{
@@ -556,7 +575,7 @@ footer #copyright span{
     }
 
     #options ul{
-        height: 7rem;
+        height: 10rem;
         display: flex;
         flex-direction: column;
         justify-content: space-around;

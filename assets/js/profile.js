@@ -153,7 +153,7 @@ function VIEW_PROFILE() {
                     data[0].level = parent.querySelector("#edu_level").value;
                     data[0].pfp.url = blob || data[0].pfp.url;
                     data[0].pfp.file = file || data[0].pfp.file;
-                    console.log(data[0]);
+                    // console.log(data[0]);
                     objectStore.put(data[0]);
                 };
             };
@@ -167,7 +167,7 @@ function VIEW_PROFILE() {
             FETCH_USER_PROFILE();
         }
     } catch (error) {
-        console.error(error, "No user profile found")
+        // console.error(error, "No user profile found")
     }
 };
 

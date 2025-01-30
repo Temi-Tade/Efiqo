@@ -5,6 +5,16 @@ let wordIndex = 0;
 let isDeleting = false;
 let profile;
 let flashcardSets;
+const isEarlyAccess = true;
+
+function IS_EARLY_ACCESS() {
+    if (isEarlyAccess) {
+        CREATE_MODAL(`
+            <p>Oops... This feature is not available during early access.</p>
+        `);
+    }
+    return;
+}
 
 const CREATE_MODAL = (text) => {
     document.querySelector("#modalbg").style.display = "block";
@@ -86,6 +96,7 @@ function GET_CARDS(){
                         <button>${flashcard.name}</button>
                     </li>
                 `;
+                document.querySelector(".sets-limit").innerHTML = `Sets limit: ${ev.target.result.length}/7`
             });
 
             [...document.querySelectorAll("#recent button")].forEach((val, i) => {
@@ -117,7 +128,7 @@ function GET_CARDS(){
                     `);
 
                     document.querySelector("#open-recent").onclick = function(){
-                        console.log(savedData[i]);
+                        // console.log(savedData[i]);
                         sessionStorage.setItem("ace-it temp data", JSON.stringify(savedData[i]));
                         window.open("./assets/flashcard/index.html","_parent");
                     }
@@ -149,13 +160,14 @@ function CREATE_NEW(){
         return;
     }else{
         window.open("./assets/flashcard/index.html", "_parent");
-        console.log("correct");
+        // console.log("correct");
     }
 }
 
 GET_CARDS();
 
 async function INIT_SHARE(){
+    IS_EARLY_ACCESS();
     if ("share" in navigator) {
         try {
             await navigator.share({

@@ -9,7 +9,7 @@ function TOGGLE_THEME(btn) {
     }else{
         btn.value = ("device");
     }
-    console.log(btn.value);
+    // console.log(btn.value);
 
     if (btn.value === "device") {
         if (window.matchMedia("(prefers-color-scheme: light)").matches) {
@@ -48,7 +48,7 @@ function TOGGLE_THEME(btn) {
             try {
                 objectStore.put(data[0]);
             } catch (error) {
-                console.log(error.message);
+                // console.log(error.message);
             }
         }
     }

@@ -106,3 +106,8 @@ input, textarea{
 .card{
     border: .5px solid #7777;
 }
+
+header .beta{
+    background-color: var(--textcol);
+    color: var(--bgcol);
+}

@@ -15,7 +15,7 @@
 <body>
     <main>
         <header>
-            <h1>Ace It!</h1>
+            <h1>Ace It! <small class="beta">beta</small></h1>
             <nav>
                 <ul type="none">
                     <li><button onclick="TOGGLE_THEME(this)" class="material-symbols-outlined transparent-btn" title="Toggle Theme" value="device"></button></li>
@@ -71,6 +71,7 @@
 
             <section id="recent" class="deskop">
                 <h3>My Sets <span class="fa-solid fa-file"></span></h3>
+                <small class="premium sets-limit"></small>
                 <ul type="none"></ul>
             </section>
         </section>
@@ -107,15 +108,15 @@
     
                 <div id="footer-top-col-2">
                     <div class="footer-btn-wrap">
-                        <button onclick="INIT_SHARE()" class="transparent-btn">Share Ace It! <span class="fa-solid fa-share-nodes"></span></button>
+                        <button onclick="IS_EARLY_ACCESS()//INIT_SHARE()" class="transparent-btn">Share Ace It! <span class="fa-solid fa-share-nodes"></span></button>
                     </div>
 
                     <div class="footer-btn-wrap">
-                        <button onclick="window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support Ace It! <span class="fa-solid fa-donate"></span></button>
+                        <button onclick="IS_EARLY_ACCESS();//window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support Ace It! <span class="fa-solid fa-donate"></span></button>
                     </div>
 
                     <div class="footer-btn-wrap premium">
-                        <button class="transparent-btn">Become a Premium User <span class="fa-regular fa-star"></span></button>
+                        <button class="transparent-btn" onclick="IS_EARLY_ACCESS()">Become a Premium User <span class="fa-regular fa-star"></span></button>
                     </div>
                 </div>
     
@@ -154,7 +155,7 @@
                 </ul>
 
                 <div class="get-premium-btn-wrap">
-                    <button>Get Premium <i class="fa-regular fa-star"></i>($4.99)</button>
+                    <button onclick="IS_EARLY_ACCESS()">Get Premium <i class="fa-regular fa-star"></i>($4.99)</button>
                 </div>
             </div>
         </section>

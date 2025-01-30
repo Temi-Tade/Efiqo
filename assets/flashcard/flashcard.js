@@ -163,6 +163,7 @@ class Flashcard{
                 ${document.querySelector("#flashcard-data form").innerHTML}
             </form>
         `);
+        document.querySelector("#modal .number").style.display = "none";
         document.querySelector("#modal form button").textContent = "Save Changes";
         document.querySelector("#modal form #term").value = flashcardData.flashcards[i].term;
         document.querySelector("#modal form #def").value = flashcardData.flashcards[i].def;
@@ -217,7 +218,7 @@ document.querySelector("#flashcard-data form").onsubmit = (ev) => {
 function DELETE_FLASHCARD(){
     card = new Flashcard(flashcardData.flashcards[index].term, flashcardData.flashcards[index].def);
     card.delete(index);
-    console.log(flashcardData);
+    // console.log(flashcardData);
     var trx = request.result.transaction("flashcards", "readwrite");
     var flashcardObjStore = trx.objectStore("flashcards");
     flashcardObjStore.put(flashcardData);
@@ -258,7 +259,7 @@ const GO_TO_PREV_CARD = () => {
             SET_PROGRESS();
         }
     }catch(error){
-        console.log(error);
+        // console.log(error);
     }
 }
 
@@ -283,7 +284,7 @@ const GO_TO_NEXT_CARD = () => {
             FLASHCARD_COUNT();
         }
     }catch(error){
-        console.log(error);
+        // console.log(error);
     }
 }
 

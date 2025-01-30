@@ -107,7 +107,7 @@ if ("indexedDB" in window) {
     }
 
     request.onerror = function(){
-        console.error("An error occured while accessing database");
+        // console.error("An error occured while accessing database");
     }
 } else {
     CREATE_MODAL(`
