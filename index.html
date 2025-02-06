@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="" class="userdef"></link>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/fontawesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0&icon_names=brightness_6" />
     <title>Ace It!</title>
 </head>
@@ -28,12 +28,12 @@
             <section id="sidebar" class="desktop">
                 <div>
                     <div class="btn-wrap">
-                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create New Study Material <i class="fa-solid fa-caret-down"></i></button>
+                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create <i class="fa-solid fa-caret-down"></i></button>
                     </div>
 
                     <div id="options" class="collapse">
                         <ul type="none">
-                            <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set<i class="fa-solid fa-flashcard"></i></button></li>
+                            <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
                             <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming Soon]</button></li>
                         </ul>
                     </div>
@@ -57,12 +57,12 @@
 
                 <div class="mobile">
                     <div class="btn-wrap">
-                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create New Study Material <i class="fa-solid fa-caret-down"></i></button>
+                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create <i class="fa-solid fa-caret-down"></i></button>
                     </div>
 
                     <div id="options" class="collapse">
                         <ul type="none">
-                            <li><button onclick='CREATE_NEW()'>New Flashcard Set<i class="fa-solid fa-flashcard"></i></button></li>
+                            <li><button onclick='CREATE_NEW()'>New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
                             <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming soon]</button></li>
                         </ul>
                     </div>
@@ -70,7 +70,7 @@
             </section>
 
             <section id="recent" class="deskop">
-                <h3>My Sets <span class="fa-solid fa-file"></span></h3>
+                <h3>My Sets <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></h3>
                 <small class="premium sets-limit"></small>
                 <ul type="none"></ul>
             </section>

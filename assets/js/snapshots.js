@@ -1,14 +1,14 @@
 const SNAPSHOTS = [
     {
-        image: "./assets/images/focused-student-doing-active-recall-studying-on-laptop.jpeg",
+        image: "./assets/images/idea-bulb.jpg",
         tagline: "Study smarter, more effectively and improve active recall"
     },
     {
-        image: "./assets/images/improved-student.jpeg",
+        image: "./assets/images/A+_excellent.jpg",
         tagline: "Set yourself on the path to academic excellence."
     },
     {
-        image: "./assets/images/happy-students-pass-exams.jpeg",
+        image: "./assets/images/improvement-graph.jpg",
         tagline: "Increase your productivity while you study."
     },
     {

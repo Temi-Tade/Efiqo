@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Ubuntu, sans-serif;
+    font-family: Fira Sans, sans-serif;
     transition: .25s;
     letter-spacing: .95px;
 }
@@ -135,10 +135,13 @@ ul{
 }
 
 #recent{
+    padding: .25rem;
+    border-radius: .5rem;
     max-height: 20rem;
     overflow-y: auto;
     margin-right: .5rem;
     border-left: .5px inset #cccc;
+    background-color: #2227;
 }
 
 #recent h3{
@@ -159,7 +162,7 @@ ul{
 }
 
 #recent ul li{
-    margin: .25rem 0;
+    margin: .5rem 0;
     padding: .25rem;
     /* border-bottom: 1px solid; */
     display: flex;
@@ -172,11 +175,16 @@ ul{
     background-color: #13131377;
 }
 
+#recent ul li:nth-child(even){
+    border: 1px solid #fff5;
+}
+
 #recent button{
     width: 100%;
     background: transparent;
     text-align: left;
     padding: 1rem;
+    word-wrap: break-word;
 }
 
 #recent button:hover{
