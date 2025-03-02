@@ -88,20 +88,25 @@ function ROTATE_CARD(card) {
         iterations: 1
     });
     if (card.querySelector(".card-text").innerHTML === flashcardData.flashcards[index].term) {
-        card.querySelector(".card-text").innerHTML = flashcardData.flashcards[index].def;
+        card.querySelector(".card-text").innerHTML = flashcardData.flashcards[index].img ? `<img src='${flashcardData.flashcards[index].img.url}'/>` : "";
+        card.querySelector(".card-text").innerHTML += `<div>${flashcardData.flashcards[index].def}</div>`;
     } else {
         card.querySelector(".card-text").innerHTML = flashcardData.flashcards[index].term;
     };
 };
 
-const PREVIEW_CARD = (index) => {
+const PREVIEW_CARD = (content) => {
     document.querySelector("#preview").innerHTML = `
         <div class='card-wrap' onclick=ROTATE_CARD(this) oncontextmenu=SHOW_MENU(event)>
             <div class="card">
-                <p class="card-text">${index}</p>
+                <p class="card-text">${content}</p>
             </div>
         </div>
-    `
+    `;
+
+    // if (document.querySelector(".card-wrap").style.transform . ) {
+        
+    // }
 
     SHOW_MENU = (e) => {
         e.preventDefault();
@@ -128,9 +133,10 @@ const ADD_CARD = () => {
 //code for flashcard starts here //
 
 class Flashcard{
-    constructor(term, def){
+    constructor(term, def, img){
         this.term = term;
         this.def = def;
+        this.img = img;
     };
     add(){
         if (flashcardData.flashcards.length >= 20) {
@@ -140,7 +146,8 @@ class Flashcard{
         } else {
             flashcardData.flashcards.push({
                 term: this.term,
-                def: this.def
+                def: this.def,
+                img: this.img,
             });
             var trx = request.result.transaction("flashcards", "readwrite");
             var flashcardObjStore = trx.objectStore("flashcards");
@@ -192,6 +199,20 @@ class Flashcard{
     }
 }
 
+function ADD_IMAGE(filepicker, e) {
+    // console.log(e);
+    var file = filepicker.files[0];
+    var fileReader = new FileReader();
+
+    fileReader.onload = function(ev) {
+        document.querySelector("#added-images").innerHTML = `<img width='100' src='${ev.target.result}'/>`;
+        sessionStorage.setItem("flashcard-image", JSON.stringify({name: file.name ,url: ev.target.result}));
+    }
+
+    fileReader.readAsDataURL(file);
+    document.querySelector("#def").value = file.name;
+}
+
 function MOBILE_PREVIEW(el) {
     if (el.classList.contains("set-up")) {
         document.querySelector("#flashcard-preview").style.display = "block";
@@ -208,11 +229,13 @@ function MOBILE_PREVIEW(el) {
 
 document.querySelector("#flashcard-data form").onsubmit = (ev) => {
     ev.preventDefault();
-    card = new Flashcard(document.querySelector("#flashcard-data form #term").value, document.querySelector("#flashcard-data form #def").value);
+    card = new Flashcard(document.querySelector("#flashcard-data form #term").value, document.querySelector("#flashcard-data form #def").value, sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : undefined);
     card.add();
     ADD_CARD();
     // FLASHCARD_COUNT();
     document.querySelector("#flashcard-data form").reset();
+    sessionStorage.removeItem("flashcard-image");
+    document.querySelector("#added-images").innerHTML = "";
 }
 
 function DELETE_FLASHCARD(){

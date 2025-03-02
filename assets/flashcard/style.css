@@ -222,6 +222,10 @@ legend {
     font-size: 150%;
 }
 
+.card img{
+    width: 100%;
+}
+
 #flashcard-count {
     display: block;
     text-align: center;
@@ -265,6 +269,33 @@ form h3 {
     width: 80%;
     margin: 1rem auto;
     justify-content: space-around;
+}
+
+.attach{
+    padding: .5rem;
+    width: 80%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.attach input[type=file]{
+    display: none;
+}
+
+#file-picker{
+    position: relative;
+    padding: 0;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#add-icon{
+    position: absolute;
+    bottom: -.5rem;
+    right: -.5rem;
+    font-size: 1rem;
 }
 
 .mobile {

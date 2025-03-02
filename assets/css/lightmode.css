@@ -16,6 +16,11 @@ header nav ul li:hover {
     background-color: #ccc7
 }
 
+
+#recent{
+    background-color: #ccc7;
+}
+
 #recent ul li button{
     color: var(--textcol);
 }
@@ -28,8 +33,16 @@ header nav ul li:hover {
     background-color: #ccc7;
 }
 
-.collapse ul{
-    background-color: #cccf;
+#recent ul li:nth-child(even){
+    background-color: #aaa7;
+}
+
+#recent ul li:nth-child(even) button:hover{
+    background-color: #aaa7;
+}
+
+.collapse{
+    background-color: #ccc7;
 }
 
 #snapshots_wrap{

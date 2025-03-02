@@ -96,7 +96,7 @@ function GET_CARDS(){
                         <button>${flashcard.name}</button>
                     </li>
                 `;
-                document.querySelector(".sets-limit").innerHTML = `Sets limit: ${ev.target.result.length}/7`
+                document.querySelector(".sets-limit").innerHTML = `Set Quota: ${ev.target.result.length}/7`
             });
 
             [...document.querySelectorAll("#recent button")].forEach((val, i) => {
@@ -121,7 +121,7 @@ function GET_CARDS(){
                                 </tr>
                             </table>
                             <div id='recent-actions'>
-                                <button id="open-recent">open</button>
+                                <button id="open-recent">open <i class='fa-solid fa-arrow-up-right-from-square'></i></button>
                                 <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
                                 </div>
                         </div>
