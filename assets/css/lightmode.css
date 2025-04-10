@@ -16,6 +16,9 @@ header nav ul li:hover {
     background-color: #ccc7
 }
 
+#search-form input::placeholder{
+    color: #777;
+}
 
 #recent{
     background-color: #ccc7;
@@ -42,6 +45,10 @@ header nav ul li:hover {
 }
 
 .collapse{
+    background-color: #ccc7;
+}
+
+#features{
     background-color: #ccc7;
 }
 

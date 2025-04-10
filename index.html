@@ -17,43 +17,28 @@
             <h1>Learnaptiq <small class="beta">beta</small></h1>
             <nav>
                 <ul type="none">
-                    <li><button onclick="TOGGLE_THEME(this)" class="material-symbols-outlined transparent-btn" title="Toggle Theme" value="device"></button></li>
-                    <li><button class="transparent-btn" onclick="VIEW_PROFILE()"><i class="fa-solid fa-user"></i></button></li>
+                    <li><button onclick="TOGGLE_THEME(this)" class="transparent-btn" title="Toggle Theme" value="device"></button></li>
+                    <li id="profile"><button class="transparent-btn" id="profile-image" onclick="VIEW_PROFILE()"></button></li>
+                    <li>
+                        <button class="create-new-btn" onclick="CREATE_MODAL(this.nextElementSibling.innerHTML)">+</button>
+                        <div class="pseudo">
+                            <ul type="none" id="options">
+                                <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
+                                <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming Soon]</button></li>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </nav>
         </header>
 
         <section id="content">
-            <!--todo: search bar-->
-            <section id="sidebar" class="desktop">
-                <div>
-                    <div class="btn-wrap">
-                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create <i class="fa-solid fa-caret-down"></i></button>
+            <section id="search-wrap">
+                <div id="search-form-warp">
+                    <div id="search-form">
+                        <!--todo: search functionality-->
+                        <input type="search" placeholder="Search tools, materials"/>
                     </div>
-
-                    <div id="options" class="collapse">
-                        <ul type="none">
-                            <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
-                            <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming Soon]</button></li>
-                        </ul>
-                    </div>
-
-                    <!-- only show this if user is registered -->
-                    <div class="user-profile-wrap">
-                        <div class="user-profile" ></div>
-                        <button id="view-profile-btn" onclick="VIEW_PROFILE()">View My Profile <i class="fa-solid fa-user"></i></button>
-                    </div>
-            </section>
-
-            <section id="intro">
-                <img src="./assets/images/learnaptiq.png" alt="Learnaptiq Logo" width="200"/>
-                <h2>Learnaptiq</h2>
-                <!--<div id="text-effect">
-                    <p id="dynamic">Simple.</p>
-                </div>-->
-    
-                <div id="about">
-                    <p>Study actively, Remember passively.</p>
                 </div>
             </section>
 
@@ -62,33 +47,29 @@
                 <small class="premium sets-limit"></small>
                 <ul type="none"></ul>
             </section>
+
+            <section id="features">
+                <h2>Learning tools and resources... all in one place.</h2>
+                <ul>
+                    <li>Create custom flashcards.</li>
+                    <li>Learn with flashcards created by others.</li>
+                    <li>Share your flashcards with other learners.</li>
+                    <li class="coming-soon">Create custom quizzes. [coming soon]</li>
+                    <li class="coming-soon">Generate AI-powered summary from lecture materials. [coming soon]</li>
+                </ul>
+                <div id="get-started">
+                    <button id="signup">GET STARTED <span class="fa-solid fa-caret-right"></span></button>
+                </div>
+            </section>
             
-            <div class="mobile">
-                <div class="btn-wrap">
-
-                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create <i class="fa-solid fa-caret-down"></i></button>
-
-                    </div>
-
-                    <div id="options" class="collapse">
-                        <ul type="none">
-                            <li><button onclick='CREATE_NEW()'>New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
-                            <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming soon]</button></li>
-                        </ul>
-                    </div>
-            </div>
         </section>
 
         <section id="snapshots_wrap">
             <h2>Hassle-free study... at your finger tips.</h2>
-            <!--<h4>Top academic performaces requires students to study smart as they study hard. With our study tool, improve how you approach studying and ace them courses!</h4>-->
             <div id="snapshots">
                 <ul type="none" id="snapshots_list"></ul>
             </div>
            
-            <!-- <div id="get-started">
-                <button>GET STARTED <span class="fa-solid fa-caret-right"></span></button>
-            </div> -->
         </section>
 
         <section id="modalbg">
@@ -100,8 +81,8 @@
                 <div id="contact">
                     <h4>CONTACT</h4>
                     <small><em>(For feedback, bug reports and improvements)</em></small><br/>
-                    <p><a href="tel:+2348135189838"><i class="fa-solid fa-phone"></i> +234 813 518 9838</a></p>
                     <ul type="none">
+                        <li><a href="tel:+2348135189838" class="fa-solid fa-phone"></a></li>
                         <li><a href="mailto:dev.mode006@gmail.com" class="fa-regular fa-envelope"></a></li>
                         <li><a href="https://x.com/Js_cipher/" class="fa-brands fa-x-twitter"></a></li>
                         <li><a href="https://github.com/Temi-Tade/" class="fa-brands fa-github"></a></li>
@@ -136,7 +117,7 @@
 
             <div id="copyright">
                 <p>
-                    <span>&copy;TenderLuxe 2024. All rights reserved.</span>
+                    <span>&copy;TenderLuxe 2025. All rights reserved.</span>
                 </p>
 
             </div>
@@ -162,16 +143,27 @@
                 </div>
             </div>
         </section>
-    </main>
-    <input type="text" autocomplete="">
 
-    <script src="./assets/js/globals.js"></script>
+        <section class="pseudo" id="signupform">
+            <form autocomplete="off" spellcheck="false">
+                <h3>Welcome learner! Thank you for choosing learnaptiq. Register to continue.</h3>
+                <div class="field">
+                    <input type="text" name="uname" placeholder="USERNAME"/>
+                </div>
+
+                <div class="btn-wrap">
+                    <button disabled>Continue</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="./assets/js/main.js"></script>    
     <script src="./assets/js/userdata.js"></script>
-    <!-- <script src="./assets/js/index.js"></script>
     <script src="./assets/js/snapshots.js"></script>
+    <script src="./assets/js/index.js"></script>
     <script src="./assets/js/profile.js"></script>
-    <script src="./assets/js/theme.js"></script> -->
-    <!-- <script src="drive.js"></script> -->
+    <script src="./assets/js/theme.js"></script>
 </body>
 </html>
 

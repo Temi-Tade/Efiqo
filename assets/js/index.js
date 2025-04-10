@@ -16,38 +16,8 @@ function IS_EARLY_ACCESS() {
     return;
 }
 
-const CREATE_MODAL = (text) => {
-    document.querySelector("#modalbg").style.display = "block";
-    document.querySelector("#modalbg").animate({
-        opacity: ["0", "1"],
-    }, {
-        iterations: 1,
-        duration: 500,
-    })
-    document.querySelector("#modal").innerHTML = text
-
-    window.onclick = (ev) => {
-        if (ev.target === document.querySelector("#modalbg")) {
-            document.querySelector("#modalbg").animate({
-                opacity: ["1", "0"],
-            }, {
-                iterations: 1,
-                duration: 500,
-            });
-            setTimeout(() => {
-                document.querySelector("#modalbg").style.display = "none"
-            }, 490);
-        };
-    };
-};
-
-const TOGGLE_MATERIALS_LIST = (el, parent) => {
+const TOGGLE_MATERIALS_LIST = (parent) => {
     parent.nextElementSibling.classList.toggle("expand");
-    if (parent.nextElementSibling.classList.contains("expand")) {
-        el.setAttribute("class", "fa-solid fa-caret-up");
-    }else{
-        el.setAttribute("class", "fa-solid fa-caret-down");
-    }
 };
 
 const TYPE_EFFECT = () => {
@@ -72,7 +42,7 @@ const TYPE_EFFECT = () => {
 
 //get saved flashcards
 function GET_CARDS(){
-    var request = indexedDB.open("ace-it");
+    var request = indexedDB.open("learnaptiq");
     request.onsuccess = function(){
         var trx = request.result.transaction("flashcards");
         var objectStore = trx.objectStore("flashcards");
@@ -129,7 +99,7 @@ function GET_CARDS(){
 
                     document.querySelector("#open-recent").onclick = function(){
                         // console.log(savedData[i]);
-                        sessionStorage.setItem("ace-it temp data", JSON.stringify(savedData[i]));
+                        sessionStorage.setItem("learnaptiq temp data", JSON.stringify(savedData[i]));
                         window.open("./assets/flashcard/index.html","_parent");
                     }
                     
@@ -151,8 +121,8 @@ function GET_CARDS(){
 };
 
 function CREATE_NEW(){
-    if (sessionStorage.getItem("ace-it temp data")) {
-        sessionStorage.removeItem("ace-it temp data");
+    if (sessionStorage.getItem("learnaptiq temp data")) {
+        sessionStorage.removeItem("learnaptiq temp data");
     }
     if (!profile.isPremiumUser && flashcardSets.length >= 7) {
         CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
@@ -232,7 +202,7 @@ function DISPLAY_TERMS(){
 }
 
 function CHECK_PREMIUM(){
-    var request = indexedDB.open("ace-it");
+    var request = indexedDB.open("learnaptiq");
 
     request.onsuccess = function() {
         var trx = request.result.transaction("user_data");
