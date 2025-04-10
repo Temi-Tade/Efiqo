@@ -4,7 +4,7 @@ const SNAPSHOTS = [
         tagline: "Study smarter, more effectively and improve active recall"
     },
     {
-        image: "./assets/images/A+_excellent.jpg",
+        image: "./assets/images/Aplus_excellent.jpg",
         tagline: "Set yourself on the path to academic excellence."
     },
     {

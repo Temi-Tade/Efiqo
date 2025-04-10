@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/fontawesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans">
-    <title>Ace It! | New Flashcard</title>
+    <title>Learnaptiq | New Flashcard</title>
 </head>
 <body>
     <main>
         <header>
-            <h1>Ace It!<small class="beta">beta</small></h1>
+            <h1>Learnaptiq<small class="beta">beta</small></h1>
             <nav>
                 <ul type="none">
                     <li><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn" title="Toggle Theme" value="device"></button></li>
@@ -62,9 +62,8 @@
                         <div class="attach">
                             <div class="field" id="added-images"></div>
                             <label for="add-image" id=file-picker class="fa-regular fa-image transparent-btn" title="add image">
-                                <i id="add-icon" class="fa-solid fa-plus-circle"></i>
                             </label>
-                            <input type="file" id="add-image" accept="image/*" onchange="ADD_IMAGE(this, event)"/>
+                            <input type="file" id="add-image" accept="image/*, .jpg, .png, .jpeg" onchange="ADD_IMAGE(this, event)"/>
                         </div>
                     </div>
                 </div>

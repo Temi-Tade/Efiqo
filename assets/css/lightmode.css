@@ -124,3 +124,8 @@ header .beta{
     background-color: var(--textcol);
     color: var(--bgcol);
 }
+
+::-webkit-scrollbar-thumb{
+    background-color: #3337;
+    border-radius: .75rem;
+}

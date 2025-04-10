@@ -68,7 +68,7 @@ const TYPE_EFFECT = () => {
     };
 };
 
-TYPE_EFFECT();
+//TYPE_EFFECT();
 
 //get saved flashcards
 function GET_CARDS(){

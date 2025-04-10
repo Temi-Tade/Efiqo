@@ -135,20 +135,22 @@ legend {
     right: 0;
     bottom: 0;
     background-color: #3337;
-    padding-top: 20dvh;
+    padding-top: 10dvh;
     display: none;
     backdrop-filter: blur(.25rem);
 }
 
 #modal {
+    position: fixed;
+    bottom: 0;
+    right: .5rem;
+    left: .5rem;
     background-color: #111;
     padding: 1rem;
-    width: 80dvw;
+    max-height: 50dvh;
     border-radius: .75rem;
     color: var(--text-color);
-    margin: auto;
     text-align: center;
-    max-height: 20rem;
     overflow-y: auto;
     box-shadow: 0 0 7px 0 #777;
 }
