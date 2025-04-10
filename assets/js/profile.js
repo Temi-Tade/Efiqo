@@ -3,7 +3,7 @@ let blob;
 let file;
 
 function FETCH_USER_PROFILE(btn){
-    var request = indexedDB.open("learnaptiq");
+    var request = indexedDB.open("efiqo");
     request.onsuccess = function(){
         var trx = request.result.transaction("user_data");
         var objectStore = trx.objectStore("user_data");
@@ -12,7 +12,8 @@ function FETCH_USER_PROFILE(btn){
         userData.onsuccess = async function(ev) {
             data = await ev.target.result;
             document.querySelector("#profile-image").innerHTML = data.length > 0 && data[0].pfp.url ? `<img src='${data[0].pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
-            document.querySelector("#profile").style.display = 'none';
+            document.querySelector("#profile").style.display = data.length === 0 ? 'none' : 'flex';
+            document.querySelector("#get-started").style.display = data.length === 0 ? 'block' : 'none';
         };
     };
 };
@@ -127,7 +128,7 @@ function VIEW_PROFILE() {
     
         parent.onsubmit = function(e){
             e.preventDefault();
-            var request = indexedDB.open("learnaptiq");
+            var request = indexedDB.open("efiqo");
             request.onsuccess = function(){
                 var trx = request.result.transaction("user_data", "readwrite");
                 var objectStore = trx.objectStore("user_data");

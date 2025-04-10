@@ -34,7 +34,7 @@ function TOGGLE_THEME(btn) {
         document.querySelector("#modalbg").style.display = "none";
     }, 1500);
 
-    var request = indexedDB.open("learnaptiq");
+    var request = indexedDB.open("efiqo");
 
     request.onsuccess = function(){
         var trx = request.result.transaction("user_data", "readwrite");
@@ -55,7 +55,7 @@ function TOGGLE_THEME(btn) {
 
 //set theme
 function LOAD_THEME(btn){
-    var request = indexedDB.open("learnaptiq");
+    var request = indexedDB.open("efiqo");
     request.onsuccess = function(){
         var trx = request.result.transaction("user_data");
         var objectStore = trx.objectStore("user_data");

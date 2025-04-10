@@ -1,5 +1,5 @@
 if ("indexedDB" in window) {
-    var request = indexedDB.open("learnaptiq", 1);
+    var request = indexedDB.open("efiqo", 1);
     request.onupgradeneeded = function(){
         if (!request.result.objectStoreNames.contains("user_data")) {
             request.result.createObjectStore("user_data", {keyPath: "userId", autoIncrement: true});

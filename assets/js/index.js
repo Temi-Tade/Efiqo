@@ -42,7 +42,7 @@ const TYPE_EFFECT = () => {
 
 //get saved flashcards
 function GET_CARDS(){
-    var request = indexedDB.open("learnaptiq");
+    var request = indexedDB.open("efiqo");
     request.onsuccess = function(){
         var trx = request.result.transaction("flashcards");
         var objectStore = trx.objectStore("flashcards");
@@ -99,7 +99,7 @@ function GET_CARDS(){
 
                     document.querySelector("#open-recent").onclick = function(){
                         // console.log(savedData[i]);
-                        sessionStorage.setItem("learnaptiq temp data", JSON.stringify(savedData[i]));
+                        sessionStorage.setItem("efiqo temp data", JSON.stringify(savedData[i]));
                         window.open("./assets/flashcard/index.html","_parent");
                     }
                     
@@ -121,8 +121,8 @@ function GET_CARDS(){
 };
 
 function CREATE_NEW(){
-    if (sessionStorage.getItem("learnaptiq temp data")) {
-        sessionStorage.removeItem("learnaptiq temp data");
+    if (sessionStorage.getItem("efiqo temp data")) {
+        sessionStorage.removeItem("efiqo temp data");
     }
     if (!profile.isPremiumUser && flashcardSets.length >= 7) {
         CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
@@ -202,7 +202,7 @@ function DISPLAY_TERMS(){
 }
 
 function CHECK_PREMIUM(){
-    var request = indexedDB.open("learnaptiq");
+    var request = indexedDB.open("efiqo");
 
     request.onsuccess = function() {
         var trx = request.result.transaction("user_data");

@@ -1,7 +1,7 @@
 let index = 0;
 let isEdit = false;
 let card;
-var flashcardData = sessionStorage.getItem("ace-it temp data") ? JSON.parse(sessionStorage.getItem("ace-it temp data")) : {
+var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessionStorage.getItem("efiqo temp data")) : {
     name: "",
     desc : "",
     flashcards: [],
@@ -16,7 +16,7 @@ const TOGGLE_FORMS = (e, el, other) => {
     var trx = request.result.transaction("flashcards", "readwrite");
     var flashcardObjStore = trx.objectStore("flashcards");
     flashcardObjStore.add(flashcardData);
-    sessionStorage.setItem("ace-it temp data", JSON.stringify(flashcardData));
+    sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcardData));
 
     if (el.style.display === "block") {
         el.style.display = "none";
@@ -321,13 +321,13 @@ const SET_PROGRESS = () => {
 }
 
 //todo: user must close any active sessions to create new FC
-if (sessionStorage.getItem("ace-it temp data")) {
+if (sessionStorage.getItem("efiqo temp data")) {
     request.onsuccess = function(){
         var trx = request.result.transaction("flashcards", "readwrite");
         var flashcardObjStore = trx.objectStore("flashcards");
         var x = flashcardObjStore.get(flashcardData.id);
         x.onsuccess = function (ev) {
-            sessionStorage.setItem("ace-it temp data", JSON.stringify(ev.target.result));
+            sessionStorage.setItem("efiqo temp data", JSON.stringify(ev.target.result));
             flashcardData = ev.target.result;
             document.querySelector("title").innerHTML = `Ace It | ${flashcardData.name}`;
             if (flashcardData.flashcards.length) {
@@ -342,7 +342,7 @@ if (sessionStorage.getItem("ace-it temp data")) {
     document.querySelector("#flashcard-data").style.display = "flex";
     document.querySelector("#flashcard-name").style.display = "none";
     
-    var session = JSON.parse(sessionStorage.getItem("ace-it temp data"));
+    var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
     // document.querySelector("h1").innerHTML = "";
     document.querySelector("#info h2").innerHTML = session.name;
     document.querySelector("#info em").innerHTML = session.desc;
