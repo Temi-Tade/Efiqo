@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans">
-    <title>SynapseStudy</title>
+    <title>Learnaptiq</title>
 </head>
 <body>
     <main>
         <header>
-            <h1>SynapseStudy <small class="beta">beta</small></h1>
+            <h1>Learnaptiq <small class="beta">beta</small></h1>
             <nav>
                 <ul type="none">
                     <li><button onclick="TOGGLE_THEME(this)" class="material-symbols-outlined transparent-btn" title="Toggle Theme" value="device"></button></li>
@@ -24,6 +24,7 @@
         </header>
 
         <section id="content">
+            <!--todo: search bar-->
             <section id="sidebar" class="desktop">
                 <div>
                     <div class="btn-wrap">
@@ -45,26 +46,14 @@
             </section>
 
             <section id="intro">
-                <h2>SynapseStudy</h2>
-                <div id="text-effect">
+                <img src="./assets/images/learnaptiq.png" alt="Learnaptiq Logo" width="200"/>
+                <h2>Learnaptiq</h2>
+                <!--<div id="text-effect">
                     <p id="dynamic">Simple.</p>
-                </div>
+                </div>-->
     
                 <div id="about">
                     <p>Study actively, Remember passively.</p>
-                </div>
-
-                <div class="mobile">
-                    <div class="btn-wrap">
-                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create <i class="fa-solid fa-caret-down"></i></button>
-                    </div>
-
-                    <div id="options" class="collapse">
-                        <ul type="none">
-                            <li><button onclick='CREATE_NEW()'>New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
-                            <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming soon]</button></li>
-                        </ul>
-                    </div>
                 </div>
             </section>
 
@@ -73,11 +62,26 @@
                 <small class="premium sets-limit"></small>
                 <ul type="none"></ul>
             </section>
+            
+            <div class="mobile">
+                <div class="btn-wrap">
+
+                        <button onclick="TOGGLE_MATERIALS_LIST(this.childNodes[1], this.parentElement)">Create <i class="fa-solid fa-caret-down"></i></button>
+
+                    </div>
+
+                    <div id="options" class="collapse">
+                        <ul type="none">
+                            <li><button onclick='CREATE_NEW()'>New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
+                            <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming soon]</button></li>
+                        </ul>
+                    </div>
+            </div>
         </section>
 
         <section id="snapshots_wrap">
-            <h2>Study smart while you study hard...</h2>
-            <h4>Top academic performaces requires students to study smart as they study hard. With our study tool, improve how you approach studying and ace them courses!</h4>
+            <h2>Hassle-free study... at your finger tips.</h2>
+            <!--<h4>Top academic performaces requires students to study smart as they study hard. With our study tool, improve how you approach studying and ace them courses!</h4>-->
             <div id="snapshots">
                 <ul type="none" id="snapshots_list"></ul>
             </div>
@@ -107,11 +111,11 @@
     
                 <div id="footer-top-col-2">
                     <div class="footer-btn-wrap">
-                        <button onclick="IS_EARLY_ACCESS()//INIT_SHARE()" class="transparent-btn">Share SynapseStudy <span class="fa-solid fa-share-nodes"></span></button>
+                        <button onclick="IS_EARLY_ACCESS()//INIT_SHARE()" class="transparent-btn">Share Learnaptiq <span class="fa-solid fa-share-nodes"></span></button>
                     </div>
 
                     <div class="footer-btn-wrap">
-                        <button onclick="IS_EARLY_ACCESS();//window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support SynapseStudy <span class="fa-solid fa-donate"></span></button>
+                        <button onclick="IS_EARLY_ACCESS();//window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support Learnaptiq <span class="fa-solid fa-donate"></span></button>
                     </div>
 
                     <div class="footer-btn-wrap premium">
@@ -120,7 +124,7 @@
                 </div>
     
                 <div id="footer-top-col-3">
-                    <h1>SynapseStudy</h1>
+                    <h1>Learnaptiq</h1>
                 </div>
             </div>
             <hr/>
