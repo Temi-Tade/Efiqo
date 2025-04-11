@@ -14,6 +14,8 @@ function FETCH_USER_PROFILE(btn){
             document.querySelector("#profile-image").innerHTML = data.length > 0 && data[0].pfp.url ? `<img src='${data[0].pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
             document.querySelector("#profile").style.display = data.length === 0 ? 'none' : 'flex';
             document.querySelector("#get-started").style.display = data.length === 0 ? 'block' : 'none';
+            document.querySelector(".create-new-btn").disabled = data.length === 0 ? true : false;
+            document.querySelector("#greeting").innerHTML = data.length === 0 ? "" : `Hello, ${data[0].userName} 👋`
         };
     };
 };
@@ -94,6 +96,10 @@ function VIEW_PROFILE() {
                 <div class='field update-field'>
                     <button>Update Profile <i class='fa-solid fa-refresh'></i></button>
                 </div>
+
+                <div class='field delete-field'>
+                    <button type='button'>Delete Account <i class='fa-solid fa-trash'></i></button>
+                </div>
             </form>    
         `);
     
@@ -123,6 +129,7 @@ function VIEW_PROFILE() {
                 field.disabled = false;
             });
             parent.querySelector(".update-field button").style.display = "block";
+            parent.querySelector(".delete-field button").style.display = "none";
             parent.querySelector(".pfp-field label").style.display = "block";
         }
     
@@ -145,7 +152,6 @@ function VIEW_PROFILE() {
                     data[0].level = parent.querySelector("#edu_level").value;
                     data[0].pfp.url = blob || data[0].pfp.url;
                     data[0].pfp.file = file || data[0].pfp.file;
-                    // console.log(data[0]);
                     objectStore.put(data[0]);
                 };
             };
@@ -154,9 +160,26 @@ function VIEW_PROFILE() {
                 field.disabled = true;
             });
             parent.querySelector(".update-field button").style.display = "none";
+            parent.querySelector(".delete-field button").style.display = "block";
             parent.querySelector(".pfp-field label").style.display = "none";
             alert("Profile Updated!");
             FETCH_USER_PROFILE();
+        }
+
+        document.querySelector(".delete-field button").onclick = function() {
+            var prompt = confirm("You are about to delete your Efiqo account. This action is permanent and cannot be undone. Do you wish to continue?");
+            if (!prompt) return;
+            var request = indexedDB.open("efiqo", 1);
+            request.onsuccess = function() {
+                var trx = request.result.transaction("user_data", "readwrite");
+                var objectStore = trx.objectStore("user_data");
+                var userData = objectStore.delete(data[0].userId);
+
+                userData.onsuccess = async function(ev) {
+                    console.log(ev);
+                    history.go(0);
+                }
+            }
         }
     } catch (error) {
         // console.error(error, "No user profile found")

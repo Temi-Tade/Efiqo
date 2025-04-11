@@ -16,6 +16,10 @@ header nav ul li:hover {
     background-color: #ccc7
 }
 
+#search-form input{
+    background-color: #cccc;
+}
+
 #search-form input::placeholder{
     color: #777;
 }

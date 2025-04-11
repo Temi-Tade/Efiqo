@@ -13,22 +13,19 @@ function TOGGLE_THEME(btn) {
 
     if (btn.value === "device") {
         if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-            document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
+            document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
         } else {
             document.querySelector("link.userdef").href = "";
         }
         btn.setAttribute("class", "fa-solid fa-laptop transparent-btn");
-        // CREATE_MODAL("TOGGLE THEME: System Default");
     }else if(btn.value === "dark"){
         document.querySelector("link.userdef").href = "";
         btn.setAttribute("class", "fa-regular fa-moon transparent-btn");
         btn.innerText = "";
-        // CREATE_MODAL("TOGGLE THEME: Dark");
     }else{
-        document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
+        document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
         btn.setAttribute("class", "fa-regular fa-sun transparent-btn");
         btn.innerText = "";
-        // CREATE_MODAL("TOGGLE THEME: Light");
     }
     setTimeout(() => {
         document.querySelector("#modalbg").style.display = "none";
@@ -62,27 +59,25 @@ function LOAD_THEME(btn){
         var userData = objectStore.getAll();
         
         userData.onsuccess = async function(ev){
-            var data = await ev.target.result[0] || {theme: "device"};
+            var data = await ev.target.result[0]
+            if(!data) return;
             var theme = data.theme;
             if (theme === "device") {
                 if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-                    document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
+                    document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
                 } else {
-                    document.querySelector("link.userdef").href = "";
+                    document.querySelector("link.userdef").href = "/assets/css/index.css";
                 }
                 btn.setAttribute("class", "fa-solid fa-laptop transparent-btn");
                 btn.value = "device";
-                // CREATE_MODAL("TOGGLE THEME: Device");
             }else if(theme === "dark"){
-                document.querySelector("link.userdef").href = "";
+                document.querySelector("link.userdef").href = "/assets/css/index.css";
                 btn.setAttribute("class", "fa-regular fa-moon transparent-btn");
                 btn.value = "dark";
-                // CREATE_MODAL("TOGGLE THEME: Dark");
             }else{
-                document.querySelector("link.userdef").href = window.location.pathname.includes("flashcard") ? "../css/lightmode.css" : "./assets/css/lightmode.css";
+                document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
                 btn.setAttribute("class", "fa-regular fa-sun transparent-btn");
                 btn.value = "light";
-                // CREATE_MODAL("TOGGLE THEME: Light");
             }
         }
     }

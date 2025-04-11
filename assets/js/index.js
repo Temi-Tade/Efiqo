@@ -38,8 +38,6 @@ const TYPE_EFFECT = () => {
     };
 };
 
-//TYPE_EFFECT();
-
 //get saved flashcards
 function GET_CARDS(){
     var request = indexedDB.open("efiqo");
@@ -98,7 +96,6 @@ function GET_CARDS(){
                     `);
 
                     document.querySelector("#open-recent").onclick = function(){
-                        // console.log(savedData[i]);
                         sessionStorage.setItem("efiqo temp data", JSON.stringify(savedData[i]));
                         window.open("./assets/flashcard/index.html","_parent");
                     }
@@ -130,7 +127,6 @@ function CREATE_NEW(){
         return;
     }else{
         window.open("./assets/flashcard/index.html", "_parent");
-        // console.log("correct");
     }
 }
 

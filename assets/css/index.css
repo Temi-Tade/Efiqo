@@ -150,8 +150,15 @@ ul{
     text-decoration: underline;
 }
 
+#greeting{
+    font-size: 1.2rem;
+    margin-bottom: .5rem;
+    font-style: italic;
+    font-weight: 700;
+}
+
 #search-form input{
-    background: #aaa7;
+    background: #5557;
     width: 90dvw;
     border: 0;
     margin-top: .25rem;
@@ -380,6 +387,10 @@ h2{
 
 .update-field button{
     display: none;
+}
+
+.delete-field button{
+    background: #f12312;
 }
 
 footer{
