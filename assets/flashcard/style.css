@@ -1,7 +1,3 @@
-html{
-    overflow: hidden;
-}
-
 #action-list.desktop{
     display: flex;
 }

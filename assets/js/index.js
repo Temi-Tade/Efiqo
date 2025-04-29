@@ -58,7 +58,7 @@ function GET_CARDS(){
             }
 
             await ev.target.result.forEach(flashcard => {
-                let info = `"Flashcards: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`
+                let info = `"Decks: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`
                 document.querySelector("#recent ul").innerHTML += `
                     <li title=${info}>
                         <button>${flashcard.name}</button>
