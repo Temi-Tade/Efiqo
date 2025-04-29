@@ -12,10 +12,11 @@ function FETCH_USER_PROFILE(btn){
         userData.onsuccess = async function(ev) {
             data = await ev.target.result;
             document.querySelector("#profile-image").innerHTML = data.length > 0 && data[0].pfp.url ? `<img src='${data[0].pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
-            document.querySelector("#profile").style.display = data.length === 0 ? 'none' : 'flex';
-            document.querySelector("#get-started").style.display = data.length === 0 ? 'block' : 'none';
+            [...document.querySelectorAll(".get-started")].map(el => el.style.display = data.length === 0 ? 'block' : 'none');
             document.querySelector(".create-new-btn").disabled = data.length === 0 ? true : false;
-            document.querySelector("#greeting").innerHTML = data.length === 0 ? "" : `Hello, ${data[0].userName} 👋`
+            document.querySelector("#greeting").innerHTML = data.length === 0 ? "" : `Hello, ${data[0].userName} 👋`;
+            [...document.querySelectorAll(".signed-in")].map(el => el.style.display = data.length === 0 ? 'block' : 'none');
+            [...document.querySelectorAll(".signed-out")].map(el => el.style.display = data.length === 0 ? 'none' : '');
         };
     };
 };
@@ -175,9 +176,20 @@ function VIEW_PROFILE() {
                 var objectStore = trx.objectStore("user_data");
                 var userData = objectStore.delete(data[0].userId);
 
-                userData.onsuccess = async function(ev) {
-                    console.log(ev);
+                userData.onsuccess = () => {
+                    CREATE_MODAL("Account successfuly deleted");
                     history.go(0);
+                }
+
+                userData.onblocked = () => {
+                    CREATE_MODAL("Please wait while we delete your account");
+                    setTimeout(() => {
+                        history.go(0);
+                    }, 1500);
+                }
+
+                userData.onerror = () => {
+                    CREATE_MODAL("An error occured.");
                 }
             }
         }

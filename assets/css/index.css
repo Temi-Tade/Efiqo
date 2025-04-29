@@ -62,11 +62,15 @@ header h1{
     align-items: start;
 }
 
+header nav{
+    display: flex;
+}
+
 header nav ul{
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    width: 10rem;
+    width: auto;
 }
 
 header nav ul li{
@@ -126,8 +130,6 @@ button:hover{
 
 #profile{
     border-radius: 50%;
-    outline: 2px solid #7777;
-    outline-offset: .125rem;
 }
 
 #profile-image img{
@@ -503,7 +505,7 @@ footer #copyright span{
         padding-bottom: 0;
     }
 
-    #get-started button{
+    .get-started button{
         margin: auto;
     }
 
@@ -621,11 +623,11 @@ footer #copyright span{
         width: 24.5%;
     }
 
-    #get-started{
+    .get-started{
         padding: 1.5rem;
     }
     
-    #get-started button{
+    .get-started button{
         display: block;
         margin: auto;
     }

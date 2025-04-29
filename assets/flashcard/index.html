@@ -16,7 +16,7 @@
         <header>
             <h1>efiqo<small class="beta">beta</small></h1>
             <nav>
-                <ul type="none" style="display: flex; justify-content: flex-end;">
+                <ul type="none" style="display: flex;">
                     <li><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn" title="Toggle Theme" value="device"></button></li>
                 </ul>
             </nav>
@@ -83,13 +83,13 @@
                     </div>
                 </div>
                 <div id="contextmenu">
-                    <button onclick="DELETE_FLASHCARD()">Delete Flashcard</button>
+                    <button onclick="DELETE_FLASHCARD()">Delete <i class="fa-solid fa-trash"></i></button>
+                    <button title="Edit" id="edit-flashcard-btn" onclick="EDIT_CARD()">Edit <i class="fa-solid fa-edit"></i></button>
                 </div>
                 <div id="flashcard-actions">
-                    <ul id="action-list" type="none">
-                        <li><button class="fa-solid fa-caret-left" title="Previous" onclick="GO_TO_PREV_CARD()"></button></li>
-                        <li><button class="fa-solid fa-edit" title="Edit" id="edit-flashcard-btn" onclick="EDIT_CARD()"></button></li>
-                        <li><button class="fa-solid fa-caret-right" title="Next" onclick="GO_TO_NEXT_CARD()"></button></li>
+                    <ul id="action-list" type="none" class="desktop">
+                        <button id="prev" class="fa-solid fa-caret-left" title="Previous" onclick="GO_TO_PREV_CARD()"></button>
+                        <button id="next" class="fa-solid fa-caret-right" title="Next" onclick="GO_TO_NEXT_CARD()"></button>
                     </ul>
                 </div>
             </div>

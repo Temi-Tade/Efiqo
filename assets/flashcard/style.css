@@ -1,3 +1,11 @@
+html{
+    overflow: hidden;
+}
+
+#action-list.desktop{
+    display: flex;
+}
+
 form {
     padding: .5rem;
     width: 80%;
@@ -116,12 +124,17 @@ legend {
 }
 
 #action-list {
+    /* transform: translateY(-13rem); */
+    /* z-index: -9; */
+    position: relative;
+    /* border: 1px solid; */
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: .5rem 0;
 }
 
 #action-list button {
+    display: block;
     border-radius: 50%;
     width: 3rem;
     height: 3rem;
@@ -198,6 +211,7 @@ legend {
 }
 
 .card-wrap {
+    overflow: hidden;
     padding: .125rem;
     height: 20rem;
     border-radius: .5rem;
@@ -262,6 +276,10 @@ legend {
     display: none;
 }
 
+#contextmenu button{
+    margin: .5rem 0;
+}
+
 form h3 {
     text-align: center;
 }
@@ -304,9 +322,21 @@ form h3 {
     display: none;
 }
 
+button.prev{
+    position: absolute;
+    top: 0;
+    background: transparent !important;
+    font-weight: 900;
+    font-size: 1.5rem;
+}
+
 @media screen and (max-width: 600px) {
     .mobile {
         display: block;
+    }
+
+    #action-list.desktop{
+        display: none;
     }
 
     html {
@@ -324,6 +354,8 @@ form h3 {
 
     #flashcard-data {
         height: 30rem;
+        flex-direction: column;
+        position: relative;
     }
 
     #flashcard-data form {
@@ -336,12 +368,9 @@ form h3 {
         width: 100%;
     }
 
-    .preview-wrap {
-        position: absolute;
-        bottom: 2rem;
-        left: 0;
-        right: 0;
-    }
+    /* .preview-wrap {
+        
+    } */
 
     .preview-wrap button {
         display: block;
@@ -350,7 +379,6 @@ form h3 {
 
     .number {
         text-align: center;
-        transform: translateY(-3rem);
     }
 
     .end-of{

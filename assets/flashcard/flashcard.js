@@ -95,22 +95,49 @@ function ROTATE_CARD(card) {
     };
 };
 
+const ANIMATE_CARD = (direction) => {
+    document.querySelector(".card").animate({
+        transform: [`translateX(${direction === "prev" ? "-10rem" : "10rem"})`, "translateX(0)"],
+    }, {
+        duration: 200,
+        iterations: 1
+    });
+}
+
 const PREVIEW_CARD = (content) => {
     document.querySelector("#preview").innerHTML = `
-        <div class='card-wrap' onclick=ROTATE_CARD(this) oncontextmenu=SHOW_MENU(event)>
+        <div class='card-wrap' onclick=ROTATE_CARD(this) oncontextmenu=SHOW_MENU(event) ontouchstart=TOUCH_START(event) ontouchend=TOUCH_END(event)>
             <div class="card">
                 <p class="card-text">${content}</p>
             </div>
         </div>
     `;
 
-    // if (document.querySelector(".card-wrap").style.transform . ) {
-        
-    // }
+    let startX, startY;
+    TOUCH_START = (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    }
+
+    TOUCH_END = (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX > 0) {
+                GO_TO_PREV_CARD();
+            } else {
+                GO_TO_NEXT_CARD();
+            }
+        }
+    }
 
     SHOW_MENU = (e) => {
         e.preventDefault();
-        document.querySelector("#contextmenu").style = `display: block; top: ${e.offsetY}px; left: ${e.offsetX}px`;
+        document.querySelector("#contextmenu").style = `display: block; top: 20%; left: 30%`;
         window.onclick = (e) => {
             if (e.target !== document.querySelector("#contextmenu")) {
                 document.querySelector("#contextmenu").style.display = "none";
@@ -217,12 +244,12 @@ function MOBILE_PREVIEW(el) {
     if (el.classList.contains("set-up")) {
         document.querySelector("#flashcard-preview").style.display = "block";
         document.querySelector("#flashcard-data form").style.display = "none";
-        el.textContent = "Go back to setup page";
-        el.removeAttribute("class");
+        el.innerHTML = "&larr;";
+        el.setAttribute("class", "prev");
     } else {
         document.querySelector("#flashcard-preview").style.display = "none";
         document.querySelector("#flashcard-data form").style.display = "block";
-        el.textContent = "Preview Flashcards";
+        el.innerHTML = "Preview Flashcards";
         el.setAttribute("class", "set-up");
     }
 }
@@ -239,6 +266,7 @@ document.querySelector("#flashcard-data form").onsubmit = (ev) => {
 }
 
 function DELETE_FLASHCARD(){
+    document.querySelector("#contextmenu").style.display = "none";
     card = new Flashcard(flashcardData.flashcards[index].term, flashcardData.flashcards[index].def);
     card.delete(index);
     // console.log(flashcardData);
@@ -257,6 +285,7 @@ function DELETE_FLASHCARD(){
 }
 
 function EDIT_CARD(){
+    document.querySelector("#contextmenu").style.display = "none";
     isEdit = !isEdit;
     if (!flashcardData.flashcards.length) {
         CREATE_MODAL('OOPS... You have not added any flashcards yet.');
@@ -278,6 +307,7 @@ const GO_TO_PREV_CARD = () => {
         }else{
             index--;
             PREVIEW_CARD(flashcardData.flashcards[index].term);
+            ANIMATE_CARD("prev");
             FLASHCARD_COUNT();
             SET_PROGRESS();
         }
@@ -303,6 +333,7 @@ const GO_TO_NEXT_CARD = () => {
         }else{
             index++;
             PREVIEW_CARD(flashcardData.flashcards[index].term);
+            ANIMATE_CARD("next");
             SET_PROGRESS();
             FLASHCARD_COUNT();
         }
@@ -329,7 +360,7 @@ if (sessionStorage.getItem("efiqo temp data")) {
         x.onsuccess = function (ev) {
             sessionStorage.setItem("efiqo temp data", JSON.stringify(ev.target.result));
             flashcardData = ev.target.result;
-            document.querySelector("title").innerHTML = `Ace It | ${flashcardData.name}`;
+            document.querySelector("title").innerHTML = `Efiqo | ${flashcardData.name}`;
             if (flashcardData.flashcards.length) {
                 PREVIEW_CARD(flashcardData.flashcards[0].term);
                 // ADD_CARD();

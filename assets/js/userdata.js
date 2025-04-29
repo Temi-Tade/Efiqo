@@ -47,15 +47,9 @@ if ("indexedDB" in window) {
                 }
                 return;
             } else {
-                document.querySelector("#signup").onclick = () => {
+                [...document.querySelectorAll(".signup")].map(el => {
+                    el.onclick = () => {
                     CREATE_MODAL(document.querySelector("#signupform").innerHTML);
-
-                    // window.onclick = function(e){
-                    //     if (e.target === document.querySelector("#modalbg")) {
-                    //         return;
-                    //     }
-                    // }
-    
                     document.querySelector("#modalbg form input").oninput = function(ev){
                         if (ev.target.value.trim().length >= 3) {
                             document.querySelector("#modalbg form button").disabled = false;
@@ -85,7 +79,7 @@ if ("indexedDB" in window) {
                         history.go(0);
                     }
                 }
-
+                })
             }
         }
     }

@@ -16,8 +16,11 @@
         <header>
             <h1>efiqo <small class="beta">beta</small></h1>
             <nav>
-                <ul type="none">
-                    <li><button onclick="TOGGLE_THEME(this)" class="transparent-btn" title="Toggle Theme" value="device"></button></li>
+                <div class="get-started">
+                    <button class="signup">Register <span class="fa-solid fa-caret-right"></span></button>
+                </div>
+                <ul type="none" class="signed-out">
+                    <li id="theme"><button onclick="TOGGLE_THEME(this)" class="transparent-btn" title="Toggle Theme" value="device"></button></li>
                     <li id="profile"><button class="transparent-btn" id="profile-image" onclick="VIEW_PROFILE()"></button></li>
                     <li>
                         <button class="create-new-btn" onclick="CREATE_MODAL(this.nextElementSibling.innerHTML)">+</button>
@@ -35,7 +38,7 @@
 
         <section id="content">
             <p id="greeting"></p>
-            <section id="search-wrap">
+            <section id="search-wrap" class="signed-out">
                 <div id="search-form-warp">
                     <div id="search-form">
                         <!--todo: search functionality-->
@@ -44,13 +47,13 @@
                 </div>
             </section>
 
-            <section id="recent" class="deskop">
+            <section id="recent" class="signed-out">
                 <h3>My Sets <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></h3>
                 <small class="premium sets-limit"></small>
                 <ul type="none"></ul>
             </section>
 
-            <section id="features">
+            <section id="features" class="signed-in">
                 <h2>Learning tools and resources... all in one place.</h2>
                 <ul>
                     <li>Create custom flashcards.</li>
@@ -59,26 +62,27 @@
                     <li class="coming-soon">Create custom quizzes. [coming soon]</li>
                     <li class="coming-soon">Generate AI-powered summary from lecture materials. [coming soon]</li>
                 </ul>
-                <div id="get-started">
-                    <button id="signup">GET STARTED <span class="fa-solid fa-caret-right"></span></button>
+                <div class="get-started">
+                    <button class="signup">GET STARTED <span class="fa-solid fa-caret-right"></span></button>
                 </div>
             </section>
-            
         </section>
-
-        <section id="snapshots_wrap">
+        
+        <section id="snapshots_wrap" class="signed-in">
             <h2>Hassle-free study... at your finger tips.</h2>
             <div id="snapshots">
                 <ul type="none" id="snapshots_list"></ul>
             </div>
-           
+            <div class="get-started">
+                <button class="signup">GET STARTED <span class="fa-solid fa-caret-right"></span></button>
+            </div>
         </section>
 
         <section id="modalbg">
             <div id="modal">{text}</div>
         </section>
 
-        <footer>
+        <footer class="signed-in">
             <div id="footer-top">
                 <div id="contact">
                     <h4>CONTACT</h4>

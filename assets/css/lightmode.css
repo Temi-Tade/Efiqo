@@ -140,3 +140,7 @@ header .beta{
     background-color: #3337;
     border-radius: .75rem;
 }
+
+button.prev{
+    color: #333;
+}
