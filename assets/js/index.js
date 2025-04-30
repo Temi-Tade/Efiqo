@@ -54,7 +54,7 @@ function GET_CARDS(){
             document.querySelector("#recent ul").innerHTML = "";
 
             if (!ev.target.result.length) {
-                document.querySelector("#recent ul").innerHTML = "<p id='no-flashcard'>You have not created any flashcard set yet.</p>";
+                document.querySelector("#recent ul").innerHTML = "<p id='no-flashcard'>You have not created any sets yet.</p>";
             }
 
             await ev.target.result.forEach(flashcard => {
@@ -76,7 +76,7 @@ function GET_CARDS(){
                             <strong><em>${savedData[i].desc}</em></strong>
                             <table>
                                 <tr>
-                                    <th>Flashcards</th>
+                                    <th>Decks</th>
                                     <td>${savedData[i].number}</td>
                                 </tr>
                                 <tr>

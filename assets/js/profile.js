@@ -34,7 +34,7 @@ function VIEW_PROFILE() {
                 <h4>MY PROFILE</h4><br>
     
                 <div class='field pfp-field'>
-                    <img id="avatar" src='${data[0].pfp.url}' alt="User Avatar" width='150' loading='lazy' draggable="false"/>
+                    <img id="avatar" src='${data[0].pfp.url}' alt="User Avatar" loading='lazy' draggable="false"/>
                     <label for='pfp' id='upload-pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
                     <input type='file' name='pfp' id='pfp' value='${data[0].pfp.file.name}' accept='*.png, *.jpg, *.jpeg, *.tiff, *.gif, *.webp' disabled/>
                 </div>
@@ -170,27 +170,22 @@ function VIEW_PROFILE() {
         document.querySelector(".delete-field button").onclick = function() {
             var prompt = confirm("You are about to delete your Efiqo account. This action is permanent and cannot be undone. Do you wish to continue?");
             if (!prompt) return;
-            var request = indexedDB.open("efiqo", 1);
-            request.onsuccess = function() {
-                var trx = request.result.transaction("user_data", "readwrite");
-                var objectStore = trx.objectStore("user_data");
-                var userData = objectStore.delete(data[0].userId);
+            //var request = indexedDB.open("efiqo", 1);
+            var deleteRequest = indexedDB.deleteDatabase("efiqo")
+            deleteRequest.onsuccess = function() {
+                CREATE_MODAL("Account successfuly deleted");
+                history.go(0);
+            }
 
-                userData.onsuccess = () => {
-                    CREATE_MODAL("Account successfuly deleted");
+            deleteRequest.onblocked = () => {
+                CREATE_MODAL("Please wait while we delete your account");
+                setTimeout(() => {
                     history.go(0);
-                }
+                }, 1500);
+            }
 
-                userData.onblocked = () => {
-                    CREATE_MODAL("Please wait while we delete your account");
-                    setTimeout(() => {
-                        history.go(0);
-                    }, 1500);
-                }
-
-                userData.onerror = () => {
-                    CREATE_MODAL("An error occured.");
-                }
+            deleteRequest.onerror = () => {
+                CREATE_MODAL("An error occured.");
             }
         }
     } catch (error) {

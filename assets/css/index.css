@@ -120,8 +120,9 @@ button:hover{
 }
 
 .create-new-btn{
+    width: 3rem;
     display: block;
-    font-size: 3rem;
+    font-size: 3.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -132,7 +133,15 @@ button:hover{
     border-radius: 50%;
 }
 
+#profile-image{
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+}
+
 #profile-image img{
+    object-fit: cover;
+    display: block;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
@@ -241,6 +250,10 @@ ul{
     background-color: #1c1c1c;
 }
 
+#features h2{
+    padding: 0 .5rem;
+}
+
 #features ul{
     list-style-position: inside;
     padding: .5rem;
@@ -338,6 +351,9 @@ h2{
 
 .pfp-field img{
     display: block;
+    width: 10rem;
+    height: 10rem;
+    object-fit: cover;
 }
 
 .pfp-field label{
