@@ -34,7 +34,7 @@ function VIEW_PROFILE() {
                 <h4>MY PROFILE</h4><br>
     
                 <div class='field pfp-field'>
-                    <img id="avatar" src='${data[0].pfp.url}' alt="User Avatar" loading='lazy' draggable="false"/>
+                    <img id="avatar" src='${!data[0].pfp.url ? "./assets/images/default_avatar.png" : data[0].pfp.url}' alt="User Avatar" loading='lazy' draggable="false"/>
                     <label for='pfp' id='upload-pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
                     <input type='file' name='pfp' id='pfp' value='${data[0].pfp.file.name}' accept='*.png, *.jpg, *.jpeg, *.tiff, *.gif, *.webp' disabled/>
                 </div>
@@ -91,11 +91,29 @@ function VIEW_PROFILE() {
                 </div>
 
                 <div class='premium'>
-                    <button type='button' class="transparent-btn">Get Premium <span class="fa-regular fa-star"></span></button>
+                    <button type='button' class="transparent-btn" onclick="IS_EARLY_ACCESS()">Get Premium <span class="fa-regular fa-star"></span></button>
                 </div>
     
                 <div class='field update-field'>
                     <button>Update Profile <i class='fa-solid fa-refresh'></i></button>
+                </div>
+
+                <div class='field'> 
+                    <ul class="terms">
+                        <li><button type="button" onclick="IS_EARLY_ACCESS()//INIT_SHARE()" class="transparent-btn">Share efIQo <span class="fa-solid fa-share-nodes"></span></button></li>
+                        <li><button type="button" onclick="IS_EARLY_ACCESS();//window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support efIQo <span class="fa-solid fa-donate"></span></button></li>
+                        <li><button type="button" class="transparent-btn" onclick="DISPLAY_TERMS()">Terms of Use</button></li>
+                    </ul>
+                </div>
+
+                <div class='field contact-field'>
+                    <div class="contact">
+                        <ul type="none">
+                            <li><a href="mailto:dev.mode006@gmail.com" class="fa-regular fa-envelope"></a></li>
+                            <li><a href="https://x.com/Temi_tade2805/" class="fa-brands fa-x-twitter"></a></li>
+                            <li><a href="https://t.me/kintade_/" class="fa-brands fa-telegram"></a></li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class='field delete-field'>

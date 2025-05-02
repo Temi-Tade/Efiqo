@@ -62,15 +62,14 @@ header h1{
     align-items: start;
 }
 
-header nav{
-    display: flex;
-}
+/* header nav{
+    width: 40%;
+} */
 
 header nav ul{
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    width: auto;
 }
 
 header nav ul li{
@@ -121,8 +120,7 @@ button:hover{
 
 .create-new-btn{
     width: 3rem;
-    display: block;
-    font-size: 3.5rem;
+    font-size: 3.25rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -188,7 +186,7 @@ ul{
     overflow-y: auto;
     margin-right: .5rem;
     /* border-left: .5px inset #cccc; */
-    background-color: #3333;
+    background-color: #4949494d;
 }
 
 #recent h3{
@@ -410,17 +408,35 @@ h2{
     background: #f12312;
 }
 
+.contact-field .contact{
+    width: 100%;
+}
+
+.contact-field .contact ul{
+    width: 50%;
+    justify-content: space-around;
+}
+
+.contact-field .contact ul li a{
+    font-size: 1.5rem;
+}
+
+.terms li {
+    display: grid;
+    place-items: center;
+}
+
 footer{
     background-color: #1c1c1c;
     padding: 1rem;
 }
 
-#contact ul{
+.contact ul{
     padding: .5rem;
     display: flex;
 }
 
-footer #contact li{
+footer .contact li{
     display: inline;
     border-radius: 50%;
     font-size: 2rem;
@@ -428,7 +444,7 @@ footer #contact li{
     height: 3rem;
 }
 
-a, footer #contact a{
+a, footer .contact a{
     color: #fff;
     text-decoration: none;
     text-align: center;
@@ -436,7 +452,7 @@ a, footer #contact a{
     padding: .5rem;
 }
 
-footer #contact a:hover{
+footer .contact a:hover{
     transform: scale(1.05);
     text-decoration: 2px underline;
 }
@@ -527,7 +543,6 @@ footer #copyright span{
     .btn-wrap{
         width: auto;
         padding: .5rem;
-        padding-top: 3rem;
     }
 
     #options li{
@@ -576,7 +591,7 @@ footer #copyright span{
         margin-bottom: .5rem;
     } */
 
-    #contact, #footer-top-col-2{
+    .contact, #footer-top-col-2{
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -592,6 +607,10 @@ footer #copyright span{
     
     .desktop{
         display: block;
+    }
+
+    #greeting{
+        padding: .5rem;
     }
 
     #search-wrap{

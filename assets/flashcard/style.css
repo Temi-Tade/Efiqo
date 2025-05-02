@@ -67,7 +67,7 @@ legend {
     /* align-items: center; */
     width: 95%;
     margin: .5rem auto;
-    background-color: #222;
+    background-color: #4949494d;
     padding: 1rem;
     border-radius: 1rem;
     /*height: 30rem;*/
@@ -349,6 +349,7 @@ button.prev{
     }
 
     #flashcard-data {
+        background-color: #4949494d;
         max-height: 30rem;
         flex-direction: column;
         position: relative;

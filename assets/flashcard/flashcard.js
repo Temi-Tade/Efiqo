@@ -26,20 +26,8 @@ const TOGGLE_FORMS = (e, el, other) => {
         other.style.display = "flex";
     }
 
-    document.querySelector("#info h2").innerHTML = flashcardData.name;
+    document.querySelector("#info h3").innerHTML = flashcardData.name;
     document.querySelector("#info em").innerHTML = flashcardData.desc;
-    document.querySelector("#edit-info").innerHTML = '<button id="edit" title="Edit"><i class="fa-solid fa-edit"></i></button>';
-    document.querySelector("#edit").onclick = () => {
-        document.querySelector("#flashcard-data").style.display = "none";
-        document.querySelector("#flashcard-name").style.display = "block";
-        document.querySelector("#info").innerHTML = `
-        <div>
-            <h2></h2>
-            <span id="edit-info"></span>
-        </div>
-        <p id="tagline"><em></em></p>
-        `
-    };
 };
 
 const VALIDATE_FLASHCARD_NAME = (val) => {
@@ -279,6 +267,7 @@ function DELETE_FLASHCARD(){
         FLASHCARD_COUNT();
         SET_PROGRESS();
     }else{
+        document.querySelector("#preview").innerHTML = "<p style='padding: 1rem; text-align: center'>No flashcards added yet.</p>";
         document.querySelector("#flashcard-count").innerHTML = "";
         document.querySelector("#level").style.width = "0%";
     }
@@ -360,7 +349,7 @@ if (sessionStorage.getItem("efiqo temp data")) {
         x.onsuccess = function (ev) {
             sessionStorage.setItem("efiqo temp data", JSON.stringify(ev.target.result));
             flashcardData = ev.target.result;
-            document.querySelector("title").innerHTML = `Efiqo | ${flashcardData.name}`;
+            document.querySelector("title").innerHTML = `efIQo | ${flashcardData.name}`;
             if (flashcardData.flashcards.length) {
                 PREVIEW_CARD(flashcardData.flashcards[0].term);
                 // ADD_CARD();
@@ -375,7 +364,7 @@ if (sessionStorage.getItem("efiqo temp data")) {
     
     var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
     // document.querySelector("h1").innerHTML = "";
-    document.querySelector("#info h2").innerHTML = session.name;
+    document.querySelector("#info h3").innerHTML = session.name;
     document.querySelector("#info em").innerHTML = session.desc;
 
     flashcardData = session;
@@ -384,5 +373,7 @@ if (sessionStorage.getItem("efiqo temp data")) {
         PREVIEW_CARD(flashcardData.flashcards[0].term);
         SET_PROGRESS();
         FLASHCARD_COUNT();
+    }else{
+        document.querySelector("#preview").innerHTML = "<p style='padding: 1rem; text-align: center'>No flashcards added yet.</p>";
     }
 }
