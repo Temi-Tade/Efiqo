@@ -103,6 +103,10 @@ header .beta{
     border-radius: .25rem 0 .25rem;
 }
 
+header .get-started{
+    padding: 0;
+}
+
 button{
     background: linear-gradient(to right, var(--theme), #f72342);
     border: 0;
