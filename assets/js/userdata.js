@@ -85,7 +85,7 @@ if ("indexedDB" in window) {
                                     betaUser = undefined;
                                 }
                             }
-                            CREATE_MODAL(betaUser ? "Fetching beta user Information" : "<h1>Oops!</h1>Invalid credentials. Ensure you provide the email address you used during early access registration. Register for early access<a href='' class='link'>here</a>and try again later (3 hours maximum).");
+                            CREATE_MODAL(betaUser ? "Fetching beta user Information" : "<h1>Oops!</h1>Invalid credentials. Ensure you provide the email address you used during early access registration. Register for early access<a href='https://forms.gle/xPnuMzqSHwe9iBXy7' class='link'>here</a>and try again later (24 hours maximum).");
                         }
                     }
                 })
