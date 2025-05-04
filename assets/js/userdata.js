@@ -20,6 +20,7 @@ if ("indexedDB" in window) {
             email: "",
             tel: "",
             level: "",
+            isBetaUser: false,
             isPremiumUser: false,
         }
 
@@ -65,6 +66,7 @@ if ("indexedDB" in window) {
                                     betaUser = user;
                                     user_data.email = user.email;
                                     user_data.fullName = `${user.firstName} ${user.lastName}`;
+                                    user_data.isBetaUser = true;
                                     var trx = request.result.transaction("user_data", "readwrite");
                                     var user_data_objStore = trx.objectStore("user_data");
                                     user_data_objStore.add(user_data);
