@@ -14,7 +14,8 @@ function FETCH_USER_PROFILE(btn){
             document.querySelector("#profile-image").innerHTML = data.length > 0 && data[0].pfp.url ? `<img src='${data[0].pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
             [...document.querySelectorAll(".get-started")].map(el => el.style.display = data.length === 0 ? 'block' : 'none');
             document.querySelector(".create-new-btn").disabled = data.length === 0 ? true : false;
-            document.querySelector("#greeting").innerHTML = data.length === 0 ? "" : `Hello, ${data[0].userName} 👋`;
+            if(data.length) var displayName = data[0].userName ? data[0].userName : data[0].fullName.slice(0, data[0].fullName.indexOf(" "));
+            document.querySelector("#greeting").innerHTML = data.length === 0 ? "" : `Hello, ${displayName} 👋`;
             [...document.querySelectorAll(".signed-in")].map(el => el.style.display = data.length === 0 ? 'block' : 'none');
             [...document.querySelectorAll(".signed-out")].map(el => el.style.display = data.length === 0 ? 'none' : '');
         };

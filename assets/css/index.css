@@ -414,6 +414,8 @@ h2{
 
 .contact-field .contact{
     width: 100%;
+    /* display: grid; */
+    place-items: center;
 }
 
 .contact-field .contact ul{
@@ -484,6 +486,10 @@ footer #copyright span{
     align-items: center;
 }
 
+#footer-top-col-2{
+    align-items: center;
+}
+
 #footer-top-col-3{
     width: 100%;
     height: 100%;
@@ -524,6 +530,11 @@ footer #copyright span{
 
 #perks .get-premium-btn-wrap button{
     margin: auto;
+}
+
+.link{
+    font-style: italic;
+    text-decoration: underline;
 }
 
 @media screen and (max-width: 600px) {
@@ -672,7 +683,7 @@ footer #copyright span{
 
     #footer-top{
         display: grid;
-        grid-template-columns: 2fr 2fr 3fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
     
     footer div{
@@ -681,5 +692,11 @@ footer #copyright span{
         align-items:flex-start;
         align-content: center;
         justify-content: center;
+    }
+
+    footer .contact ul{
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
     }
 }

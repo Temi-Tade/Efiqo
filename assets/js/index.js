@@ -160,6 +160,7 @@ async function INIT_SHARE(){
 }
 
 function DISPLAY_TERMS(){
+    document.querySelector("#modal").scrollTo({top: 0});
     CREATE_MODAL(`
         <h3>TERMS OF USE</h3>
         <ul class='privacy-policy error' type='none'>
@@ -192,7 +193,7 @@ function DISPLAY_TERMS(){
 
         <div class='error'>
             <h4>Your Rights</h4>
-            <p>&nbsp;For further enquires, contact us at <a href="mailto:dev.mode006@gmail.com">dev.mode006@gmail.com</a></p>
+            <p>&nbsp;For further enquires, contact us at <a href="mailto:tenderluxetechenterprises@gmail.com">tenderluxetechenterprises@gmail.com</a></p>
         </div>
     `);
 }

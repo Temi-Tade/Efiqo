@@ -13,10 +13,7 @@ if ("indexedDB" in window) {
             theme: "device",
             lastLogIn: new Date().toUTCString(),
             userId: crypto.randomUUID(),
-            pfp: {
-                file: "",
-                url: ""
-            },
+            pfp: {file: "", url: ""},
             fullName: "",
             gender: "",
             dob: "",
@@ -49,36 +46,48 @@ if ("indexedDB" in window) {
             } else {
                 [...document.querySelectorAll(".signup")].map(el => {
                     el.onclick = () => {
-                    CREATE_MODAL(document.querySelector("#signupform").innerHTML);
-                    document.querySelector("#modalbg form input").oninput = function(ev){
-                        if (ev.target.value.trim().length >= 3) {
-                            document.querySelector("#modalbg form button").disabled = false;
-                        }else{
-                            document.querySelector("#modalbg form button").disabled = true;
+                        CREATE_MODAL(document.querySelector("#signupform").innerHTML);
+                        document.querySelector("#modalbg form input").oninput = function(ev){
+                            if (ev.target.validity.valid) {
+                                document.querySelector("#modalbg form button").disabled = false;
+                            }else{
+                                document.querySelector("#modalbg form button").disabled = true;
+                            }
+                        }
+        
+                        document.querySelector("#modalbg form").onsubmit = function(e){
+                            e.preventDefault();
+                            var betaUser;
+                            var input_email = [...new FormData(e.target).entries()][0][1].trim();
+                            for(let user of BETA_USERS) {
+                                if (user.email.toLowerCase() === input_email.trim().toLowerCase()) {
+                                    CREATE_MODAL("Loading... Please wait.");
+                                    betaUser = user;
+                                    user_data.email = user.email;
+                                    user_data.fullName = `${user.firstName} ${user.lastName}`;
+                                    var trx = request.result.transaction("user_data", "readwrite");
+                                    var user_data_objStore = trx.objectStore("user_data");
+                                    user_data_objStore.add(user_data);
+                
+                                    e.target.reset();
+                                    document.querySelector("#modalbg").animate({
+                                        opacity: ["1", "0"],
+                                    }, {
+                                        iterations: 1,
+                                        duration: 500
+                                    })
+                                    setTimeout(() => {
+                                        document.querySelector("#modalbg").style.display = "none"
+                                        history.go(0);
+                                    }, 490);
+                                    break;
+                                }else{
+                                    betaUser = undefined;
+                                }
+                            }
+                            CREATE_MODAL(betaUser ? "Fetching beta user Information" : "<h1>Oops!</h1>Invalid credentials. Ensure you provide the email address you used during early access registration. Register for early access<a href='' class='link'>here</a>and try again later (3 hours maximum).");
                         }
                     }
-    
-                    document.querySelector("#modalbg form").onsubmit = function(e){
-                        e.preventDefault();
-                        user_data.userName = [...new FormData(e.target).entries()][0][1];
-    
-                        var trx = request.result.transaction("user_data", "readwrite");
-                        var user_data_objStore = trx.objectStore("user_data");
-                        user_data_objStore.add(user_data);
-    
-                        e.target.reset();
-                        document.querySelector("#modalbg").animate({
-                            opacity: ["1", "0"],
-                        }, {
-                            iterations: 1,
-                            duration: 500
-                        })
-                        setTimeout(() => {
-                            document.querySelector("#modalbg").style.display = "none"
-                        }, 490);
-                        history.go(0);
-                    }
-                }
                 })
             }
         }

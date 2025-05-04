@@ -22,3 +22,51 @@ const CREATE_MODAL = (text) => {
         };
     };
 };
+
+const BETA_USERS = [
+    {
+        firstName: "Muhammad Jamshaid",
+        lastName: "Ali",
+        email: "jamshaid8081@gmail.com"
+    },
+    {
+        firstName: "Deen",
+        lastName: "",
+        email: "Sharafadeenadewale35@gmail.com"
+    },
+    {
+        firstName: "Dhanamjay",
+        lastName: "",
+        email: "kanipakkamdhanamjay@gmail.com"
+    },
+    {
+        firstName: "Mrunank",
+        lastName: "Pawar",
+        email: "mrunankpawar05@gmail.com"
+    },
+    {
+        firstName: "Levi",
+        lastName: "",
+        email: "Levinstar116@gmail.com"
+    },
+    {
+        firstName: "Kehinde",
+        lastName: "David",
+        email: "omotosokehinde2002@gmail.com"
+    },
+    {
+        firstName: "Oluwatobiloba",
+        lastName: "",
+        email: "oluwatobilobafemi25@gmail.com"
+    },
+    {
+        firstName: "Heesak",
+        lastName: "",
+        email: "adesuyiojo04@gmail.com"
+    },
+    {
+        firstName: "Temiloluwa",
+        lastName: "Akintade",
+        email: "akintadetemi19@gmail.com"
+    },
+];

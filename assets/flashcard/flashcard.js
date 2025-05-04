@@ -185,13 +185,20 @@ class Flashcard{
                 ${document.querySelector("#flashcard-data form").innerHTML}
             </form>
         `);
+        document.querySelector("#modal #main-file-picker").id = "edit-file-picker";
+        document.querySelector("#modal #added-images").id = "edit-added-images";
+        document.querySelector("#modal #add-image").id = "edit-add-image";
+        document.querySelector("#modal label").setAttribute("for", "edit-add-image");
         document.querySelector("#modal .number").style.display = "none";
         document.querySelector("#modal form button").textContent = "Save Changes";
         document.querySelector("#modal form #term").value = flashcardData.flashcards[i].term;
         document.querySelector("#modal form #def").value = flashcardData.flashcards[i].def;
+
+       if(flashcardData.flashcards[i].img) document.querySelector("#edit-added-images").innerHTML = `<img width='100' src='${flashcardData.flashcards[i].img.url}'/>`;
+
         document.querySelector("#modal form").onsubmit = (e) => {
             e.preventDefault();
-            flashcardData.flashcards[i] = new Flashcard(document.querySelector("#modal form #term").value, document.querySelector("#modal form #def").value);
+            flashcardData.flashcards[i] = new Flashcard(document.querySelector("#modal form #term").value, document.querySelector("#modal form #def").value, sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : undefined);
             ADD_CARD();
             isEdit = !isEdit;
             var trx = request.result.transaction("flashcards", "readwrite");
@@ -214,18 +221,22 @@ class Flashcard{
     }
 }
 
-function ADD_IMAGE(filepicker, e) {
+function ADD_IMAGE(filepicker) {
     // console.log(e);
     var file = filepicker.files[0];
     var fileReader = new FileReader();
-
+    
     fileReader.onload = function(ev) {
-        document.querySelector("#added-images").innerHTML = `<img width='100' src='${ev.target.result}'/>`;
+        if (isEdit) {
+            document.querySelector("#edit-added-images").innerHTML = `<img width='70' src='${ev.target.result}'/>`;
+        }else{
+            document.querySelector("#added-images").innerHTML = `<img width='70' src='${ev.target.result}'/>`;
+        }
         sessionStorage.setItem("flashcard-image", JSON.stringify({name: file.name ,url: ev.target.result}));
     }
 
     fileReader.readAsDataURL(file);
-    document.querySelector("#def").value = file.name;
+    filepicker.parentElement.previousElementSibling.value = file.name;
 }
 
 function MOBILE_PREVIEW(el) {
@@ -244,7 +255,7 @@ function MOBILE_PREVIEW(el) {
 
 document.querySelector("#flashcard-data form").onsubmit = (ev) => {
     ev.preventDefault();
-    card = new Flashcard(document.querySelector("#flashcard-data form #term").value, document.querySelector("#flashcard-data form #def").value, sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : undefined);
+    card = new Flashcard(document.querySelector("#flashcard-data form #term").value.trim(), document.querySelector("#flashcard-data form #def").value.trim(), sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : undefined);
     card.add();
     ADD_CARD();
     // FLASHCARD_COUNT();
@@ -274,13 +285,13 @@ function DELETE_FLASHCARD(){
 }
 
 function EDIT_CARD(){
-    document.querySelector("#contextmenu").style.display = "none";
-    isEdit = !isEdit;
     if (!flashcardData.flashcards.length) {
         CREATE_MODAL('OOPS... You have not added any flashcards yet.');
         return;
     }
-    card = new Flashcard(flashcardData.flashcards[index].term, flashcardData.flashcards[index].def);
+    document.querySelector("#contextmenu").style.display = "none";
+    isEdit = !isEdit;
+    card = new Flashcard(flashcardData.flashcards[index].term, flashcardData.flashcards[index].def, );
     card.edit(index);
 }
 
