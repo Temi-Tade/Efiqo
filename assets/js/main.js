@@ -69,4 +69,9 @@ const BETA_USERS = [
         lastName: "Akintade",
         email: "akintadetemi19@gmail.com"
     },
+    {
+        firstName: "abhi",
+        lastName: "",
+        email: "abhi394040@gmail.com"
+    },
 ];
