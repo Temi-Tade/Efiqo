@@ -20,6 +20,7 @@ if ("indexedDB" in window) {
             email: "",
             tel: "",
             level: "",
+            isBetaUser: false,
             isPremiumUser: false,
         }
 
@@ -65,6 +66,7 @@ if ("indexedDB" in window) {
                                     betaUser = user;
                                     user_data.email = user.email;
                                     user_data.fullName = `${user.firstName} ${user.lastName}`;
+                                    user_data.isBetaUser = true;
                                     var trx = request.result.transaction("user_data", "readwrite");
                                     var user_data_objStore = trx.objectStore("user_data");
                                     user_data_objStore.add(user_data);
@@ -85,7 +87,7 @@ if ("indexedDB" in window) {
                                     betaUser = undefined;
                                 }
                             }
-                            CREATE_MODAL(betaUser ? "Fetching beta user Information" : "<h1>Oops!</h1>Invalid credentials. Ensure you provide the email address you used during early access registration. Register for early access<a href='' class='link'>here</a>and try again later (3 hours maximum).");
+                            CREATE_MODAL(betaUser ? "Fetching beta user Information" : "<h1>Oops!</h1>Invalid credentials. Ensure you provide the email address you used during early access registration. Register for early access<a href='https://forms.gle/xPnuMzqSHwe9iBXy7' class='link'>here</a>and try again later (24 hours maximum).");
                         }
                     }
                 })
