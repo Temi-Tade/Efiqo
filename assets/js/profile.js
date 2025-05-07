@@ -49,7 +49,7 @@ function VIEW_PROFILE() {
     
                 <div class='field'>
                     <label for='fname'>FULL NAME</label>
-                    <input type='text' name=fname id='fname' value='${data[0].fullName}' disabled/>
+                    <input type='text' name=fname id='fname' value="${data[0].fullName}" disabled/>
                 </div>
     
                 <div class='field'>
