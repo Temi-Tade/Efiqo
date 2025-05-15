@@ -1,0 +1,53 @@
+.quiz-preview-actions, .quiz-config-options, .attempt-btn-wrap{
+    display: none;
+}
+
+#quiz-details{
+    padding-top: 1rem;
+}
+
+#result{
+    padding: .5rem;
+}
+
+#result-wrap p {
+    font-size: 5rem;
+    text-align: center;
+}
+
+#result-wrap p small{
+    font-size: 1rem;
+    display: block;
+}
+
+#corrections{
+    padding: .5rem;
+}
+
+#corrections li.correction-question{
+    padding: .5rem;
+    margin-top: .85rem;
+    background-color: #4444;
+    border-radius: .6rem;
+}
+
+#corrections li p{
+    padding: .25rem;
+}
+
+#corrections li p:first-child{
+    padding: 1rem;
+    padding-bottom: 0;
+}
+
+#result .options li {
+    margin-top: .5rem;
+}
+
+#result-actions{
+    padding: .5rem;
+}
+
+#result-actions button{
+    margin: .75rem auto;
+}

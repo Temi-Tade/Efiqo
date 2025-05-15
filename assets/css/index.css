@@ -107,6 +107,14 @@ header .get-started{
     padding: 0;
 }
 
+header .theme-btn-wrap{
+    width: 100%;
+}
+
+header .theme-btn{
+    width: 100%;
+}
+
 button{
     background: linear-gradient(to right, var(--theme), #f72342);
     border: 0;
@@ -193,16 +201,39 @@ ul{
     background-color: #4949494d;
 }
 
-#recent h3{
-    text-align: center;
+#recent-header{
+    display: flex;
+    justify-content: space-evenly   ;
 }
 
-#recent .sets-limit{
+#recent-header button{
+    text-align: center !important;
+    width: 45% !important;
+    padding: .25rem !important;
+}
+
+#recent-header input[type=radio]{
+    display: none;
+}
+
+#recent-header span{
+    display: block;
+    width: 100%;
+    padding: 1rem 0 .5rem;
+    cursor: pointer;
+}
+
+#recent-header input:checked+span{
+    border-bottom: 1px solid;
+    background-color: #dddddd0a
+}
+
+#recent .quota{
     text-align: center;
     padding: .5rem;
 }
 
-#no-flashcard{
+.no-data{
     text-align: center;
 }
 

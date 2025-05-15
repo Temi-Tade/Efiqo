@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/index.css">
+    <link rel="stylesheet" href="../../flashcard/style.css">
+    <link rel="stylesheet" href="../create/quiz.css">
+    <link rel="stylesheet" href="./attempt.css">
+    <link rel="stylesheet" href="" class="userdef">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <header style="display: none;">
+            <h1>efIQo<small class="beta">beta</small></h1>
+            <nav>
+                <ul type="none" class="nav-ul">
+                    <li class="theme-btn-wrap"><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn theme-btn" title="Toggle Theme" value="device"></button></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <section id="quiz">
+            <div id="quiz-details"></div>
+            <div id="question-preview"></div>
+            <div id="quiz-preview-wrap" hidden>
+                <div class="quiz-preview-actions">
+                    <button class='back-btn transparent-btn'>&larr;</button>
+                    <button class='fa-solid fa-trash transparent-btn' onclick="DELETE_QUESTION()"></button>
+                </div>
+                <div id="quiz-preview"></div>
+                <div class="quiz-actions">
+                    <button id="prev-btn" onclick="GO_TO_PREV_QUESTION()">Previous</button>
+                    <button id="next-btn" onclick="GO_TO_NEXT_QUESTION()">Next</button>
+                    <button style="display: none;" id="submit-btn" onclick="SUBMIT_QUIZ()">Submit</button>
+                </div>
+                <div class="attempt-btn-wrap">
+                    <button onclick="window.open('../attempt/index.html', '_parent')">Attempt Quiz</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="result" hidden>
+            <div id="result-wrap"></div>
+            <ul id="corrections"></ul>
+            <div id="result-actions">
+                <button onclick="history.go(0)">Retake Quiz</button>
+                <button onclick="location.pathname = '/'">Go to Dashboard</button>
+            </div>
+        </section>
+    </main>
+
+    <!--  -->
+    <div hidden>
+        <section id="quiz-data">
+            <form autocomplete="off" spellcheck="false">
+                <fieldset>
+                    <legend>Quiz Information</legend>
+                    <div class="field">
+                        <input type="text" id="quiz-name" placeholder="Quiz Name" oninput="validateInput(this, document.querySelector('#create-quiz-btn'))"/>
+                    </div>
+            
+                    <div class="field">
+                        <textarea cols="30" rows="5" id="quiz-desc" placeholder="Description (Optional)"></textarea>
+                    </div>
+            
+                    <div class="field">
+                        <button type="submit" id="create-quiz-btn" disabled>Create Quiz</button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+    
+        <section id="quiz-wrap" hidden>
+            <div id="quiz-details"></div>
+    
+            <div id="quiz-form">
+                <div class="field">
+                    <textarea id="question" placeholder="QUESTION" oninput="validateInput(this, document.querySelector('#create-question-btn'))" autocomplete="off"></textarea>
+                    <button type="button" id="create-question-btn" onclick="createQuestion(this.previousElementSibling.value.trim())" disabled>Create Question</button>
+                </div>
+
+                <div class="field" id="option" hidden>
+                    <input id="option-input" placeholder="ADD OPTION" oninput="validateInput(this, this.nextElementSibling)" autocomplete="off"/>
+                    <button type="button" id="add-option-btn" onclick="addOption(this.previousElementSibling)" disabled>Add Option</button>
+                </div>
+                
+                <div class="field" id="submit" hidden>
+                    <button type="submit" id="add-to-quiz-btn">Add Question to Quiz</button>
+                </div>
+
+                <div class="field">
+                    <!-- <button onclick="PREVIEW_QUIZ(ind)">Quiz Preview</button> -->
+                </div>
+            </div>
+    
+            <div id="question-preview"></div>
+            <div id="quiz-preview-wrap" hidden>
+                <div class="quiz-preview-actions">
+                    <button class='back-btn transparent-btn'>&larr;</button>
+                    <button class='fa-solid fa-trash transparent-btn' onclick="DELETE_QUESTION()"></button>
+                </div>
+                <div id="quiz-preview"></div>
+                <div class="quiz-actions">
+                    <button onclick="GO_TO_PREV_QUESTION()">Previous</button>
+                    <button onclick="GO_TO_NEXT_QUESTION()">Next</button>
+                </div>
+                <div class="attempt-btn-wrap">
+                    <button onclick="window.open('../attempt/index.html', '_parent')">Attempt Quiz</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <section id="modalbg">
+        <div id="modal">{text}</div>
+    </section>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/userdata.js"></script>
+    <script src="../../js/theme.js"></script>
+    <script src="../create/quiz.js"></script>
+    <script src="./attempt.js"></script>
+    <script defer data-domain="temi-tade.github.io" src="https://webtracker.avikmukherjee.tech/tracking-script.js"></script>
+</body>
+</html>

@@ -244,18 +244,18 @@ legend {
     padding: .25rem;
 }
 
-#flashcard-progress-wrap {
+.progress-wrap {
     padding: .5rem;
 }
 
-#progress {
+.progress {
     background-color: #111;
     /* padding: .125rem; */
     border-radius: 1rem;
     width: 100%;
 }
 
-#level {
+.level {
     padding: .165rem;
     border-radius: 1rem;
     background: linear-gradient(to right, var(--theme), #f72342);

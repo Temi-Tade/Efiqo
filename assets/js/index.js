@@ -5,6 +5,7 @@ let wordIndex = 0;
 let isDeleting = false;
 let profile;
 let flashcardSets;
+let quizSets;
 const isEarlyAccess = true;
 
 function IS_EARLY_ACCESS() {
@@ -52,22 +53,23 @@ function GET_CARDS(){
             flashcardSets = savedData;
             document.querySelector("#recent ul").innerHTML = "Loading...";
             document.querySelector("#recent ul").innerHTML = "";
-
+            
+            document.querySelector("#recent ul").innerHTML = "";
             if (!ev.target.result.length) {
-                document.querySelector("#recent ul").innerHTML = "<p id='no-flashcard'>You have not created any sets yet.</p>";
+                document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
             }
 
             await ev.target.result.forEach(flashcard => {
-                let info = `"Decks: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`
+                let info = `"Decks: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`;
                 document.querySelector("#recent ul").innerHTML += `
                     <li title=${info}>
-                        <button>${flashcard.name}</button>
+                        <button class='saved-flashcard'>${flashcard.name}</button>
                     </li>
                 `;
-                document.querySelector(".sets-limit").innerHTML = `Set Quota: ${ev.target.result.length}/7`
+                document.querySelector(".quota").innerHTML = `Quota: ${ev.target.result.length}/7`;
             });
 
-            [...document.querySelectorAll("#recent button")].forEach((val, i) => {
+            [...document.querySelectorAll("#recent .saved-flashcard")].forEach((val, i) => {
                 val.onclick = function(event){
                     event.preventDefault();
                     CREATE_MODAL(`
@@ -117,19 +119,105 @@ function GET_CARDS(){
     }
 };
 
-function CREATE_NEW(){
-    if (sessionStorage.getItem("efiqo temp data")) {
-        sessionStorage.removeItem("efiqo temp data");
-    }
-    if (!profile.isPremiumUser && flashcardSets.length >= 7) {
-        CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
-        document.querySelector("#reason").innerHTML = "<h3>You have run out of free flashcard sets</h3><br/><p>Upgrade to premium to enjoy creating unlimited sets.</p><br/>";
-        return;
-    }else{
-        window.open("./assets/flashcard/index.html", "_parent");
+// get quizzes
+function GET_QUIZZES(){
+    var request = indexedDB.open("efiqo", 1);
+
+    request.onsuccess = function(){
+        var trx = request.result.transaction("quizzes", "readwrite");
+        var quiz_objStore = trx.objectStore("quizzes");
+        var data = quiz_objStore.getAll();
+
+        data.onsuccess = async function (e) {
+            var quizzes = await e.target.result;
+            quizSets = quizzes;
+
+            document.querySelector("#recent ul").innerHTML = "";
+            if (!quizzes.length) {
+                document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any quizzes yet.</p>";
+            document.querySelector(".quota").innerHTML = "";
+            }
+
+            quizzes.forEach(quiz => {
+                let info = `"Questions: ${quiz.questions.length}\nCreated on: ${quiz.timeStamp}\nId: ${quiz.id}"`;
+                document.querySelector("#recent ul").innerHTML += `
+                <li title=${info}>
+                    <button class='saved-quiz'>${quiz.title}</button>
+                </li>
+            `;
+            document.querySelector(".quota").innerHTML = `Quota: ${quizzes.length}/7`;
+            });
+
+            [...document.querySelectorAll("#recent .saved-quiz")].forEach((val, i) => {
+                val.onclick = function(event){
+                    event.preventDefault();
+                    CREATE_MODAL(`
+                        <div id='recent-info'>
+                            <h3>${quizzes[i].title} </h3>
+                            <strong><em>${quizzes[i].desc}</em></strong>
+                            <table>
+                                <tr>
+                                    <th>Questions</th>
+                                    <td>${quizzes[i].questions.length}</td>
+                                </tr>
+                                <tr>
+                                    <th>Id</th>
+                                    <td>${quizzes[i].id}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created On</th>
+                                    <td>${quizzes[i].timeStamp}</td>
+                                </tr>
+                            </table>
+                            <div id='recent-actions'>
+                                <button id="open-recent">open <i class='fa-solid fa-arrow-up-right-from-square'></i></button>
+                                <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
+                                </div>
+                        </div>
+                    `);
+
+                    document.querySelector("#open-recent").onclick = function(){
+                        sessionStorage.setItem("efiqo temp data", JSON.stringify(quizzes[i]));
+                        window.open("./assets/quiz/create/index.html","_parent");
+                    }
+                    
+                    document.querySelector("#del-recent").onclick = function(){
+                        var confirmUserAction = confirm(`WARNING! You are about to delete the Set - ${quizzes[i].title} and all its related data. This action cannot be reversed. Do you wish to continue?`);
+                        if (confirmUserAction) {
+                            var trx = request.result.transaction("quizzes", "readwrite");
+                            var objectStore = trx.objectStore("quizzes");
+                            objectStore.delete(quizzes[i].id);
+                            history.go(0);
+                        }else{
+                            alert("Delete operation cancelled by user.")
+                        }
+                    }
+                }
+            });
+        }
     }
 }
 
+
+function CREATE_NEW(material){
+    if (sessionStorage.getItem("efiqo temp data")) {
+        sessionStorage.removeItem("efiqo temp data");
+    }
+    if (!profile.isPremiumUser) {
+        if (material === "flashcard" && flashcardSets.length >= 7) {
+            CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
+            document.querySelector("#reason").innerHTML = "<h3>You have run out of free sets</h3><br/><p>Upgrade to premium to enjoy creating unlimited sets.</p><br/>";
+            return;
+        }else if (material === "quiz" && quizSets.length >= 7) {
+            CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
+            document.querySelector("#reason").innerHTML = "<h3>You have run out of free sets</h3><br/><p>Upgrade to premium to enjoy creating unlimited sets.</p><br/>";
+            return;
+        }
+    }
+    window.open(`./assets/${material === "flashcard" ? "flashcard" : "quiz/create"}/index.html`, "_parent");
+}
+
+GET_QUIZZES();
 GET_CARDS();
 
 async function INIT_SHARE(){
@@ -137,13 +225,13 @@ async function INIT_SHARE(){
     if ("share" in navigator) {
         try {
             await navigator.share({
-                text: "Welcome to Ace It! Your tool for creating flashcards on the web!",
-                title: "Ace It!",
+                text: "efIQo. Your all-in-one study toolkit!",
+                title: "efIQo",
                 url: "http://127.0.0.1:5500/",
                 
             });
         } catch (error) {
-            CREATE_MODAL("AN error occured while trying to share.");
+            CREATE_MODAL("An error occured while trying to share.");
         }
     } else {
         CREATE_MODAL(`

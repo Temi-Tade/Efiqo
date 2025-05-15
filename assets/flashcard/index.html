@@ -16,8 +16,8 @@
         <header>
             <h1>efIQo<small class="beta">beta</small></h1>
             <nav>
-                <ul type="none" style="display: flex;">
-                    <li><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn" title="Toggle Theme" value="device"></button></li>
+                <ul type="none" class="nav-ul">
+                    <li class="theme-btn-wrap"><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn theme-btn" title="Toggle Theme" value="device"></button></li>
                 </ul>
             </nav>
         </header>
@@ -36,7 +36,7 @@
                 <fieldset>
                     <legend>Flashcard Information</legend>
                     <div class="field">
-                        <input type="text" id="fname" name="fname" placeholder="Name of Flashcard Set" class="req" oninput="VALIDATE_FLASHCARD_NAME(this.value)">
+                        <input type="text" id="fname" name="fname" placeholder="Flashcard Set" class="req" oninput="VALIDATE_FLASHCARD_NAME(this.value)">
                      </div>
          
                      <div class="field">
@@ -44,7 +44,7 @@
                      </div>
 
                      <div class="btn-wrap">
-                        <button type="submit" id="flashcard-name-btn" onclick="TOGGLE_FORMS(event, this.parentElement.parentElement.parentElement.parentElement, document.querySelector('#flashcard-data'))" disabled>Next <i class="fa-solid fa-arrow-right"></i></button>
+                        <button type="submit" id="flashcard-name-btn" onclick="TOGGLE_FORMS(event, this.parentElement.parentElement.parentElement.parentElement, document.querySelector('#flashcard-data'))" disabled>Create Flashcard Set <i class="fa-solid fa-arrow-right"></i></button>
                      </div>
                 </fieldset>
             </form>
@@ -77,9 +77,9 @@
                 <h4>Preview</h4>
                 <span id="flashcard-count"></span>
                 <div id="preview"></div>
-                <div id="flashcard-progress-wrap">
-                    <div id="progress">
-                        <span id="level"></span>
+                <div class="progress-wrap">
+                    <div class="progress">
+                        <span class="level"></span>
                     </div>
                 </div>
                 <div id="contextmenu">
@@ -128,6 +128,7 @@
     <script src="../js/userdata.js"></script>
     <script src="./flashcard.js"></script>
     <script src="../js/theme.js"></script>
+    <script defer data-domain="temi-tade.github.io" src="https://webtracker.avikmukherjee.tech/tracking-script.js"></script>
 </body>
 </html>
 

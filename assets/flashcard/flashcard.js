@@ -8,6 +8,7 @@ var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessi
     number: 0,
     id : crypto.randomUUID(),
     created : new Date().toUTCString(),
+    mode: "edit"
 };
 
 const TOGGLE_FORMS = (e, el, other) => {
@@ -280,7 +281,7 @@ function DELETE_FLASHCARD(){
     }else{
         document.querySelector("#preview").innerHTML = "<p style='padding: 1rem; text-align: center'>No flashcards added yet.</p>";
         document.querySelector("#flashcard-count").innerHTML = "";
-        document.querySelector("#level").style.width = "0%";
+        document.querySelector(".level").style.width = "0%";
     }
 }
 
@@ -348,7 +349,7 @@ const FLASHCARD_COUNT = () => {
 }
 
 const SET_PROGRESS = () => {
-    document.querySelector("#level").style.width = `${((index + 1) / flashcardData.flashcards.length) * 100}%`
+    document.querySelector(".level").style.width = `${((index + 1) / flashcardData.flashcards.length) * 100}%`
 }
 
 //todo: user must close any active sessions to create new FC

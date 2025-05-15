@@ -4,6 +4,9 @@ if ("indexedDB" in window) {
         if (!request.result.objectStoreNames.contains("user_data")) {
             request.result.createObjectStore("user_data", {keyPath: "userId", autoIncrement: true});
             request.result.createObjectStore("flashcards", {keyPath: "id", autoIncrement: true});
+            request.result.createObjectStore("quizzes", {keyPath: "id", autoIncrement: true});
+        }else{
+            request.result.createObjectStore("quizzes", {keyPath: "id", autoIncrement: true});
         }
     }
 

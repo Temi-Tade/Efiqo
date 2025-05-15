@@ -27,8 +27,8 @@
                         <div class="pseudo">
                             <h4>CREATE</h4>
                             <ul type="none" id="options">
-                                <li><button onclick="CREATE_NEW()" title="Create new Flashcard">New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
-                                <li><button disabled>New Quiz <i class="fa-soild fa-quiz"></i>[Coming Soon]</button></li>
+                                <li><button onclick="CREATE_NEW('flashcard')" title="Create new Flashcard">New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
+                                <li><button onclick="CREATE_NEW('quiz')">New Quiz <i class="fa-soild fa-quiz"></i></button></li>
                             </ul>
                         </div>
                     </li>
@@ -48,8 +48,27 @@
             </section>-->
 
             <section id="recent" class="signed-out">
-                <h3>Flashcards <i class="fa-regular fa-square fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></h3>
-                <small class="premium sets-limit"></small>
+                <div id="recent-header">
+                    <button>
+                        <label>
+                            <input type="radio" name="recent-type" oninput="GET_CARDS()" checked>
+                            <span>
+                                Flashcards
+                                <i class="fa-regular fa-square fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i>
+                            </span>
+                        </label>
+                    </button>
+                    <button>
+                        <label>
+                            <input type="radio" name="recent-type" oninput="GET_QUIZZES()">
+                            <span>
+                                Quizzes
+                                <i class="fa-regular fa-question-circle"></i>
+                            </span>
+                        </label>
+                    </button>
+                </div>
+                <small class="premium quota"></small>
                 <ul type="none"></ul>
             </section>
 
@@ -128,13 +147,17 @@
                 <ul>
                     <h4>Free Plan</h4>
                     <li>7 flashcard sets.</li>
-                    <li>20 flashcards to per set.</li>
+                    <li>20 decks to per flashcard set.</li>
+                    <li>7 quiz sets.</li>
+                    <li>20 questions to per quiz set.</li>
                 </ul>
 
                 <ul>
                     <h4>Premium Plan</h4>
                     <li>Unlimited flashcard sets.</li>
-                    <li>Unlimited flashcards per set.</li>
+                    <li>Unlimited decks per set.</li>
+                    <li>Unlimited quiz sets.</li>
+                    <li>Unlimited questions per quiz set.</li>
                 </ul>
 
                 <div class="get-premium-btn-wrap">

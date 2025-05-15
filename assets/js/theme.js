@@ -27,9 +27,6 @@ function TOGGLE_THEME(btn) {
         btn.setAttribute("class", "fa-regular fa-sun transparent-btn");
         btn.innerText = "";
     }
-    setTimeout(() => {
-        document.querySelector("#modalbg").style.display = "none";
-    }, 1500);
 
     var request = indexedDB.open("efiqo");
 

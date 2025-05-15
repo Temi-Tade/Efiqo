@@ -28,6 +28,18 @@ header nav ul li:hover {
     background-color: #ccc7;
 }
 
+#recent-header button:hover{
+    background-color: transparent;
+}
+
+#recent label span{
+    color: var(--textcol);
+}
+
+#recent-header input:checked+span{
+    background-color: #7777
+}
+
 #recent ul li button{
     color: var(--textcol);
 }
@@ -142,4 +154,8 @@ header .beta{
 
 button.prev{
     color: #333;
+}
+
+#corrections li.correction-question{
+    background-color: #ddd7;
 }
