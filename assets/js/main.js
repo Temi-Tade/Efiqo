@@ -80,3 +80,21 @@ const BETA_USERS = [
         email: "engineeringtheimpossible5@gmail.com"
     }
 ];
+
+var user_data = {
+    userName: "",
+    theme: "device",
+    createdOn: new Date().toUTCString(),
+    userId: crypto.randomUUID(),
+    pfp: {file: "", url: ""},
+    fullName: "",
+    gender: "",
+    dob: "",
+    email: "",
+    tel: "",
+    level: "",
+    isBetaUser: false,
+    isPremiumUser: false,
+    flashcards: [],
+    quizzes: []
+}

@@ -4,8 +4,25 @@ const QUIZ_DATA_FORM = document.querySelector("#quiz-data form");
 
 if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
     quizData = JSON.parse(sessionStorage.getItem("efiqo temp data"));
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
     hide(QUIZ_DATA_FORM);
     show(document.querySelector("#quiz-wrap"));
+
+    if (quizData.by !== profile.email) {
+        if (quizData.questions.length === 0) {
+            CREATE_MODAL("No questions have been set here here");
+            window.onclick = function(e){
+                if (e.target === document.querySelector("#modalbg")) {
+                    return;
+                }
+            }
+        }
+
+        getQuizInfo();
+        PREVIEW_QUIZ(ind);
+        document.querySelector(".quiz-preview-actions").style.display = 'none';
+        document.querySelector("#preview-btn").innerHTML = ""
+    }
 } 
 
 const QUIZ_FORM = document.querySelector("#quiz-form");
@@ -15,13 +32,15 @@ var quiz;
 var question;
 
 class Quiz{
-    constructor(title, desc){
-        this.title = title;
+    constructor(name, desc){
+        this.name = name;
         this.desc = desc;
         this.questions = [];
         this.mode = "create";
         this.id = crypto.randomUUID();
         this.timeStamp = new Date().toUTCString();
+        this.by = JSON.parse(sessionStorage.getItem("efiqo user data")).email;
+        this.attempts = [];
     }
 
     addQuestion(question){
@@ -79,9 +98,8 @@ class Question {
 
         [...document.querySelectorAll(".answer")].forEach((input, i) => {
             input.onchange = () => {
-                console.log(question)
                 if(input.checked) hide(document.querySelector("#no-answer"));
-                question.setAnswer(input.value);
+                question.setAnswer(input.parentElement.querySelector("span").innerHTML);
                 input.nextElementSibling.innerHTML = "<em>answer</em>";
             }
         })
@@ -106,15 +124,16 @@ function show(el){
 
 function getQuizInfo(){
     var quizInfo = quizData ? quizData : quiz;
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
 
     document.querySelector("#quiz-details").innerHTML = `
         <div class='quiz-title'>
-            <h3>${quizInfo.title}</h3>
+            <h3>${quizInfo.name}</h3>
         </div>
         <p><small>${quizInfo.desc}</small></p>
-        <div class='quiz-config-options'>
-        <p>Mode: ${quizInfo.mode}</p>
-            <button id='preview-btn' class='transparent-btn preview-btn' onclick="PREVIEW_QUIZ(ind)">Check Preview</button>
+        <div class='quiz-config-options' style='justify-content: ${(quizInfo.by !== profile.email) ? "center" : "space-between"}'>
+            <p>Mode: ${quizInfo.mode}</p>
+            <button id='preview-btn' class='transparent-btn preview-btn' onclick="PREVIEW_QUIZ(ind)" style='display: ${(quizInfo.by !== profile.email) ? "none" : "block"}'>Preview <i class='fa-solid fa-caret-right'></i></button>
         </div>
     `
 }
@@ -122,30 +141,28 @@ function getQuizInfo(){
 if(quizData) getQuizInfo();
 
 QUIZ_DATA_FORM.onsubmit = function (event) {
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+
     event.preventDefault();
     quiz = new Quiz(event.target.querySelector("#quiz-name").value.trim(), event.target.querySelector("#quiz-desc").value.trim());
+    
     sessionStorage.setItem("efiqo temp data", JSON.stringify(quiz));
     quizData = JSON.parse(sessionStorage.getItem("efiqo temp data"));
-    QUIZ_DATA_FORM.reset();
-    hide(event.target.parentElement);
-    show(document.querySelector("#quiz-wrap"));
+    profile.quizzes.push(quizData);
 
-    var request = indexedDB.open("efiqo", 1);
-
-    request.onsuccess = function(){
-        var trx = request.result.transaction("quizzes", "readwrite");
-        var quiz_objStore = trx.objectStore("quizzes");
-
-        quiz_objStore.put(quiz);
+    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+    updateDB(profile.email, {quizzes: profile.quizzes}, () => {
+        QUIZ_DATA_FORM.reset();
+        hide(event.target.parentElement);
+        show(document.querySelector("#quiz-wrap"));
         getQuizInfo();
-    }
+    });
 }
 
 function createQuestion(text){
     question = new Question(text);
     show(document.querySelector("#option"));
     show(document.querySelector("#question-preview"));
-    console.log(question);
     document.querySelector("#question-preview").innerHTML = `
         <h3>${question.question}</h3>
         <p id='no-answer'><em>No answer selected</em></p>
@@ -159,45 +176,40 @@ function addOption(option){
     option.nextElementSibling.disabled = true;
     hide(document.querySelector("#submit"));
     show(document.querySelector("#no-answer"));
-    console.log(question);
 }
 
 QUIZ_FORM.querySelector("#add-to-quiz-btn").onclick = function(){
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+
     if (quizData.questions.length >= 20) {
         CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
-        document.querySelector("#reason").innerHTML = "<h3>You have run out of free flashcards</h3><br/><p>Upgrade to premium to enjoy creating unlimited flashcards.</p><br/>";
+        document.querySelector("#reason").innerHTML = "<h3>You have run out of questions</h3><br/><p>Upgrade to premium to enjoy creating unlimited questions and quizzes.</p><br/>";
         return;
     }
 
     QUIZ_FORM.querySelector("#question").value = "";
     document.querySelector("#create-question-btn").disabled = true;
     if(quizData){
-        quizData.questions.push(question);
+        quizData.questions.push(JSON.parse(JSON.stringify(question)));
         quiz = quizData;
     }else{
         quiz.addQuestion(question);
     }
 
-    console.log(quiz);
-
-    document.querySelector("#question-preview").innerHTML = "";
-    hide(document.querySelector("#submit"));
-    hide(document.querySelector("#option"));
-
-
-    var request = indexedDB.open("efiqo", 1);
-
-    request.onsuccess = function(){
-        var trx = request.result.transaction("quizzes", "readwrite");
-        var quiz_objStore = trx.objectStore("quizzes");
-
-        var data = quiz_objStore.get(quizData ? quizData.id : quiz.id);
-        data.onsuccess = function(){
-            quiz_objStore.put(quiz);
-            quizData = quiz;
-            sessionStorage.setItem("efiqo temp data", JSON.stringify(quizData));
+    // sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+    profile.quizzes.forEach((q, i) => {
+        if (q.id === quiz.id) {
+            profile.quizzes[i] = quiz;
+            sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.quizzes[i]));
+            sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
         }
-    }
+    })
+
+    updateDB(profile.email, {quizzes: profile.quizzes}, () => {
+        document.querySelector("#question-preview").innerHTML = "";
+        hide(document.querySelector("#submit"));
+        hide(document.querySelector("#option"));
+    });
 }
 
 function PREVIEW_QUIZ(index) {
@@ -207,7 +219,6 @@ function PREVIEW_QUIZ(index) {
     hide(document.querySelector("#quiz-form"));
     document.querySelector("#preview-btn").style.display = 'none'
 
-    // if(!quizData) return;
     if (quizData.questions.length < 1) {
         document.querySelector("#quiz-preview").innerHTML = "<p style='text-align: center; font-style: italic'>No questions added yet.</p>"
     }
@@ -261,7 +272,7 @@ function PREVIEW_QUIZ(index) {
     [...document.querySelectorAll(".options input[type=radio]")].forEach(input => {
         if(location.pathname.includes("create")){
             input.setAttribute("disabled", "");
-            if(quizData.questions[index].answer === input.value) input.checked = true;
+            // if(quizData.questions[index].answer === input.value) input.checked = true;
         }else{
             input.setAttribute("oninput", `saveUserAnswer(this.nextElementSibling)`);
         }
@@ -310,24 +321,32 @@ function GO_TO_NEXT_QUESTION(arrName) {
                 document.querySelector("#next-btn").removeAttribute("disabled");
             }
         })
+        document.querySelector("#submit-btn").setAttribute("disabled", "");
 
         if (ind >= quizData.questions.length - 1){
             document.querySelector("#next-btn").style.display = "none";
             document.querySelector("#submit-btn").style.display = "block";
+
+            if (quizData.questions.length === arrName.length) {
+                document.querySelector("#submit-btn").removeAttribute("disabled");
+            }
         }
     }
 }
 
 function DELETE_QUESTION() {
     quizData.questions.splice(ind, 1);
-    var request = indexedDB.open("efiqo", 1);
 
-    request.onsuccess = function() {
-        var trx = request.result.transaction("quizzes", "readwrite");
-        var quiz_objStore = trx.objectStore("quizzes");
-        quiz_objStore.put(quizData);
-        sessionStorage.setItem("efiqo temp data", JSON.stringify(quizData));
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile.quizzes.forEach((q, i) => {
+        if (q.id === quizData.id) {
+            profile.quizzes[i] = quizData;
+            sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.quizzes[i]));
+            sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+        }
+    })
+    updateDB(profile.email, profile, () => {
         ind = 0;
         PREVIEW_QUIZ(ind);
-    }
+    });
 }

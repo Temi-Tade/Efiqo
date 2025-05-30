@@ -1,30 +1,80 @@
-let data;
 let blob;
 let file;
+let profileValues;
+let isProfileComplete;
+let usernameExists;
 
-function FETCH_USER_PROFILE(btn){
-    var request = indexedDB.open("efiqo");
-    request.onsuccess = function(){
-        var trx = request.result.transaction("user_data");
-        var objectStore = trx.objectStore("user_data");
-        var userData = objectStore.getAll();
-        
-        userData.onsuccess = async function(ev) {
-            data = await ev.target.result;
-            document.querySelector("#profile-image").innerHTML = data.length > 0 && data[0].pfp.url ? `<img src='${data[0].pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
-            [...document.querySelectorAll(".get-started")].map(el => el.style.display = data.length === 0 ? 'block' : 'none');
-            document.querySelector(".create-new-btn").disabled = data.length === 0 ? true : false;
-            if(data.length) var displayName = data[0].userName ? data[0].userName : data[0].fullName.slice(0, data[0].fullName.indexOf(" "));
-            document.querySelector("#greeting").innerHTML = data.length === 0 ? "" : `Hello, ${displayName} 👋`;
-            [...document.querySelectorAll(".signed-in")].map(el => el.style.display = data.length === 0 ? 'block' : 'none');
-            [...document.querySelectorAll(".signed-out")].map(el => el.style.display = data.length === 0 ? 'none' : '');
-        };
-    };
+if (sessionStorage.getItem("efiqo user data")) {
+    profileValues = Object.values(profile).filter((val) => val !== false)
+    isProfileComplete = profileValues.some(val => !!val === false);
+
+    if (isProfileComplete) {
+        alert("Your profile appears to be incomplete. Kindly update your profile to start using efIQo");
+        VIEW_PROFILE();
+        window.onclick = function(e){
+            if (e.target === document.querySelector("#modalbg")) {
+                alert("Your profile appears to be incomplete. Kindly update your profile to start using efIQo");
+                return;
+            }
+        }
+    }
+}
+
+function FETCH_USER_PROFILE(){
+    let sessionProfile;
+    if (sessionStorage.getItem("efiqo user data")) {
+        sessionProfile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    }
+
+    [...document.querySelectorAll(".get-started")].map(el => el.style.display = !sessionProfile ? 'block' : 'none');
+    document.querySelector(".create-new-btn").disabled = !sessionProfile ? true : false;
+
+    document.querySelector("#profile-image").innerHTML = sessionProfile && sessionProfile.pfp.url ? `<img src='${sessionProfile.pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
+    if(sessionProfile) var displayName = sessionProfile.userName ? sessionProfile.userName : sessionProfile.fullName.slice(0, sessionProfile.fullName.indexOf(" "));
+    document.querySelector("#greeting").innerHTML = !sessionProfile ? "" : `Hello, ${displayName} 👋`;
+
+    [...document.querySelectorAll(".signed-in")].map(el => el.style.display = !sessionProfile ? 'block' : 'none');
+    [...document.querySelectorAll(".signed-out")].map(el => el.style.display = !sessionProfile ? 'none' : '');
 };
+
+FETCH_USER_PROFILE();
+
+function VALIDATE_USERNAME(val) {
+    let dbUsernames = [];
+
+    document.querySelector("#available-status").setAttribute("class", 'fa-solid fa-circle-notch fa-spin');
+    document.querySelector("#available-status").style.color = "#eee";
+    
+    db.collection("users")
+    .where("userName", "!=", "")
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach(doc => {
+            dbUsernames.push(doc.data().userName);
+        })
+
+        dbUsernames.forEach(username => {
+            if ((val.trim().length < 4) || (username.toLowerCase() === val.toLowerCase().trim())) {
+                document.querySelector("#available-status").setAttribute("class", 'fa-solid fa-times');
+                document.querySelector("#available-status").style.color = "red";
+                document.querySelector(".update-field button").disabled = true;
+                usernameExists = true;
+                return;
+            }else{
+                document.querySelector("#available-status").setAttribute("class", 'fa-solid fa-check');
+                document.querySelector("#available-status").style.color = "green";
+                document.querySelector(".update-field button").disabled = false;
+                usernameExists = false;
+                return;
+            }
+        }) 
+    });
+}
 
 function VIEW_PROFILE() {
     //todo: convert dob
     CHECK_PREMIUM();
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
     try {
         CREATE_MODAL(`
             <form id="user-profile-form" autocomplete="off">
@@ -35,31 +85,34 @@ function VIEW_PROFILE() {
                 <h4>MY PROFILE</h4><br>
     
                 <div class='field pfp-field'>
-                    <img id="avatar" src='${!data[0].pfp.url ? "./assets/images/default_avatar.png" : data[0].pfp.url}' alt="User Avatar" loading='lazy' draggable="false"/>
+                    <img id="avatar" src='${!profile.pfp.url ? "./assets/images/default_avatar.png" : profile.pfp.url}' alt="User Avatar" loading='lazy' draggable="false"/>
                     <label for='pfp' id='upload-pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
-                    <input type='file' name='pfp' id='pfp' value='${data[0].pfp.file.name}' accept='*.png, *.jpg, *.jpeg, *.tiff, *.gif, *.webp' disabled/>
+                    <input type='file' name='pfp' id='pfp' value='${profile.pfp.file.name}' accept='*.png, *.jpg, *.jpeg, *.tiff, *.gif, *.webp' disabled/>
                 </div>
     
                 <h5>Personal Information</h5><br>
                 
                 <div class='field'>
-                    <label for='uname'>USER NAME</label>
-                    <input type='text' name='uname' id='uname' value='${data[0].userName}' disabled/>
+                    <label for='uname'>
+                        USER NAME
+                        <i id='available-status' class=''></i>
+                    </label>
+                    <input type='text' name='uname' id='uname' value='${profile.userName}' disabled oninput='VALIDATE_USERNAME(this.value)'/>
                 </div>
     
                 <div class='field'>
                     <label for='fname'>FULL NAME</label>
-                    <input type='text' name=fname id='fname' value="${data[0].fullName}" disabled/>
+                    <input type='text' name=fname id='fname' value="${profile.fullName}" disabled/>
                 </div>
     
                 <div class='field'>
                     <label for='dob'>DATE OF BIRTH</label>
-                    <input type='date' name='dob' id='dob' value='${data[0].dob}' disabled/>
+                    <input type='date' name='dob' id='dob' value='${profile.dob}' disabled/>
                 </div>
     
                 <div class='field'>
                     <label for='gender'>SEX</label>
-                    <select name='gender' id='gender' value='${data[0].gender}' disabled>
+                    <select name='gender' id='gender' value='${profile.gender}' disabled>
                         <option value="">--select--</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -69,18 +122,18 @@ function VIEW_PROFILE() {
                 <h5>Contact Information</h5>
                 <div class='field'>
                     <label for='email'>EMAIL ADDRESS</label>
-                    <input type='email' name='email' id='email' inputmode=email value='${data[0].email}' disabled/>
+                    <input type='email' name='email' id='email' inputmode=email value='${profile.email}' disabled/>
                 </div>
     
                 <div class='field'>
                     <label for='tel'>PHONE NUMBER (with country code)</label>
-                    <input type='tel' name='tel' id='tel' inputmode='tel'  value='${data[0].tel}' disabled/>
+                    <input type='tel' name='tel' id='tel' inputmode='tel'  value='${profile.tel}' disabled/>
                 </div>
     
                 <h5>Academic Information</h5>
                 <div class='field'>
                    <label for='edu_level'>CURRENT LEVEL OF EDUCATION</label>
-                    <select name='edu_level' id='edu_level' value='${data[0].level}' disabled>
+                    <select name='edu_level' id='edu_level' value='${profile.level}' disabled>
                         <option value="">--select--</option>
                         <option value="Pre-primary">Pre-primary</option>
                         <option value="Primary">Primary</option>
@@ -92,20 +145,25 @@ function VIEW_PROFILE() {
                 </div>
 
                 <div class='premium'>
-                    <button type='button' class="transparent-btn" onclick="IS_EARLY_ACCESS()">Get Premium <span class="fa-regular fa-star"></span></button>
+                    <button type='button' class="transparent-btn" onclick="CREATE_MODAL(document.querySelector('#get-premium').innerHTML)">Get Premium <span class="fa-regular fa-star"></span></button>
                 </div>
     
                 <div class='field update-field'>
-                    <button>Update Profile <i class='fa-solid fa-refresh'></i></button>
+                <button>Update Profile <i class='fa-solid fa-refresh'></i></button>
+                </div>
+
+                <div class='field'>
+                    <button type='button' class='sign-out' onclick='signOut()'>Sign Out <i class='fa-solid fa-sign-out'></i></button>
                 </div>
 
                 <div class='field'> 
                     <ul class="terms">
-                        <li><button type="button" onclick="IS_EARLY_ACCESS()//INIT_SHARE()" class="transparent-btn">Share efIQo <span class="fa-solid fa-share-nodes"></span></button></li>
-                        <li><button type="button" onclick="IS_EARLY_ACCESS();//window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support efIQo <span class="fa-solid fa-donate"></span></button></li>
+                        <li><button type="button" onclick="INIT_SHARE()" class="transparent-btn">Share efIQo <span class="fa-solid fa-share-nodes"></span></button></li>
+                        <li><button type="button" onclick="window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support efIQo <span class="fa-solid fa-donate"></span></button></li>
                         <li><button type="button" class="transparent-btn" onclick="DISPLAY_TERMS()">Terms of Use</button></li>
                     </ul>
                 </div>
+
 
                 <div class='field contact-field'>
                     <div class="contact">
@@ -127,7 +185,7 @@ function VIEW_PROFILE() {
     
         var options = [...parent.querySelectorAll("select option")];
         options.forEach(option => {
-            if (option.value === data[0].gender || option.value === data[0].level) {
+            if (option.value === profile.gender || option.value === profile.level) {
                 option.selected = true;
             }
         })
@@ -147,6 +205,9 @@ function VIEW_PROFILE() {
             this.disabled = true;
             [...parent.querySelectorAll(":disabled")].map(field => {
                 field.disabled = false;
+                if (field.id === "email") {
+                    field.disabled = true;
+                }
             });
             parent.querySelector(".update-field button").style.display = "block";
             parent.querySelector(".delete-field button").style.display = "none";
@@ -155,61 +216,72 @@ function VIEW_PROFILE() {
     
         parent.onsubmit = function(e){
             e.preventDefault();
-            var request = indexedDB.open("efiqo");
-            request.onsuccess = function(){
-                var trx = request.result.transaction("user_data", "readwrite");
-                var objectStore = trx.objectStore("user_data");
-                var userData = objectStore.getAll();
-                
-                userData.onsuccess = async function(ev) {
-                    data = await ev.target.result;
-                    data[0].userName = parent.querySelector("#uname").value;
-                    data[0].fullName = parent.querySelector("#fname").value;
-                    data[0].dob = parent.querySelector("#dob").value;
-                    data[0].gender = parent.querySelector("#gender").value;
-                    data[0].email = parent.querySelector("#email").value;
-                    data[0].tel = parent.querySelector("#tel").value;
-                    data[0].level = parent.querySelector("#edu_level").value;
-                    data[0].pfp.url = blob || data[0].pfp.url;
-                    data[0].pfp.file = file || data[0].pfp.file;
-                    objectStore.put(data[0]);
-                };
-            };
-    
-            [...parent.querySelectorAll(":disabled")].map(field => {
-                field.disabled = true;
-            });
-            parent.querySelector(".update-field button").style.display = "none";
-            parent.querySelector(".delete-field button").style.display = "block";
-            parent.querySelector(".pfp-field label").style.display = "none";
-            alert("Profile Updated!");
-            FETCH_USER_PROFILE();
-        }
 
+            if (usernameExists) {
+                alert("Username already exists.");
+                return;
+            }
+                
+            profile.userName = parent.querySelector("#uname").value.trim();
+            profile.fullName = parent.querySelector("#fname").value.trim();
+            profile.dob = parent.querySelector("#dob").value.trim();
+            profile.gender = parent.querySelector("#gender").value.trim();
+            profile.email = parent.querySelector("#email").value.trim();
+            profile.tel = parent.querySelector("#tel").value.trim();
+            profile.level = parent.querySelector("#edu_level").value.trim();
+            profile.pfp.url = blob || profile.pfp.url;
+            // profile.pfp.file = file || profile.pfp.file;
+
+            profileValues = Object.values(profile).filter((val) => val !== false)
+            isProfileComplete = profileValues.some(val => !!val === false);
+        
+            if (isProfileComplete) {
+                alert("Your profile appears to be incomplete. Kindly update your profile to start using efIQo");
+                // VIEW_PROFILE();
+
+                window.onclick = function(e){
+                    if (e.target === document.querySelector("#modalbg")) {
+                        alert("Your profile appears to be incomplete. Kindly update your profile to start using efIQo");
+                        return;
+                    }
+                } 
+            }else{
+                writeToDB(profile.email, profile, () => {
+                    alert("Profile successfully updated.");
+                });
+                parent.querySelector(".update-field button").style.display = "none";
+                parent.querySelector(".delete-field button").style.display = "block";
+                parent.querySelector(".pfp-field label").style.display = "none";
+            }
+        };
+    
         document.querySelector(".delete-field button").onclick = function() {
             var prompt = confirm("You are about to delete your Efiqo account. This action is permanent and cannot be undone. Do you wish to continue?");
             if (!prompt) return;
-            //var request = indexedDB.open("efiqo", 1);
-            var deleteRequest = indexedDB.deleteDatabase("efiqo")
-            deleteRequest.onsuccess = function() {
-                CREATE_MODAL("Account successfuly deleted");
+
+            CREATE_MODAL("Deleting your account..."); //spinner
+            window.onclick = function(e){
+                if (e.target === document.querySelector("#modalbg")) {
+                    return;
+                }
+            }
+            
+            //delete user account
+            db.collection("users").doc(profile.email)
+            .delete()
+            .then(() => {
+                profile = null;
+                sessionStorage.removeItem("efiqo user data");
+                sessionStorage.removeItem("efiqo temp data");
                 history.go(0);
-            }
-
-            deleteRequest.onblocked = () => {
-                CREATE_MODAL("Please wait while we delete your account");
-                setTimeout(() => {
-                    history.go(0);
-                }, 1500);
-            }
-
-            deleteRequest.onerror = () => {
-                CREATE_MODAL("An error occured.");
-            }
+            })
+            .catch((error) => {
+                console.error(error);
+                CREATE_MODAL("An error occured. Please try again.");
+            })
         }
     } catch (error) {
-        // console.error(error, "No user profile found")
+        console.error(error);
+        CREATE_MODAL("An error occured while loading your profile. Please refresh this page.");
     }
 };
-
-FETCH_USER_PROFILE(document.querySelector("header nav ul li button"));

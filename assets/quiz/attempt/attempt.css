@@ -36,8 +36,7 @@
 }
 
 #corrections li p:first-child{
-    padding: 1rem;
-    padding-bottom: 0;
+    padding: 1rem .5rem;
 }
 
 #result .options li {

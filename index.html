@@ -10,25 +10,33 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit">
     <title>efIQo</title>
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-auth-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <main>
         <header>
-            <h1>efIQo <small class="beta">beta</small></h1>
+            <div class="header-img">
+                <h1>
+                    <img src="./assets/images/efiQo_logo.png" alt="" width="50">
+                    efIQo
+                </h1>
+            </div>
             <nav>
                 <div class="get-started">
-                    <button class="signup">Early Access <span class="fa-solid fa-caret-right"></span></button>
+                    <button class="signup">Sign In <span class="fa-solid fa-caret-right"></span></button>
                 </div>
-                <ul type="none" class="signed-out">
+                <ul type="none" class="signed-out" style="display: none;">
                     <li id="theme"><button onclick="TOGGLE_THEME(this)" class="transparent-btn" title="Toggle Theme" value="device"></button></li>
-                    <li id="profile"><button class="transparent-btn" id="profile-image" onclick="VIEW_PROFILE()"></button></li>
+                    <li id="profile"><button class="transparent-btn" id="profile-image" onclick="VIEW_PROFILE()"></button></li>&nbsp;&nbsp;
                     <li>
                         <button class="create-new-btn" onclick="CREATE_MODAL(this.nextElementSibling.innerHTML)">+</button>
                         <div class="pseudo">
                             <h4>CREATE</h4>
                             <ul type="none" id="options">
-                                <li><button onclick="CREATE_NEW('flashcard')" title="Create new Flashcard">New Flashcard Set <i class="fa-regular fa-file fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
-                                <li><button onclick="CREATE_NEW('quiz')">New Quiz <i class="fa-soild fa-quiz"></i></button></li>
+                                <li><button onclick="CREATE_NEW('quiz')">New Quiz <i class="fa-regular fa-question-circle"></i></button></li>
+                                <li><button onclick="CREATE_NEW('flashcard')" title="Create new Flashcard">New Flashcard Set <i class="fa-solid fa-layer-group fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
                             </ul>
                         </div>
                     </li>
@@ -37,15 +45,22 @@
         </header>
 
         <section id="content">
-            <p id="greeting"></p>
-            <!--<section id="search-wrap" class="signed-out">
+            <div class="search-bar signed-out">
+                <p id="greeting"></p>
+                <button class="transparent-btn fa-solid fa-search" onclick="INIT_SEARCH()"></button>
+            </div>
+
+            <section id="search-wrap" class="signed-out" hidden>
+                <div class="close-btn-wrap">
+                    <button class="close-btn transparent-btn" id="close-btn">&times;</button>
+                </div>
                 <div id="search-form-warp">
                     <div id="search-form">
-                        todo: search functionality-
-                        <input type="search" placeholder="Search tools, materials" autocomplete="off" spellcheck="false"/>
+                        <input type="search" placeholder="Search flashcards, quizzes" autocomplete="off" spellcheck="false" oninput="SEARCH_DB(this.value)" autofocus/>
+                        <ul id="filtered-list"></ul>
                     </div>
                 </div>
-            </section>-->
+            </section>
 
             <section id="recent" class="signed-out">
                 <div id="recent-header">
@@ -54,7 +69,7 @@
                             <input type="radio" name="recent-type" oninput="GET_CARDS()" checked>
                             <span>
                                 Flashcards
-                                <i class="fa-regular fa-square fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i>
+                                <i class="fa-solid fa-layer-group fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i>
                             </span>
                         </label>
                     </button>
@@ -72,18 +87,30 @@
                 <ul type="none"></ul>
             </section>
 
+            <!-- <section id="materials" class="signed-out">
+                <h3>From other learners</h3>
+                <div class="materials">
+                    <ul class="materials-list"></ul>
+                </div>
+            </section> -->
+
             <section id="features" class="signed-in">
-                <h2>Learning tools and resources... all in one place.</h2>
-                <ul>
-                    <li>Create custom flashcards.</li>
-                    <li>Learn with flashcards created by others.</li>
-                    <li>Share your flashcards with other learners.</li>
-                    <li class="coming-soon">Create custom quizzes. [coming soon]</li>
-                    <li class="coming-soon">Generate AI-powered summary from lecture materials. [coming soon]</li>
-                    <li>...and many more to come</li>
-                </ul>
+                <h2>Learning tools and resources... all in one place</h2>
+                <div class="feature-list">
+                    <ul>
+                        <li>Create custom flashcards.</li>
+                        <li>Create custom quizzes.</li>
+                        <li>Learn with flashcards and quizzes created by others.</li>
+                        <li>Share your flashcards with other learners.</li>
+                        <li class="coming-soon">Generate AI-powered summary from lecture materials. [coming soon]</li>
+                        <li>...and many more to come</li>
+                    </ul>
+                    <div class="img-wrap">
+                        <img src="./assets/images/efiQo_logo.png" alt="" width="250">
+                    </div>
+                </div>
                 <div class="get-started">
-                    <button class="signup">Join Early Access <span class="fa-solid fa-caret-right"></span></button>
+                    <button class="signup">Get Started <span class="fa-solid fa-caret-right"></span></button>
                 </div>
             </section>
         </section>
@@ -94,7 +121,7 @@
                 <ul type="none" id="snapshots_list"></ul>
             </div>
             <div class="get-started">
-                <button class="signup">Join Early Access <span class="fa-solid fa-caret-right"></span></button>
+                <button class="signup">Sign In <span class="fa-solid fa-caret-right"></span></button>
             </div>
         </section>
 
@@ -114,11 +141,11 @@
     
                 <div id="footer-top-col-2">
                     <div class="footer-btn-wrap">
-                        <button onclick="IS_EARLY_ACCESS()//INIT_SHARE()" class="transparent-btn">Share efIQo <span class="fa-solid fa-share-nodes"></span></button>
+                        <button onclick="INIT_SHARE()" class="transparent-btn">Share efIQo <span class="fa-solid fa-share-nodes"></span></button>
                     </div>
 
                     <div class="footer-btn-wrap">
-                        <button onclick="IS_EARLY_ACCESS();//window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support efIQo <span class="fa-solid fa-donate"></span></button>
+                        <button onclick="window.open('https:\/\/buymeacoffee.com/temiloluwa')" class="transparent-btn">Support efIQo <span class="fa-solid fa-donate"></span></button>
                     </div>
                 </div>
     
@@ -135,7 +162,7 @@
 
             <div id="copyright">
                 <p>
-                    <span>&copy;TenderLuxe 2025. All rights reserved.</span>
+                    <span>&copy;TenderLuxe Tech. Enterprises 2025. All rights reserved.</span>
                 </p>
 
             </div>
@@ -161,45 +188,46 @@
                 </ul>
 
                 <div class="get-premium-btn-wrap">
-                    <button onclick="IS_EARLY_ACCESS()">Get Premium <i class="fa-regular fa-star"></i>($4.99)</button>
+                    <button onclick="INIT_PAY()">Get Premium <i class="fa-regular fa-star"></i>($4.99)</button>
                 </div>
             </div>
         </section>
 
-        <section class="pseudo" id="signupform">
-            <form autocomplete="off" spellcheck="false">
-                <h3>Welcome to efIQo early access. Enter the email you provided during early access registration.</h3>
-                <div class="field">
-                    <input type="email" name="email" placeholder="EMAIL ADDRESS" autofocus required/>
-                </div>
-
-                <div class="btn-wrap">
-                    <button disabled>Continue</button>
-                </div>
+        <section id="paynow" class="pseudo">
+            <form action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
+                <p>You are about to make a payment of $4.99 for the premium plan for efIQo. Click the 'Pay Now' button to continue to the checkout page.</p>
+                <input class="pp-FX7KJ62DYGV5J" type="submit" value="Pay Now" />
+                <img src=https://www.paypalobjects.com/images/Debit_Credit.svg alt="cards" />
+                <section style="font-size: 0.75rem;"> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/>
+                </section>
             </form>
         </section>
+
+        <section class="pseudo" id="signupform">
+                <div class="btn-wrap">
+                    <button id="signinbtn" class="transparent-btn">
+                        <img src="./assets/images/google-logo.png" alt="Google logo" width="20">
+                        &nbsp;&nbsp;
+                        <span>Sign In with Google</span>
+                    </button>
+                </div>
+                <small>
+                    <em>Please allow popups and redirects for this site</em>
+                </small>
+        </section>
+        
+        <div class="pseudo loader-wrap">
+            <div class="spinner"></div>
+            <p><small>Loading...</small></p>
+        </div>
     </main>
 
-    <script src="./assets/js/main.js"></script>    
-    <script src="./assets/js/userdata.js"></script>
+    <script src="./assets/js/main.js"></script>  
+    <script src="./assets/js/signin.js"></script> 
+    <script src="./assets/js/db.js"></script>
     <script src="./assets/js/snapshots.js"></script>
     <script src="./assets/js/index.js"></script>
     <script src="./assets/js/profile.js"></script>
     <script src="./assets/js/theme.js"></script>
-    <script defer data-domain="temi-tade.github.io" src="https://webtracker.avikmukherjee.tech/tracking-script.js"></script>
 </body>
 </html>
-
-<!-- 
-    bug fixes
-    - user profile page
-        - update lastLogin for every login
-    - integrate firebase
-    - disable flashcard form submit btn
-    - allow user to create new set/go back to home page at the end of one set
-    - ipad mobile view
-    - for teachers/educators/instructors
-    - fix final fc deletion bug
-    - set header as fixed position
-    - image upload bug
- -->

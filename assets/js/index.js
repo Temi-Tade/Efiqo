@@ -1,208 +1,168 @@
-const dynamicText = document.querySelector("#dynamic");
-const words = ["Simple", "Sleek", "Effective"];
-let charIndex = 0;
-let wordIndex = 0;
-let isDeleting = false;
-let profile;
 let flashcardSets;
 let quizSets;
-const isEarlyAccess = true;
-
-function IS_EARLY_ACCESS() {
-    if (isEarlyAccess) {
-        CREATE_MODAL(`
-            <p>Oops... This feature is not available during early access.</p>
-        `);
-    }
-    return;
-}
 
 const TOGGLE_MATERIALS_LIST = (parent) => {
     parent.nextElementSibling.classList.toggle("expand");
 };
 
-const TYPE_EFFECT = () => {
-    let currentWord = words[wordIndex];
-    let currentChar = currentWord.substring(0, charIndex);
-    dynamicText.textContent = currentChar;
-
-    if (!isDeleting && charIndex < currentWord.length) {
-        charIndex++;
-        setTimeout(TYPE_EFFECT, 300);
-    } else if (isDeleting && charIndex > 0) {
-        charIndex--;
-        setTimeout(TYPE_EFFECT, 200);
-    } else {
-        isDeleting = !isDeleting;
-        wordIndex = !isDeleting ? (wordIndex + 1) % words.length : wordIndex;
-        setTimeout(TYPE_EFFECT, 1750);
-    };
-};
-
 //get saved flashcards
 function GET_CARDS(){
-    var request = indexedDB.open("efiqo");
-    request.onsuccess = function(){
-        var trx = request.result.transaction("flashcards");
-        var objectStore = trx.objectStore("flashcards");
-        var keys = objectStore.getAll();
-        let savedData;
-        
-        keys.onsuccess = async function(ev){
-            savedData = await ev.target.result;
-            flashcardSets = savedData;
-            document.querySelector("#recent ul").innerHTML = "Loading...";
-            document.querySelector("#recent ul").innerHTML = "";
-            
-            document.querySelector("#recent ul").innerHTML = "";
-            if (!ev.target.result.length) {
-                document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
-            }
-
-            await ev.target.result.forEach(flashcard => {
-                let info = `"Decks: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`;
-                document.querySelector("#recent ul").innerHTML += `
-                    <li title=${info}>
-                        <button class='saved-flashcard'>${flashcard.name}</button>
-                    </li>
-                `;
-                document.querySelector(".quota").innerHTML = `Quota: ${ev.target.result.length}/7`;
-            });
-
-            [...document.querySelectorAll("#recent .saved-flashcard")].forEach((val, i) => {
-                val.onclick = function(event){
-                    event.preventDefault();
-                    CREATE_MODAL(`
-                        <div id='recent-info'>
-                            <h3>${savedData[i].name} </h3>
-                            <strong><em>${savedData[i].desc}</em></strong>
-                            <table>
-                                <tr>
-                                    <th>Decks</th>
-                                    <td>${savedData[i].number}</td>
-                                </tr>
-                                <tr>
-                                    <th>Id</th>
-                                    <td>${savedData[i].id}</td>
-                                </tr>
-                                <tr>
-                                    <th>Created On</th>
-                                    <td>${savedData[i].created}</td>
-                                </tr>
-                            </table>
-                            <div id='recent-actions'>
-                                <button id="open-recent">open <i class='fa-solid fa-arrow-up-right-from-square'></i></button>
-                                <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
-                                </div>
-                        </div>
-                    `);
-
-                    document.querySelector("#open-recent").onclick = function(){
-                        sessionStorage.setItem("efiqo temp data", JSON.stringify(savedData[i]));
-                        window.open("./assets/flashcard/index.html","_parent");
-                    }
-                    
-                    document.querySelector("#del-recent").onclick = function(){
-                        var confirmUserAction = confirm(`WARNING! You are about to delete the Set - ${savedData[i].name} and all its related data. This action cannot be reversed. Do you wish to continue?`);
-                        if (confirmUserAction) {
-                            var trx = request.result.transaction("flashcards", "readwrite");
-                            var objectStore = trx.objectStore("flashcards");
-                            objectStore.delete(savedData[i].id);
-                            history.go(0);
-                        }else{
-                            alert("Delete operation cancelled by user.")
-                        }
-                    }
-                }
-            });
-        }
+    if (sessionStorage.getItem("efiqo user data")) {
+        profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+        flashcardSets = profile.flashcards;
+    } else {
+        return;
     }
+        
+    document.querySelector("#recent ul").innerHTML = "Loading...";
+    document.querySelector("#recent ul").innerHTML = "";
+            
+    document.querySelector("#recent ul").innerHTML = "";
+    if (flashcardSets.length === 0) {
+        document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
+    }
+
+    flashcardSets.forEach(flashcard => {
+        let info = `"Decks: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`;
+        document.querySelector("#recent ul").innerHTML += `
+            <li title=${info}>
+                <button class='saved-flashcard'>${flashcard.name}</button>
+            </li>
+        `;
+    });
+    
+    document.querySelector(".quota").innerHTML = `Quota: ${flashcardSets.length}/7`;
+
+    [...document.querySelectorAll("#recent .saved-flashcard")].forEach((val, i) => {
+        val.onclick = function(event){
+            event.preventDefault();
+            CREATE_MODAL(`
+                <div id='recent-info'>
+                    <h3>${flashcardSets[i].name} </h3>
+                    <strong><em>${flashcardSets[i].desc}</em></strong>
+                    <table>
+                        <tr>
+                            <th>Decks</th>
+                            <td>${flashcardSets[i].number}</td>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <td>${flashcardSets[i].id}</td>
+                        </tr>
+                        <tr>
+                            <th>Created On</th>
+                            <td>${flashcardSets[i].created}</td>
+                        </tr>
+                    </table>
+                    <div id='recent-actions'>
+                        <button id="open-recent">open <i class='fa-solid fa-arrow-up-right-from-square'></i></button>
+                        <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
+                    </div>
+                </div>
+            `);
+
+            document.querySelector("#open-recent").onclick = function(){
+                sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcardSets[i]));
+                window.open("./assets/flashcard/index.html","_parent");
+            }
+                    
+            document.querySelector("#del-recent").onclick = function(){
+                var confirmUserAction = confirm(`WARNING! You are about to delete the Set - ${flashcardSets[i].name} and all its related data. This action cannot be reversed. Do you wish to continue?`);
+                if (confirmUserAction) {
+                    profile.flashcards.splice(i, 1);
+                    // console.log(profile.flashcards);
+                    updateDB(profile.email, {flashcards: profile.flashcards}, () => history.go(0));
+                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                }else{
+                    alert("Delete operation cancelled by user.");
+                    return;
+                }
+            }
+        }
+    });
 };
 
 // get quizzes
 function GET_QUIZZES(){
-    var request = indexedDB.open("efiqo", 1);
-
-    request.onsuccess = function(){
-        var trx = request.result.transaction("quizzes", "readwrite");
-        var quiz_objStore = trx.objectStore("quizzes");
-        var data = quiz_objStore.getAll();
-
-        data.onsuccess = async function (e) {
-            var quizzes = await e.target.result;
-            quizSets = quizzes;
-
-            document.querySelector("#recent ul").innerHTML = "";
-            if (!quizzes.length) {
-                document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any quizzes yet.</p>";
-            document.querySelector(".quota").innerHTML = "";
-            }
-
-            quizzes.forEach(quiz => {
-                let info = `"Questions: ${quiz.questions.length}\nCreated on: ${quiz.timeStamp}\nId: ${quiz.id}"`;
-                document.querySelector("#recent ul").innerHTML += `
-                <li title=${info}>
-                    <button class='saved-quiz'>${quiz.title}</button>
-                </li>
-            `;
-            document.querySelector(".quota").innerHTML = `Quota: ${quizzes.length}/7`;
-            });
-
-            [...document.querySelectorAll("#recent .saved-quiz")].forEach((val, i) => {
-                val.onclick = function(event){
-                    event.preventDefault();
-                    CREATE_MODAL(`
-                        <div id='recent-info'>
-                            <h3>${quizzes[i].title} </h3>
-                            <strong><em>${quizzes[i].desc}</em></strong>
-                            <table>
-                                <tr>
-                                    <th>Questions</th>
-                                    <td>${quizzes[i].questions.length}</td>
-                                </tr>
-                                <tr>
-                                    <th>Id</th>
-                                    <td>${quizzes[i].id}</td>
-                                </tr>
-                                <tr>
-                                    <th>Created On</th>
-                                    <td>${quizzes[i].timeStamp}</td>
-                                </tr>
-                            </table>
-                            <div id='recent-actions'>
-                                <button id="open-recent">open <i class='fa-solid fa-arrow-up-right-from-square'></i></button>
-                                <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
-                                </div>
-                        </div>
-                    `);
-
-                    document.querySelector("#open-recent").onclick = function(){
-                        sessionStorage.setItem("efiqo temp data", JSON.stringify(quizzes[i]));
-                        window.open("./assets/quiz/create/index.html","_parent");
-                    }
-                    
-                    document.querySelector("#del-recent").onclick = function(){
-                        var confirmUserAction = confirm(`WARNING! You are about to delete the Set - ${quizzes[i].title} and all its related data. This action cannot be reversed. Do you wish to continue?`);
-                        if (confirmUserAction) {
-                            var trx = request.result.transaction("quizzes", "readwrite");
-                            var objectStore = trx.objectStore("quizzes");
-                            objectStore.delete(quizzes[i].id);
-                            history.go(0);
-                        }else{
-                            alert("Delete operation cancelled by user.")
-                        }
-                    }
-                }
-            });
-        }
+    if (sessionStorage.getItem("efiqo user data")) {
+        profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+        quizSets = profile.quizzes;
+    } else {
+        return;
     }
-}
+        
+    document.querySelector("#recent ul").innerHTML = "Loading...";
+    document.querySelector("#recent ul").innerHTML = "";
+            
+    document.querySelector("#recent ul").innerHTML = "";
+    if (quizSets.length === 0) {
+        document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
+    }
 
+    quizSets.forEach(quiz => {
+        let info = `"Questions: ${quiz.length}\nCreated on: ${quiz.timeStamp}\nId: ${quiz.id}"`;
+        document.querySelector("#recent ul").innerHTML += `
+            <li title=${info}>
+                <button class='saved-flashcard'>${quiz.name}</button>
+            </li>
+        `;
+    });
+    
+    document.querySelector(".quota").innerHTML = `Quota: ${quizSets.length}/7`;
+
+    [...document.querySelectorAll("#recent .saved-flashcard")].forEach((val, i) => {
+        val.onclick = function(event){
+            event.preventDefault();
+            CREATE_MODAL(`
+                <div id='recent-info'>
+                    <h3>${quizSets[i].name} </h3>
+                    <strong><em>${quizSets[i].desc}</em></strong>
+                    <table>
+                        <tr>
+                            <th>Questions</th>
+                            <td>${quizSets[i].questions.length}</td>
+                        </tr>
+                        <tr>
+                            <th>Id</th>
+                            <td>${quizSets[i].id}</td>
+                        </tr>
+                        <tr>
+                            <th>Created On</th>
+                            <td>${quizSets[i].timeStamp}</td>
+                        </tr>
+                    </table>
+                    <div id='recent-actions'>
+                        <button id="open-recent">open <i class='fa-solid fa-arrow-up-right-from-square'></i></button>
+                        <button id="del-recent">delete <i class='fa-solid fa-trash'></i></button>
+                    </div>
+                </div>
+            `);
+
+            document.querySelector("#open-recent").onclick = function(){
+                sessionStorage.setItem("efiqo temp data", JSON.stringify(quizSets[i]));
+                window.open("./assets/quiz/create/index.html","_parent");
+            }
+                    
+            document.querySelector("#del-recent").onclick = function(){
+                var confirmUserAction = confirm(`WARNING! You are about to delete the Set - ${quizSets[i].name} and all its related data. This action cannot be reversed. Do you wish to continue?`);
+                if (confirmUserAction) {
+                    profile.quizzes.splice(i, 1);
+                    updateDB(profile.email, {quizzes: profile.quizzes}, () => history.go(0));
+                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                }else{
+                    alert("Delete operation cancelled by user.");
+                    return;
+                }
+            }
+        }
+    });
+}
 
 function CREATE_NEW(material){
     if (sessionStorage.getItem("efiqo temp data")) {
         sessionStorage.removeItem("efiqo temp data");
     }
+
     if (!profile.isPremiumUser) {
         if (material === "flashcard" && flashcardSets.length >= 7) {
             CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
@@ -221,7 +181,6 @@ GET_QUIZZES();
 GET_CARDS();
 
 async function INIT_SHARE(){
-    IS_EARLY_ACCESS();
     if ("share" in navigator) {
         try {
             await navigator.share({
@@ -287,24 +246,129 @@ function DISPLAY_TERMS(){
 }
 
 function CHECK_PREMIUM(){
-    var request = indexedDB.open("efiqo");
-
-    request.onsuccess = function() {
-        var trx = request.result.transaction("user_data");
-        var objectStore = trx.objectStore("user_data");
-        var keys = objectStore.getAll();
-
-        keys.onsuccess = async function(ev) {
-            profile = await ev.target.result[0];
-            if (profile) {
-                [...document.querySelectorAll(".premium")].map(el => {
-                    el.style.display = profile.isPremiumUser ? "none" : "block";
-                });
-            } else {
-                return;
-            }
-        }
+    if (JSON.parse(sessionStorage.getItem("efiqo user data"))) {
+        [...document.querySelectorAll(".premium")].map(el => {
+            el.style.display = JSON.parse(sessionStorage.getItem("efiqo user data")).isPremiumUser ? "none" : "block";
+        });
+    } else {
+        return;
     }
 }
 
 CHECK_PREMIUM();
+
+let dbData = [];
+
+function getDataFromDB() {
+    CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
+    window.onclick = function(e){
+        if (e.target === document.querySelector("#modalbg")) {
+            return;
+        }
+    }
+
+    db.collection("users")
+        .where("email", "!=", "")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc, i) => {
+                dbData.push(...doc.data().flashcards);
+                dbData.push(...doc.data().quizzes);
+            });
+
+            document.querySelector("#filtered-list").innerHTML = "";
+            dbData.forEach(data => {
+                document.querySelector("#filtered-list").innerHTML += `
+                    <li>
+                        <button class='transparent-btn'>
+                            <span>${data.name}</span>
+                            <span class='${data.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"}'>
+                                <small>${data.flashcards ? data.number : data.questions.length}</small>
+                            </span>
+                        </button>
+                    </li>
+                `;
+            })
+            document.querySelector("#modalbg").style.display = 'none';
+
+            [...document.querySelectorAll("#filtered-list button")].forEach((btn, i) => {
+                btn.onclick = function(){
+                    // console.log(dbData[i]);
+                    sessionStorage.setItem("efiqo temp data", JSON.stringify(dbData[i]));
+                    window.open(`./assets/${dbData[i].flashcards ? "flashcard" : "quiz/create"}/index.html`, "_parent");
+                }
+            });
+        })
+        .catch((error) => {
+            CREATE_MODAL("An error occured");
+            console.error(error);
+        })
+}
+
+
+function SEARCH_DB(param) {
+    if (param.trim().length === 0) {
+        document.querySelector("#filtered-list").innerHTML = "";
+        dbData.forEach(data => {
+            document.querySelector("#filtered-list").innerHTML += `
+                <li>
+                    <button class='transparent-btn'>
+                        <span>${data.name}</span>
+                        <span class='${data.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"}'>
+                            <small>${data.flashcards ? data.number : data.questions.length}</small>
+                        </span>
+                    </button>
+                </li>
+            `;
+        });
+
+        return;
+    }
+
+    let filteredList = [];
+    dbData.filter((data) => {
+        if(data.name.toLowerCase().indexOf(param.trim().toLowerCase()) > -1){
+            filteredList.push(data);
+            document.querySelector("#filtered-list").innerHTML = "";
+
+            filteredList.forEach((el, i) => {
+                document.querySelector("#filtered-list").innerHTML += `
+                    <li>
+                        <button class='transparent-btn'>
+                            <span>${el.name}</span>
+                            <span class='${el.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"}'>
+                                <small>${el.flashcards ? el.number : el.questions.length}</small>
+                            </span>
+                        </button>
+                    </li>
+                `;
+            });
+        }else{
+            if (filteredList.length === 0) {
+                document.querySelector("#filtered-list").innerHTML = `
+                    <div class='search-not-found'>
+                        <p style='font-size: 5rem'>🤔</p>
+                        <p>Oops. We could not find what you are looking for.</p>
+                    </div>
+                `;
+            }
+        }
+    })
+}
+
+function INIT_SEARCH() {
+    dbData = [];
+    getDataFromDB();
+    document.querySelector('#search-wrap').removeAttribute('hidden');
+
+    document.querySelector("#close-btn").onclick = function(){
+        document.querySelector('#search-wrap').setAttribute('hidden', '');
+    }
+}
+
+function INIT_PAY() {
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    let isBetaUser = BETA_USERS.some(user => user.email === profile.email);
+    // if (isBetaUser) alert(); discount for beta users
+    CREATE_MODAL(document.querySelector("#paynow").innerHTML);
+}

@@ -1,6 +1,7 @@
 let index = 0;
 let isEdit = false;
 let card;
+
 var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessionStorage.getItem("efiqo temp data")) : {
     name: "",
     desc : "",
@@ -8,16 +9,19 @@ var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessi
     number: 0,
     id : crypto.randomUUID(),
     created : new Date().toUTCString(),
-    mode: "edit"
+    by: JSON.parse(sessionStorage.getItem("efiqo user data")).email,
+    mode: "edit",
 };
 
 const TOGGLE_FORMS = (e, el, other) => {
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
     e.preventDefault();
-    
-    var trx = request.result.transaction("flashcards", "readwrite");
-    var flashcardObjStore = trx.objectStore("flashcards");
-    flashcardObjStore.add(flashcardData);
-    sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcardData));
+
+    profile.flashcards.push(flashcardData);
+    updateDB(profile.email, {flashcards: profile.flashcards}, () => {
+        sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+        sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcardData));
+    });
 
     if (el.style.display === "block") {
         el.style.display = "none";
@@ -125,7 +129,10 @@ const PREVIEW_CARD = (content) => {
     }
 
     SHOW_MENU = (e) => {
-        e.preventDefault();
+        e.preventDefault(); 
+        if (session.by !== profile.email) {
+            return;
+        }
         document.querySelector("#contextmenu").style = `display: block; top: 20%; left: 30%`;
         window.onclick = (e) => {
             if (e.target !== document.querySelector("#contextmenu")) {
@@ -165,14 +172,17 @@ class Flashcard{
                 def: this.def,
                 img: this.img,
             });
-            var trx = request.result.transaction("flashcards", "readwrite");
-            var flashcardObjStore = trx.objectStore("flashcards");
-            var data = flashcardObjStore.get(flashcardData.id);
-    
-            data.onsuccess = function(){
-                flashcardData.number = flashcardData.flashcards.length;
-                flashcardObjStore.put(flashcardData);
-            }   
+
+            profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+            profile.flashcards.forEach((deck, i) => {
+                if (deck.id === flashcardData.id) {
+                    flashcardData.number = flashcardData.flashcards.length;
+                    profile.flashcards[i] = flashcardData;
+                    sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.flashcards[i]));
+                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                }
+            })
+            updateDB(profile.email, profile, () => true);
         }
     }
     delete(ind){
@@ -199,16 +209,24 @@ class Flashcard{
 
         document.querySelector("#modal form").onsubmit = (e) => {
             e.preventDefault();
-            flashcardData.flashcards[i] = new Flashcard(document.querySelector("#modal form #term").value, document.querySelector("#modal form #def").value, sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : undefined);
+            flashcardData.flashcards[i] = {
+                term: document.querySelector("#modal form #term").value, 
+                def: document.querySelector("#modal form #def").value, 
+                img: sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : ""
+            }
             ADD_CARD();
             isEdit = !isEdit;
-            var trx = request.result.transaction("flashcards", "readwrite");
-            var objectStore = trx.objectStore("flashcards");
-            var data = objectStore.get(flashcardData.id);
-        
-            data.onsuccess = function(){
-                objectStore.put(flashcardData);
-            }
+
+            profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+            profile.flashcards.forEach((deck, i) => {
+                if (deck.id === flashcardData.id) {
+                    profile.flashcards[i] = flashcardData;
+                    sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.flashcards[i]));
+                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                }
+            })
+            updateDB(profile.email, profile, () => true);
+
             document.querySelector("#modalbg").animate({
                 opacity: ["1", "0"],
             }, {
@@ -223,7 +241,6 @@ class Flashcard{
 }
 
 function ADD_IMAGE(filepicker) {
-    // console.log(e);
     var file = filepicker.files[0];
     var fileReader = new FileReader();
     
@@ -256,7 +273,7 @@ function MOBILE_PREVIEW(el) {
 
 document.querySelector("#flashcard-data form").onsubmit = (ev) => {
     ev.preventDefault();
-    card = new Flashcard(document.querySelector("#flashcard-data form #term").value.trim(), document.querySelector("#flashcard-data form #def").value.trim(), sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : undefined);
+    card = new Flashcard(document.querySelector("#flashcard-data form #term").value.trim(), document.querySelector("#flashcard-data form #def").value.trim(), sessionStorage.getItem("flashcard-image") ? JSON.parse(sessionStorage.getItem("flashcard-image")) : "");
     card.add();
     ADD_CARD();
     // FLASHCARD_COUNT();
@@ -269,10 +286,18 @@ function DELETE_FLASHCARD(){
     document.querySelector("#contextmenu").style.display = "none";
     card = new Flashcard(flashcardData.flashcards[index].term, flashcardData.flashcards[index].def);
     card.delete(index);
-    // console.log(flashcardData);
-    var trx = request.result.transaction("flashcards", "readwrite");
-    var flashcardObjStore = trx.objectStore("flashcards");
-    flashcardObjStore.put(flashcardData);
+
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile.flashcards.forEach((deck, i) => {
+        if (deck.id === flashcardData.id) {
+            flashcardData.number = flashcardData.flashcards.length;
+            profile.flashcards[i] = flashcardData;
+            sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.flashcards[i]));
+            sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+        }
+    })
+    updateDB(profile.email, profile, () => true);
+
     if (flashcardData.flashcards.length) {
         PREVIEW_CARD(flashcardData.flashcards[0].term);
         index = 0;
@@ -354,30 +379,20 @@ const SET_PROGRESS = () => {
 
 //todo: user must close any active sessions to create new FC
 if (sessionStorage.getItem("efiqo temp data")) {
-    request.onsuccess = function(){
-        var trx = request.result.transaction("flashcards", "readwrite");
-        var flashcardObjStore = trx.objectStore("flashcards");
-        var x = flashcardObjStore.get(flashcardData.id);
-        x.onsuccess = function (ev) {
-            sessionStorage.setItem("efiqo temp data", JSON.stringify(ev.target.result));
-            flashcardData = ev.target.result;
-            document.querySelector("title").innerHTML = `efIQo | ${flashcardData.name}`;
-            if (flashcardData.flashcards.length) {
-                PREVIEW_CARD(flashcardData.flashcards[0].term);
-                // ADD_CARD();
-                SET_PROGRESS();
-                FLASHCARD_COUNT();
-            }
-        }
-    }
-
+    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
     document.querySelector("#flashcard-data").style.display = "flex";
     document.querySelector("#flashcard-name").style.display = "none";
     
     var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
-    // document.querySelector("h1").innerHTML = "";
+    document.title = `efIQo | Flashcard - ${session.name}`
     document.querySelector("#info h3").innerHTML = session.name;
     document.querySelector("#info em").innerHTML = session.desc;
+
+    if (session.by !== profile.email) {
+        document.querySelector("#flashcard-data form").style.display = "none";
+        document.querySelector(".preview-wrap").style.display = "none";
+        document.querySelector("#flashcard-preview").style.display = "block";
+    }
 
     flashcardData = session;
     flashcardData.flashcards = session.flashcards;

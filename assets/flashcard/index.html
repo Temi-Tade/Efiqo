@@ -10,11 +10,19 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit">
     <title>efIQo | New Flashcard</title>
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-auth-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <main>
         <header>
-            <h1>efIQo<small class="beta">beta</small></h1>
+            <div class="header-img">
+                <h1>
+                    <img src="../../assets/images/efiQo_logo.png" alt="" width="50">
+                    efIQo
+                </h1>
+            </div>
             <nav>
                 <ul type="none" class="nav-ul">
                     <li class="theme-btn-wrap"><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn theme-btn" title="Toggle Theme" value="device"></button></li>
@@ -40,7 +48,7 @@
                      </div>
          
                      <div class="field">
-                         <textarea name="desc" id="desc" cols="30" rows="5" class="opt" placeholder="Description(Optional)" oninput="SET_DESC(this.value)"></textarea>
+                         <textarea name="desc" id="desc" cols="30" rows="5" class="opt" placeholder="Description (Optional)" oninput="SET_DESC(this.value)"></textarea>
                      </div>
 
                      <div class="btn-wrap">
@@ -48,6 +56,11 @@
                      </div>
                 </fieldset>
             </form>
+            
+            <div class="ai-btn">
+                <button disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture material</button>
+                <small><em>This feature is not available yet.</em></small>
+            </div>
         </section>
 
         <section id="flashcard-data">
@@ -123,26 +136,16 @@
                 </div>
             </div>
         </section>
+
+        <div class="pseudo loader-wrap">
+            <div class="spinner"></div>
+            <p><small>Loading...</small></p>
+        </div>
     </main>
 
-    <script src="../js/userdata.js"></script>
+    <script src="../../assets/js/signin.js"></script>
+    <script src="../../assets/js/db.js"></script>
     <script src="./flashcard.js"></script>
     <script src="../js/theme.js"></script>
-    <script defer data-domain="temi-tade.github.io" src="https://webtracker.avikmukherjee.tech/tracking-script.js"></script>
 </body>
 </html>
-
-<!-- 
-    future features: 
-    go to
-    sort
-    autoplay
-    text formatting (html and md)
-    upload images
-    share FCs
-    allow users lock shared FCs
-    
-    quiz
-
-    music
- -->

@@ -17,6 +17,11 @@ form {
     justify-content: flex-end;
 }
 
+.ai-btn{
+    display: grid;
+    place-items: center;
+}
+
 input,
 textarea,
 select {
@@ -32,7 +37,7 @@ select {
     font-size: 1rem;
 }
 
-input:focus,
+input:not(input[type=radio]):focus,
 textarea:focus,
 select:focus {
     box-shadow: 0 0 2px 2px #ccc7;
@@ -147,13 +152,14 @@ legend {
     padding-top: 10dvh;
     display: none;
     backdrop-filter: blur(.25rem);
+    z-index: 30;
 }
 
 #modal {
     position: fixed;
     bottom: 0;
-    right: .5rem;
-    left: .5rem;
+    right: 20rem;
+    left: 20rem;
     background-color: #111;
     padding: 1rem;
     max-height: 50dvh;
@@ -384,6 +390,11 @@ button.prev{
     }
 
     .end-of button{
-        margin: 1rem auto;
+        margin: .5rem auto;
+    }
+
+    #modal{
+        left: .5rem;
+        right: .5rem;
     }
 }

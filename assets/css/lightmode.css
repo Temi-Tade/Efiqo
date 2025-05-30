@@ -17,11 +17,12 @@ header nav ul li:hover {
 }
 
 #search-form input{
-    background-color: #cccc;
+    background-color: #3339;
+    color: #eee;
 }
 
 #search-form input::placeholder{
-    color: #777;
+    color: #fffc;
 }
 
 #recent{
@@ -37,7 +38,7 @@ header nav ul li:hover {
 }
 
 #recent-header input:checked+span{
-    background-color: #7777
+    background-color: #ababab77;
 }
 
 #recent ul li button{
@@ -158,4 +159,8 @@ button.prev{
 
 #corrections li.correction-question{
     background-color: #ddd7;
+}
+
+#search-wrap{
+    background-color: #fff7;
 }
