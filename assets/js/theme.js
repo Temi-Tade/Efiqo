@@ -51,7 +51,7 @@ function LOAD_THEME(btn){
             btn.setAttribute("class", "fa-regular fa-moon transparent-btn");
             btn.value = "dark";
         }else{
-            document.querySelector("link.userdef").href = "./assets//css/lightmode.css";
+            document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
             btn.setAttribute("class", "fa-regular fa-sun transparent-btn");
             btn.value = "light";
         }
