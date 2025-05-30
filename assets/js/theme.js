@@ -14,7 +14,7 @@ function TOGGLE_THEME(btn) {
 
     if (btn.value === "device") {
         if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-            document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
+            document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
         } else {
             document.querySelector("link.userdef").href = "";
         }
@@ -24,7 +24,7 @@ function TOGGLE_THEME(btn) {
         btn.setAttribute("class", "fa-regular fa-moon transparent-btn");
         btn.innerText = "";
     }else{
-        document.querySelector("link.userdef").href = "/assets/css/lightmode.css";
+        document.querySelector("link.userdef").href = "./assets/css/lightmode.css";
         btn.setAttribute("class", "fa-regular fa-sun transparent-btn");
         btn.innerText = "";
     }
@@ -40,7 +40,7 @@ function LOAD_THEME(btn){
         
         if (theme === "device") {
             if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-                document.querySelector("link.userdef").href = "/assets/css/lightmode.css"
+                document.querySelector("link.userdef").href = "./assets/css/lightmode.css"
             } else {
                 document.querySelector("link.userdef").href = "";
             }
@@ -51,7 +51,7 @@ function LOAD_THEME(btn){
             btn.setAttribute("class", "fa-regular fa-moon transparent-btn");
             btn.value = "dark";
         }else{
-            document.querySelector("link.userdef").href = "/assets//css/lightmode.css";
+            document.querySelector("link.userdef").href = "./assets//css/lightmode.css";
             btn.setAttribute("class", "fa-regular fa-sun transparent-btn");
             btn.value = "light";
         }
