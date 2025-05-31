@@ -75,6 +75,7 @@ function VIEW_PROFILE() {
     //todo: convert dob
     CHECK_PREMIUM();
     profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+
     try {
         CREATE_MODAL(`
             <form id="user-profile-form" autocomplete="off">
@@ -145,7 +146,7 @@ function VIEW_PROFILE() {
                 </div>
 
                 <div class='premium'>
-                    <button type='button' class="transparent-btn" onclick="CREATE_MODAL(document.querySelector('#get-premium').innerHTML)">Get Premium <span class="fa-regular fa-star"></span></button>
+                    <button type='button' class="transparent-btn" onclick="CREATE_MODAL(document.querySelector('#get-premium').innerHTML);">Get Premium <span class="fa-regular fa-star"></span></button>
                 </div>
     
                 <div class='field update-field'>
@@ -168,7 +169,7 @@ function VIEW_PROFILE() {
                 <div class='field contact-field'>
                     <div class="contact">
                         <ul type="none">
-                            <li><a href="mailto:dev.mode006@gmail.com" class="fa-regular fa-envelope"></a></li>
+                            <li><a href="mailto:tenderluxetechenterprises@gmail.com" class="fa-regular fa-envelope"></a></li>
                             <li><a href="https://x.com/Temi_tade2805/" class="fa-brands fa-x-twitter"></a></li>
                             <li><a href="https://t.me/kintade_/" class="fa-brands fa-telegram"></a></li>
                         </ul>

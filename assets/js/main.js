@@ -7,6 +7,7 @@ const CREATE_MODAL = (text) => {
         duration: 500,
     })
     document.querySelector("#modal").innerHTML = text
+    document.querySelector("#modal").scrollTop = 0;
 
     window.onclick = (ev) => {
         if (ev.target === document.querySelector("#modalbg")) {

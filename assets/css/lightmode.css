@@ -38,7 +38,9 @@ header nav ul li:hover {
 }
 
 #recent-header input:checked+span{
-    background-color: #ababab77;
+    background-color: #2e2e2eda;
+    color: var(--bgcol);
+    border-bottom: 3px solid var(--textcol);
 }
 
 #recent ul li button{

@@ -612,6 +612,17 @@ footer #copyright span{
     border: 1.5px solid;
 }
 
+#get-premium{
+    padding: .5rem;
+    margin: 1rem .75rem;
+    border-radius: .6rem;
+    background-color: #1c1c1c;
+}
+
+#get-premium h3{
+    text-align: center;
+}
+
 #perks ul{
     margin: .5rem auto;
 }
@@ -619,6 +630,8 @@ footer #copyright span{
 #perks ul li{
     text-align: left;
     margin: .25rem 0;
+    list-style-type: "\2713";
+    list-style-position: inside;
 }
 
 #perks .get-premium-btn-wrap{
@@ -842,6 +855,6 @@ footer #copyright span{
 }
 
 /* paypal styles */
-.pp-FX7KJ62DYGV5J{
+.pp-FX7KJ62DYGV5J, .pp-8Y8A5MD9DW9B8{
     text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#000000;color:#ffffff !important;font-size:1rem;line-height:1.25rem;cursor:pointer;
 }

@@ -207,7 +207,6 @@ async function INIT_SHARE(){
 }
 
 function DISPLAY_TERMS(){
-    document.querySelector("#modal").scrollTo({top: 0});
     CREATE_MODAL(`
         <h3>TERMS OF USE</h3>
         <ul class='privacy-policy error' type='none'>
@@ -369,6 +368,11 @@ function INIT_SEARCH() {
 function INIT_PAY() {
     profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
     let isBetaUser = BETA_USERS.some(user => user.email === profile.email);
-    // if (isBetaUser) alert(); discount for beta users
-    CREATE_MODAL(document.querySelector("#paynow").innerHTML);
+    
+    if (isBetaUser && !profile.isPremiumUser) {
+        alert("For being a part of our early access users, you get 50% off on your first premium purchase!");
+        CREATE_MODAL(document.querySelector("#betauserspaynow").innerHTML);
+    } else {
+        CREATE_MODAL(document.querySelector("#paynow").innerHTML);
+    }
 }
