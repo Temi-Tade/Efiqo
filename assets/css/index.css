@@ -185,6 +185,10 @@ ul{
     font-size: 2rem;
 }
 
+#options li{
+    display: grid;
+    place-items: center;
+}
 
 #search-wrap{
     position: absolute;
@@ -271,9 +275,11 @@ ul{
 }
 
 #recent-header input:checked+span{
-    border-bottom: 1px solid;
+    border-bottom: 3px solid;
+    font-weight: 900;
     border-radius: .5rem .5rem 0 0;
-    background-color: #dddddd0a
+    background-color: #fffb;
+    color: #333;
 }
 
 #recent .quota{
@@ -659,6 +665,10 @@ footer #copyright span{
     animation: spin 1s infinite;
 }
 
+.ai-btn{
+    margin-top: 1rem;
+}
+
 @media screen and (max-width: 600px) {
     .desktop{
         display: none;
@@ -780,6 +790,10 @@ footer #copyright span{
         align-items: center;
     }
 
+    #options li{
+        margin-bottom: .5rem;
+    }
+
     #about{
         font-size: 1.25rem;
         margin: 2.5rem 0;
@@ -829,5 +843,5 @@ footer #copyright span{
 
 /* paypal styles */
 .pp-FX7KJ62DYGV5J{
-    text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#000000;color:#ffffff !important;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;
+    text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#000000;color:#ffffff !important;font-size:1rem;line-height:1.25rem;cursor:pointer;
 }

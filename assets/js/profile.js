@@ -29,7 +29,7 @@ function FETCH_USER_PROFILE(){
     [...document.querySelectorAll(".get-started")].map(el => el.style.display = !sessionProfile ? 'block' : 'none');
     document.querySelector(".create-new-btn").disabled = !sessionProfile ? true : false;
 
-    document.querySelector("#profile-image").innerHTML = sessionProfile && sessionProfile.pfp.url ? `<img src='${sessionProfile.pfp.url}' width='50'>` : `<i class='fa-solid fa-user'></i>`;
+    document.querySelector("#profile-image").innerHTML = sessionProfile && sessionProfile.pfp.url ? `<img src='${sessionProfile.pfp.url}' width='50' loading="lazy">` : `<i class='fa-solid fa-user'></i>`;
     if(sessionProfile) var displayName = sessionProfile.userName ? sessionProfile.userName : sessionProfile.fullName.slice(0, sessionProfile.fullName.indexOf(" "));
     document.querySelector("#greeting").innerHTML = !sessionProfile ? "" : `Hello, ${displayName} 👋`;
 

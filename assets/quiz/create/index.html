@@ -24,7 +24,7 @@
                     efIQo
                 </h1>
             </div>
-            <nav>
+            <nav hidden>
                 <ul type="none" class="nav-ul">
                     <li class="theme-btn-wrap"><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn theme-btn" title="Toggle Theme" value="device"></button></li>
                 </ul>
@@ -46,12 +46,13 @@
                         <button type="submit" id="create-quiz-btn" disabled>Create Quiz</button>
                     </div>
                 </fieldset>
+
+                <div class="ai-btn">
+                    <button type="button" disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture material</button>
+                    <small><em>This feature is not available yet.</em></small>
+                </div>
             </form>
 
-            <div class="ai-btn">
-                <button disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture material</button>
-                <small><em>This feature is not available yet.</em></small>
-            </div>
         </section>
     
         <section id="quiz-wrap" hidden>

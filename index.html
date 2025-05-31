@@ -19,7 +19,7 @@
         <header>
             <div class="header-img">
                 <h1>
-                    <img src="./assets/images/efiQo_logo.png" alt="" width="50">
+                    <img src="./assets/images/efiQo_logo.png" alt="efIQo logo" width="50" loading="lazy">
                     efIQo
                 </h1>
             </div>
@@ -36,7 +36,7 @@
                             <h4>CREATE</h4>
                             <ul type="none" id="options">
                                 <li><button onclick="CREATE_NEW('quiz')">New Quiz <i class="fa-regular fa-question-circle"></i></button></li>
-                                <li><button onclick="CREATE_NEW('flashcard')" title="Create new Flashcard">New Flashcard Set <i class="fa-solid fa-layer-group fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i></button></li>
+                                <li><button onclick="CREATE_NEW('flashcard')" title="Create new Flashcard">New Flashcard Set <i class="fa-solid fa-layer-group"></i></button></li>
                             </ul>
                         </div>
                     </li>
@@ -69,7 +69,7 @@
                             <input type="radio" name="recent-type" oninput="GET_CARDS()" checked>
                             <span>
                                 Flashcards
-                                <i class="fa-solid fa-layer-group fa-rotate-by" style="--fa-rotate-angle: 15deg;"></i>
+                                <i class="fa-solid fa-layer-group"></i>
                             </span>
                         </label>
                     </button>
@@ -106,7 +106,7 @@
                         <li>...and many more to come</li>
                     </ul>
                     <div class="img-wrap">
-                        <img src="./assets/images/efiQo_logo.png" alt="" width="250">
+                        <img src="./assets/images/efiQo_logo.png" alt="efIQo logo" width="250" loading="lazy">
                     </div>
                 </div>
                 <div class="get-started">
@@ -197,8 +197,8 @@
             <form action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
                 <p>You are about to make a payment of $4.99 for the premium plan for efIQo. Click the 'Pay Now' button to continue to the checkout page.</p>
                 <input class="pp-FX7KJ62DYGV5J" type="submit" value="Pay Now" />
-                <img src=https://www.paypalobjects.com/images/Debit_Credit.svg alt="cards" />
-                <section style="font-size: 0.75rem;"> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/>
+                <img src=https://www.paypalobjects.com/images/Debit_Credit.svg alt="cards" loading="lazy"/>
+                <section style="font-size: 0.75rem;"> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;" loading="lazy"/>
                 </section>
             </form>
         </section>
@@ -206,7 +206,7 @@
         <section class="pseudo" id="signupform">
                 <div class="btn-wrap">
                     <button id="signinbtn" class="transparent-btn">
-                        <img src="./assets/images/google-logo.png" alt="Google logo" width="20">
+                        <img src="./assets/images/google-logo.png" alt="Google logo" width="20" loading="lazy">
                         &nbsp;&nbsp;
                         <span>Sign In with Google</span>
                     </button>
@@ -221,6 +221,7 @@
             <p><small>Loading...</small></p>
         </div>
     </main>
+
 
     <script src="./assets/js/main.js"></script>  
     <script src="./assets/js/signin.js"></script> 

@@ -8,6 +8,10 @@ form {
     margin: 1rem auto;
 }
 
+#flashcard-name form{
+    margin-top: 0   ;
+}
+
 ::placeholder {
     color: #aaa;
 }

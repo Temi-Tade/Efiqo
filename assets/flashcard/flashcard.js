@@ -81,7 +81,7 @@ function ROTATE_CARD(card) {
         iterations: 1
     });
     if (card.querySelector(".card-text").innerHTML === flashcardData.flashcards[index].term) {
-        card.querySelector(".card-text").innerHTML = flashcardData.flashcards[index].img ? `<img src='${flashcardData.flashcards[index].img.url}'/>` : "";
+        card.querySelector(".card-text").innerHTML = flashcardData.flashcards[index].img ? `<img src='${flashcardData.flashcards[index].img.url}' loading="lazy"/>` : "";
         card.querySelector(".card-text").innerHTML += `<div>${flashcardData.flashcards[index].def}</div>`;
     } else {
         card.querySelector(".card-text").innerHTML = flashcardData.flashcards[index].term;
@@ -205,7 +205,7 @@ class Flashcard{
         document.querySelector("#modal form #term").value = flashcardData.flashcards[i].term;
         document.querySelector("#modal form #def").value = flashcardData.flashcards[i].def;
 
-       if(flashcardData.flashcards[i].img) document.querySelector("#edit-added-images").innerHTML = `<img width='100' src='${flashcardData.flashcards[i].img.url}'/>`;
+       if(flashcardData.flashcards[i].img) document.querySelector("#edit-added-images").innerHTML = `<img width='100' src='${flashcardData.flashcards[i].img.url}' loading="lazy"/>`;
 
         document.querySelector("#modal form").onsubmit = (e) => {
             e.preventDefault();
@@ -246,9 +246,9 @@ function ADD_IMAGE(filepicker) {
     
     fileReader.onload = function(ev) {
         if (isEdit) {
-            document.querySelector("#edit-added-images").innerHTML = `<img width='70' src='${ev.target.result}'/>`;
+            document.querySelector("#edit-added-images").innerHTML = `<img width='70' src='${ev.target.result}' loading="lazy"/>`;
         }else{
-            document.querySelector("#added-images").innerHTML = `<img width='70' src='${ev.target.result}'/>`;
+            document.querySelector("#added-images").innerHTML = `<img width='70' src='${ev.target.result}' loading="lazy"/>`;
         }
         sessionStorage.setItem("flashcard-image", JSON.stringify({name: file.name ,url: ev.target.result}));
     }
