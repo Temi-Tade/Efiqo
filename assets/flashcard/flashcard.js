@@ -376,7 +376,7 @@ const SHARE_FLASHCARD = () => {
             navigator.share({
                 title: "efIQo",
                 text: `Study ${session.name} with me on efIQo!`,
-                url: `http://127.0.0.1:5500/assets/flashcard/index.html?&share_id=${session.id}`,
+                url: `https://temi-tade.github.io/Efiqo/assets/flashcard/index.html?&share_id=${session.id}`,
             })
         } catch (error) {
             console.error("An error occured")
@@ -424,9 +424,9 @@ if (sessionStorage.getItem("efiqo temp data")) {
 }else{
     if (new URLSearchParams(location.href).has("share_id")) {
         let param = new URLSearchParams(location.href).get("share_id");
-        location.href = `http://127.0.0.1:5500/?&share_id=${param}`;
+        location.href = `https://temi-tade.github.io/Efiqo/?&share_id=${param}`;
         sessionStorage.setItem("efiqo share data", param)
     }else{
-        location.href = `http://127.0.0.1:5500/`;
+        location.href = `https://temi-tade.github.io/Efiqo/`;
     }
 }
