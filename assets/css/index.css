@@ -625,13 +625,21 @@ footer #copyright span{
 
 #perks ul{
     margin: .5rem auto;
+    padding: .5rem;
 }
 
 #perks ul li{
-    text-align: left;
     margin: .25rem 0;
     list-style-type: "\2713";
     list-style-position: inside;
+}
+
+#perks ul li::before{
+    background-color: red;
+}
+
+#perks ul li::marker{
+    color: green;
 }
 
 #perks .get-premium-btn-wrap{

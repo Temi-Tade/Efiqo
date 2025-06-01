@@ -184,10 +184,9 @@ async function INIT_SHARE(){
     if ("share" in navigator) {
         try {
             await navigator.share({
-                text: "efIQo. Your all-in-one study toolkit!",
+                text: "Make your study sessions more engaging with efIQo, your all-in-one study toolkit!",
                 title: "efIQo",
-                url: "http://127.0.0.1:5500/",
-                
+                url: "https://temi-tade.github.io/Efiqo/",
             });
         } catch (error) {
             CREATE_MODAL("An error occured while trying to share.");
