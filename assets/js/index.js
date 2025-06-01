@@ -234,10 +234,10 @@ async function INIT_SHARE(){
             await navigator.share({
                 text: "Make your study sessions more engaging with efIQo, your all-in-one study toolkit!",
                 title: "efIQo",
-                url: "https://temi-tade.github.io/Efiqo/",
+                url: "https://efiqo-app.web.app/",
             });
         } catch (error) {
-            CREATE_MODAL("An error occured while trying to share.");
+            console.error(error);
         }
     } else {
         CREATE_MODAL(`
