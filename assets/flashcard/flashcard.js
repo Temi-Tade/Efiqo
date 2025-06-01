@@ -9,7 +9,7 @@ var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessi
     number: 0,
     id : crypto.randomUUID(),
     created : new Date().toUTCString(),
-    by: JSON.parse(sessionStorage.getItem("efiqo user data")).email,
+    by: JSON.parse(sessionStorage.getItem("efiqo user data"))?.email,
     mode: "edit",
 };
 
@@ -368,6 +368,24 @@ const GO_TO_NEXT_CARD = () => {
     }
 }
 
+const SHARE_FLASHCARD = () => {
+    var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
+
+    if ("share" in navigator) {
+        try {
+            navigator.share({
+                title: "efIQo",
+                text: `Study ${session.name} with me on efIQo!`,
+                url: `http://127.0.0.1:5500/assets/flashcard/index.html?&share_id=${session.id}`,
+            })
+        } catch (error) {
+            console.error("An error occured")
+        }
+    }else{
+        CREATE_MODAL("Share Error");
+    }
+}
+
 const FLASHCARD_COUNT = () => {
     document.querySelector("#flashcard-count").innerHTML = `${index+1} of ${flashcardData.flashcards.length}`;
     document.querySelector(".number").innerHTML = flashcardData.flashcards.length ? `${flashcardData.flashcards.length} ${flashcardData.flashcards.length > 1 ? "flashcards" : "flashcard"} added` : "No flashcards added yet.";
@@ -402,5 +420,13 @@ if (sessionStorage.getItem("efiqo temp data")) {
         FLASHCARD_COUNT();
     }else{
         document.querySelector("#preview").innerHTML = "<p style='padding: 1rem; text-align: center'>No flashcards added yet.</p>";
+    }
+}else{
+    if (new URLSearchParams(location.href).has("share_id")) {
+        let param = new URLSearchParams(location.href).get("share_id");
+        location.href = `http://127.0.0.1:5500/?&share_id=${param}`;
+        sessionStorage.setItem("efiqo share data", param)
+    }else{
+        location.href = `http://127.0.0.1:5500/`;
     }
 }

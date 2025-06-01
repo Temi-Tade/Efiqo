@@ -1,5 +1,53 @@
 let flashcardSets;
 let quizSets;
+let flashcardsFromDB = [];
+let quizzesFromDB = [];
+
+if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem("efiqo user data")) {
+    CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
+    db.collection("users")
+        .where("flashcards", "!=", "[]")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc, i) => {
+                if(doc.data().flashcards.length !== 0) flashcardsFromDB.push(...doc.data().flashcards);
+        })
+        
+        flashcardsFromDB.forEach(flashcard => {
+            if (flashcard.id === new URLSearchParams(location.href).get("share_id")) {
+                sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcard));
+                location.href = `http://127.0.0.1:5500/assets/flashcard/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
+            }
+        })
+    })
+    .catch((error) => {
+        console.error(error);
+        CREATE_MODAL("An error occured while trying to fetch data");
+    })
+}
+
+if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem("efiqo user data")) {
+    CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
+    db.collection("users")
+        .where("quizzes", "!=", "[]")
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc, i) => {
+                if(doc.data().quizzes.length !== 0) quizzesFromDB.push(...doc.data().quizzes);
+        })
+        
+        quizzesFromDB.forEach(quiz => {
+            if (quiz.id === new URLSearchParams(location.href).get("share_id")) {
+                sessionStorage.setItem("efiqo temp data", JSON.stringify(quiz));
+                location.href = `http://127.0.0.1:5500/assets/quiz/create/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
+            }
+        })
+    })
+    .catch((error) => {
+        console.error(error);
+        CREATE_MODAL("An error occured while trying to fetch data");
+    })
+}
 
 const TOGGLE_MATERIALS_LIST = (parent) => {
     parent.nextElementSibling.classList.toggle("expand");

@@ -5,6 +5,7 @@ const QUIZ_DATA_FORM = document.querySelector("#quiz-data form");
 if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
     quizData = JSON.parse(sessionStorage.getItem("efiqo temp data"));
     profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    document.title = `efIQo | Quiz Maker (${quizData.name})`
     hide(QUIZ_DATA_FORM);
     show(document.querySelector("#quiz-wrap"));
 
@@ -23,7 +24,15 @@ if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
         document.querySelector(".quiz-preview-actions").style.display = 'none';
         document.querySelector("#preview-btn").innerHTML = ""
     }
-} 
+} else{
+    if (new URLSearchParams(location.href).has("share_id")) {
+        let param = new URLSearchParams(location.href).get("share_id");
+        location.href = `http://127.0.0.1:5500/?&share_id=${param}`;
+        sessionStorage.setItem("efiqo share data", param)
+    }else{
+        location.href = `http://127.0.0.1:5500/`;
+    }
+}
 
 const QUIZ_FORM = document.querySelector("#quiz-form");
 const QUESTIONS = quizData ? quizData.options : [];
@@ -39,8 +48,7 @@ class Quiz{
         this.mode = "create";
         this.id = crypto.randomUUID();
         this.timeStamp = new Date().toUTCString();
-        this.by = JSON.parse(sessionStorage.getItem("efiqo user data")).email;
-        this.attempts = [];
+        this.by = JSON.parse(sessionStorage.getItem("efiqo user data"))?.email;
     }
 
     addQuestion(question){
@@ -129,6 +137,7 @@ function getQuizInfo(){
     document.querySelector("#quiz-details").innerHTML = `
         <div class='quiz-title'>
             <h3>${quizInfo.name}</h3>
+            <button style='padding: .5rem' class='fa-solid fa-share-nodes transparent-btn' onclick='SHARE_QUIZ()'></button>
         </div>
         <p><small>${quizInfo.desc}</small></p>
         <div class='quiz-config-options' style='justify-content: ${(quizInfo.by !== profile.email) ? "center" : "space-between"}'>
@@ -136,6 +145,24 @@ function getQuizInfo(){
             <button id='preview-btn' class='transparent-btn preview-btn' onclick="PREVIEW_QUIZ(ind)" style='display: ${(quizInfo.by !== profile.email) ? "none" : "block"}'>Preview <i class='fa-solid fa-caret-right'></i></button>
         </div>
     `
+}
+
+function SHARE_QUIZ() {
+    var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
+
+    if ("share" in navigator) {
+        try {
+            navigator.share({
+                title: "efIQo",
+                text: `Study ${session.name} with me on efIQo!`,
+                url: `http://127.0.0.1:5500/assets/quiz/create/index.html?&share_id=${session.id}`,
+            })
+        } catch (error) {
+            console.error("An error occured");
+        }
+    }else{
+        CREATE_MODAL("Share Error");
+    }
 }
 
 if(quizData) getQuizInfo();

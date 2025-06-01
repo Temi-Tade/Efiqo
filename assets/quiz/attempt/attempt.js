@@ -27,7 +27,6 @@ function SUBMIT_QUIZ() {
         document.querySelector("#result-wrap").innerHTML = `<p><small>Final score</small>${score}/${quizData.questions.length}</p>`;
 
         profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
-        quizData.attempts.push(`${score}/${quizData.questions.length}`);
         profile.quizzes.forEach((q, i) => {
             if (q.id === quizData.id) {
                 profile.quizzes[i] = quizData;

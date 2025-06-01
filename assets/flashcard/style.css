@@ -113,11 +113,13 @@ legend {
 #info {
     text-align: center;
     width: 100%;
-    padding: .75rem;
+    padding: .5rem .75rem;
 }
 
 #info div {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #tagline {
