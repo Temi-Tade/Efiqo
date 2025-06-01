@@ -27,10 +27,10 @@ if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
 } else{
     if (new URLSearchParams(location.href).has("share_id")) {
         let param = new URLSearchParams(location.href).get("share_id");
-        location.href = `https://temi-tade.github.io/Efiqo/?&share_id=${param}`;
+        location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
         sessionStorage.setItem("efiqo share data", param)
     }else{
-        location.href = `https://temi-tade.github.io/Efiqo/`;
+        location.href = `https://efiqo-app.web.app/`;
     }
 }
 
@@ -136,6 +136,7 @@ function getQuizInfo(){
 
     document.querySelector("#quiz-details").innerHTML = `
         <div class='quiz-title'>
+            <button class="transparent-btn back-to-home" onclick="location.pathname = '/'">&larr;</button>
             <h3>${quizInfo.name}</h3>
             <button style='padding: .5rem' class='fa-solid fa-share-nodes transparent-btn' onclick='SHARE_QUIZ()'></button>
         </div>
@@ -155,7 +156,7 @@ function SHARE_QUIZ() {
             navigator.share({
                 title: "efIQo",
                 text: `Study ${session.name} with me on efIQo!`,
-                url: `https://temi-tade.github.io/Efiqo/assets/quiz/create/index.html?&share_id=${session.id}`,
+                url: `https://efiqo-app.web.app/assets/quiz/create/index.html?&share_id=${session.id}`,
             })
         } catch (error) {
             console.error("An error occured");

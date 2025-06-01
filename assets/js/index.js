@@ -16,7 +16,7 @@ if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem
         flashcardsFromDB.forEach(flashcard => {
             if (flashcard.id === new URLSearchParams(location.href).get("share_id")) {
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcard));
-                location.href = `https://temi-tade.github.io/Efiqo/assets/flashcard/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
+                location.href = `https://efiqo-app.web.app/assets/flashcard/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
             }
         })
     })
@@ -39,7 +39,7 @@ if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem
         quizzesFromDB.forEach(quiz => {
             if (quiz.id === new URLSearchParams(location.href).get("share_id")) {
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(quiz));
-                location.href = `https://temi-tade.github.io/Efiqo/assets/quiz/create/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
+                location.href = `https://efiqo-app.web.app/assets/quiz/create/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
             }
         })
     })
