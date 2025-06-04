@@ -425,8 +425,9 @@ if (sessionStorage.getItem("efiqo temp data")) {
         let param = new URLSearchParams(location.href).get("share_id");
         location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
         sessionStorage.setItem("efiqo share data", param)
-    }else if(!sessionStorage.getItem("efiqo user data")){
-        alert("Proceed to create an account first.")
-        location.href = `https://efiqo-app.web.app/`;
     }
+    // else if(!sessionStorage.getItem("efiqo user data")){
+    //     alert("Proceed to create an account first.")
+    //     location.href = `https://efiqo-app.web.app/`;
+    // }
 }
