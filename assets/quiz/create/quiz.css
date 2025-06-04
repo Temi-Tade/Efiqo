@@ -2,6 +2,10 @@
     margin: auto;
 }
 
+#quiz-data form{
+    margin-top: 0;
+}
+
 #quiz-wrap{
     padding: .5rem;
 }

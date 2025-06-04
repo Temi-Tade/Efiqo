@@ -395,7 +395,6 @@ const SET_PROGRESS = () => {
     document.querySelector(".level").style.width = `${((index + 1) / flashcardData.flashcards.length) * 100}%`
 }
 
-//todo: user must close any active sessions to create new FC
 if (sessionStorage.getItem("efiqo temp data")) {
     profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
     document.querySelector("#flashcard-data").style.display = "flex";
@@ -426,7 +425,8 @@ if (sessionStorage.getItem("efiqo temp data")) {
         let param = new URLSearchParams(location.href).get("share_id");
         location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
         sessionStorage.setItem("efiqo share data", param)
-    }else{
+    }else if(!sessionStorage.getItem("efiqo user data")){
+        alert("Proceed to create an account first.")
         location.href = `https://efiqo-app.web.app/`;
     }
 }

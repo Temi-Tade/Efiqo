@@ -111,7 +111,7 @@ function GET_CARDS(){
 
             document.querySelector("#open-recent").onclick = function(){
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcardSets[i]));
-                window.open("./assets/flashcard/index.html","_parent");
+                location.pathname = "./assets/flashcard/index.html";
             }
                     
             document.querySelector("#del-recent").onclick = function(){
@@ -188,7 +188,7 @@ function GET_QUIZZES(){
 
             document.querySelector("#open-recent").onclick = function(){
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(quizSets[i]));
-                window.open("./assets/quiz/create/index.html","_parent");
+                location.pathname = "./assets/quiz/create/index.html";
             }
                     
             document.querySelector("#del-recent").onclick = function(){
@@ -222,7 +222,7 @@ function CREATE_NEW(material){
             return;
         }
     }
-    window.open(`./assets/${material === "flashcard" ? "flashcard" : "quiz/create"}/index.html`, "_parent");
+    location.pathname = `./assets/${material === "flashcard" ? "flashcard" : "quiz/create"}/index.html`;
 }
 
 GET_QUIZZES();
@@ -333,7 +333,7 @@ function getDataFromDB() {
                             </span>
                         </button>
                     </li>
-                `;
+                `; 
             })
             document.querySelector("#modalbg").style.display = 'none';
 
@@ -341,7 +341,7 @@ function getDataFromDB() {
                 btn.onclick = function(){
                     // console.log(dbData[i]);
                     sessionStorage.setItem("efiqo temp data", JSON.stringify(dbData[i]));
-                    window.open(`./assets/${dbData[i].flashcards ? "flashcard" : "quiz/create"}/index.html`, "_parent");
+                    location.pathname = `./assets/${dbData[i].flashcards ? "flashcard" : "quiz/create"}/index.html`;
                 }
             });
         })

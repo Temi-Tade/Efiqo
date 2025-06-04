@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -8,13 +9,14 @@
     <link rel="stylesheet" href="./quiz.css">
     <link rel="stylesheet" href="" class="userdef">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit">
     <title>efIQo | Quiz Maker</title>
     <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-auth-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.7.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
     <main>
         <header style="display: none;">
@@ -26,49 +28,60 @@
             </div>
             <nav hidden>
                 <ul type="none" class="nav-ul">
-                    <li class="theme-btn-wrap"><button onclick="TOGGLE_THEME(this)" class="fa-solid fa-sun transparent-btn theme-btn" title="Toggle Theme" value="device"></button></li>
+                    <li class="theme-btn-wrap"><button onclick="TOGGLE_THEME(this)"
+                            class="fa-solid fa-sun transparent-btn theme-btn" title="Toggle Theme"
+                            value="device"></button></li>
                 </ul>
             </nav>
         </header>
         <section id="quiz-data">
+            <button style="padding-left: 1rem;" class="transparent-btn back-to-home" onclick="location.pathname = '/'">&larr;</button>
             <form autocomplete="off" spellcheck="false">
                 <fieldset>
                     <legend>Quiz Information</legend>
                     <div class="field">
-                        <input type="text" id="quiz-name" placeholder="Quiz Name" oninput="validateInput(this, document.querySelector('#create-quiz-btn'))"/>
+                        <input type="text" id="quiz-name" placeholder="Quiz Name"
+                            oninput="validateInput(this, document.querySelector('#create-quiz-btn'))" />
                     </div>
-            
+
                     <div class="field">
                         <textarea cols="30" rows="5" id="quiz-desc" placeholder="Description (Optional)"></textarea>
                     </div>
-            
+
                     <div class="field">
                         <button type="submit" id="create-quiz-btn" disabled>Create Quiz</button>
                     </div>
                 </fieldset>
 
                 <div class="ai-btn">
-                    <button type="button" disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture material</button>
+                    <button type="button" disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture
+                        material</button>
                     <small><em>This feature is not available yet.</em></small>
                 </div>
             </form>
 
         </section>
-    
+
         <section id="quiz-wrap" hidden>
             <div id="quiz-details"></div>
-    
+
             <div id="quiz-form">
                 <div class="field">
-                    <textarea id="question" placeholder="QUESTION" oninput="validateInput(this, document.querySelector('#create-question-btn'))" autocomplete="off"></textarea>
-                    <button type="button" id="create-question-btn" onclick="createQuestion(this.previousElementSibling.value.trim())" disabled>Create Question</button>
+                    <textarea id="question" placeholder="QUESTION"
+                        oninput="validateInput(this, document.querySelector('#create-question-btn'))"
+                        autocomplete="off"></textarea>
+                    <button type="button" id="create-question-btn"
+                        onclick="createQuestion(this.previousElementSibling.value.trim())" disabled>Create
+                        Question</button>
                 </div>
 
                 <div class="field" id="option" hidden>
-                    <input id="option-input" placeholder="ADD OPTION" oninput="validateInput(this, this.nextElementSibling)" autocomplete="off"/>
-                    <button type="button" id="add-option-btn" onclick="addOption(this.previousElementSibling)" disabled>Add Option</button>
+                    <input id="option-input" placeholder="ADD OPTION"
+                        oninput="validateInput(this, this.nextElementSibling)" autocomplete="off" />
+                    <button type="button" id="add-option-btn" onclick="addOption(this.previousElementSibling)"
+                        disabled>Add Option</button>
                 </div>
-                
+
                 <div class="field" id="submit" hidden>
                     <button type="submit" id="add-to-quiz-btn">Add Question to Quiz</button>
                 </div>
@@ -77,7 +90,7 @@
                     <!-- <button onclick="PREVIEW_QUIZ(ind)">Quiz Preview</button> -->
                 </div>
             </div>
-    
+
             <div id="question-preview"></div>
             <div id="quiz-preview-wrap" hidden>
                 <div class="quiz-preview-actions">
@@ -111,4 +124,5 @@
     <script src="../../js/theme.js"></script>
     <script src="./quiz.js"></script>
 </body>
+
 </html>
