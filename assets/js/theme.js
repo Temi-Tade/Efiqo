@@ -2,7 +2,7 @@ var themes = ["device", "light", "dark"];
 
 //todo: theme toggle bug
 function TOGGLE_THEME(btn) {
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
 
     if (btn.value === "device") {
         btn.value = "light";
@@ -30,13 +30,13 @@ function TOGGLE_THEME(btn) {
     }
 
     updateDB(profile.email, {theme: btn.value}, () => true);
-    sessionStorage.setItem("efiqo user data", JSON.stringify({...profile, theme: btn.value}));
+    localStorage.setItem("efiqo user data", JSON.stringify({...profile, theme: btn.value}));
 }
 
 //set theme
 function LOAD_THEME(btn){
-    if (sessionStorage.getItem("efiqo user data")) {
-        var theme = JSON.parse(sessionStorage.getItem("efiqo user data")).theme;
+    if (localStorage.getItem("efiqo user data")) {
+        var theme = JSON.parse(localStorage.getItem("efiqo user data")).theme;
         
         if (theme === "device") {
             if (window.matchMedia("(prefers-color-scheme: light)").matches) {
@@ -61,6 +61,6 @@ function LOAD_THEME(btn){
 LOAD_THEME(document.querySelector("header nav ul li button"));
 
 // restore header position if logged in
-if (sessionStorage.getItem("efiqo user data")) {
+if (localStorage.getItem("efiqo user data")) {
     document.querySelector("header").style.position = "static"
 }

@@ -4,7 +4,7 @@ let profileValues;
 let isProfileComplete;
 let usernameExists;
 
-if (sessionStorage.getItem("efiqo user data")) {
+if (localStorage.getItem("efiqo user data")) {
     profileValues = Object.values(profile).filter((val) => val !== false)
     isProfileComplete = profileValues.some(val => !!val === false);
 
@@ -22,8 +22,8 @@ if (sessionStorage.getItem("efiqo user data")) {
 
 function FETCH_USER_PROFILE(){
     let sessionProfile;
-    if (sessionStorage.getItem("efiqo user data")) {
-        sessionProfile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    if (localStorage.getItem("efiqo user data")) {
+        sessionProfile = JSON.parse(localStorage.getItem("efiqo user data"));
     }
 
     [...document.querySelectorAll(".get-started")].map(el => el.style.display = !sessionProfile ? 'block' : 'none');
@@ -74,7 +74,7 @@ function VALIDATE_USERNAME(val) {
 function VIEW_PROFILE() {
     //todo: convert dob
     CHECK_PREMIUM();
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
 
     try {
         CREATE_MODAL(`

@@ -1,3 +1,9 @@
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        // alert()
+    }
+})
+
 function writeToDB(id, data, callback) {
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     window.onclick = function(e){
@@ -40,12 +46,6 @@ function updateDB(id, data, callback) {
     });
 }
 
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // console.log(user);
-    }
-})
-
 function getUserData(id){
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     window.onclick = function(e){
@@ -59,10 +59,31 @@ function getUserData(id){
     .then((doc) => {
         if (doc.exists) {
             user_data = doc.data();
-            sessionStorage.setItem("efiqo user data", JSON.stringify(user_data));
-            profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+            localStorage.setItem("efiqo user data", JSON.stringify(user_data));
+            profile = JSON.parse(localStorage.getItem("efiqo user data"));
             FETCH_USER_PROFILE();
             document.querySelector("#modalbg").style.display = "none";
         }
     });
 }
+
+function getGenData() {
+    CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
+    window.onclick = function(e){
+        if (e.target === document.querySelector("#modalbg")) {
+            return;
+        }
+    }
+
+    db.collection("generate").doc("model")
+    .get()
+    .then((doc) => {
+        console.log(doc.data());
+    })
+    .catch(error => {
+        console.log(error);
+        CREATE_MODAL("An error occured while trying to connect.");
+    })
+}
+
+getGenData();

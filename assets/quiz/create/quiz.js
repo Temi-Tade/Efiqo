@@ -4,7 +4,7 @@ const QUIZ_DATA_FORM = document.querySelector("#quiz-data form");
 
 if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
     quizData = JSON.parse(sessionStorage.getItem("efiqo temp data"));
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
     document.title = `efIQo | Quiz Maker (${quizData.name})`
     hide(QUIZ_DATA_FORM);
     show(document.querySelector("#quiz-wrap"));
@@ -29,7 +29,7 @@ if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
         let param = new URLSearchParams(location.href).get("share_id");
         location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
         sessionStorage.setItem("efiqo share data", param)
-    }else if(!sessionStorage.getItem("efiqo user data")){
+    }else if(!localStorage.getItem("efiqo user data")){
         alert("Proceed to create an account first.");
         location.href = `https://efiqo-app.web.app/`;
     }
@@ -49,7 +49,7 @@ class Quiz{
         this.mode = "create";
         this.id = crypto.randomUUID();
         this.timeStamp = new Date().toUTCString();
-        this.by = JSON.parse(sessionStorage.getItem("efiqo user data"))?.email;
+        this.by = JSON.parse(localStorage.getItem("efiqo user data"))?.email;
     }
 
     addQuestion(question){
@@ -133,7 +133,7 @@ function show(el){
 
 function getQuizInfo(){
     var quizInfo = quizData ? quizData : quiz;
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
 
     document.querySelector("#quiz-details").innerHTML = `
         <div class='quiz-title'>
@@ -170,7 +170,7 @@ function SHARE_QUIZ() {
 if(quizData) getQuizInfo();
 
 QUIZ_DATA_FORM.onsubmit = function (event) {
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
 
     event.preventDefault();
     quiz = new Quiz(event.target.querySelector("#quiz-name").value.trim(), event.target.querySelector("#quiz-desc").value.trim());
@@ -179,7 +179,7 @@ QUIZ_DATA_FORM.onsubmit = function (event) {
     quizData = JSON.parse(sessionStorage.getItem("efiqo temp data"));
     profile.quizzes.push(quizData);
 
-    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+    localStorage.setItem("efiqo user data", JSON.stringify(profile));
     updateDB(profile.email, {quizzes: profile.quizzes}, () => {
         QUIZ_DATA_FORM.reset();
         hide(event.target.parentElement);
@@ -208,7 +208,7 @@ function addOption(option){
 }
 
 QUIZ_FORM.querySelector("#add-to-quiz-btn").onclick = function(){
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
 
     if (quizData.questions.length >= 20) {
         CREATE_MODAL(document.querySelector("#get-premium").innerHTML);
@@ -225,12 +225,12 @@ QUIZ_FORM.querySelector("#add-to-quiz-btn").onclick = function(){
         quiz.addQuestion(question);
     }
 
-    // sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+    // localStorage.setItem("efiqo user data", JSON.stringify(profile));
     profile.quizzes.forEach((q, i) => {
         if (q.id === quiz.id) {
             profile.quizzes[i] = quiz;
             sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.quizzes[i]));
-            sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+            localStorage.setItem("efiqo user data", JSON.stringify(profile));
         }
     })
 
@@ -366,12 +366,12 @@ function GO_TO_NEXT_QUESTION(arrName) {
 function DELETE_QUESTION() {
     quizData.questions.splice(ind, 1);
 
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
     profile.quizzes.forEach((q, i) => {
         if (q.id === quizData.id) {
             profile.quizzes[i] = quizData;
             sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.quizzes[i]));
-            sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+            localStorage.setItem("efiqo user data", JSON.stringify(profile));
         }
     })
     updateDB(profile.email, profile, () => {

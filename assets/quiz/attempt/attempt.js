@@ -26,12 +26,12 @@ function SUBMIT_QUIZ() {
         })
         document.querySelector("#result-wrap").innerHTML = `<p><small>Final score</small>${score}/${quizData.questions.length}</p>`;
 
-        profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+        profile = JSON.parse(localStorage.getItem("efiqo user data"));
         profile.quizzes.forEach((q, i) => {
             if (q.id === quizData.id) {
                 profile.quizzes[i] = quizData;
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.quizzes[i]));
-                sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                localStorage.setItem("efiqo user data", JSON.stringify(profile));
             }
         });
         

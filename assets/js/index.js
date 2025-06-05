@@ -3,7 +3,7 @@ let quizSets;
 let flashcardsFromDB = [];
 let quizzesFromDB = [];
 
-if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem("efiqo user data")) {
+if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("efiqo user data")) {
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     db.collection("users")
         .where("flashcards", "!=", "[]")
@@ -26,7 +26,7 @@ if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem
     })
 }
 
-if (new URLSearchParams(location.href).has("share_id") && sessionStorage.getItem("efiqo user data")) {
+if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("efiqo user data")) {
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     db.collection("users")
         .where("quizzes", "!=", "[]")
@@ -55,8 +55,8 @@ const TOGGLE_MATERIALS_LIST = (parent) => {
 
 //get saved flashcards
 function GET_CARDS(){
-    if (sessionStorage.getItem("efiqo user data")) {
-        profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    if (localStorage.getItem("efiqo user data")) {
+        profile = JSON.parse(localStorage.getItem("efiqo user data"));
         flashcardSets = profile.flashcards;
     } else {
         return;
@@ -120,7 +120,7 @@ function GET_CARDS(){
                     profile.flashcards.splice(i, 1);
                     // console.log(profile.flashcards);
                     updateDB(profile.email, {flashcards: profile.flashcards}, () => history.go(0));
-                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                    localStorage.setItem("efiqo user data", JSON.stringify(profile));
                 }else{
                     alert("Delete operation cancelled by user.");
                     return;
@@ -132,8 +132,8 @@ function GET_CARDS(){
 
 // get quizzes
 function GET_QUIZZES(){
-    if (sessionStorage.getItem("efiqo user data")) {
-        profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    if (localStorage.getItem("efiqo user data")) {
+        profile = JSON.parse(localStorage.getItem("efiqo user data"));
         quizSets = profile.quizzes;
     } else {
         return;
@@ -196,7 +196,7 @@ function GET_QUIZZES(){
                 if (confirmUserAction) {
                     profile.quizzes.splice(i, 1);
                     updateDB(profile.email, {quizzes: profile.quizzes}, () => history.go(0));
-                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                    localStorage.setItem("efiqo user data", JSON.stringify(profile));
                 }else{
                     alert("Delete operation cancelled by user.");
                     return;
@@ -292,9 +292,9 @@ function DISPLAY_TERMS(){
 }
 
 function CHECK_PREMIUM(){
-    if (JSON.parse(sessionStorage.getItem("efiqo user data"))) {
+    if (JSON.parse(localStorage.getItem("efiqo user data"))) {
         [...document.querySelectorAll(".premium")].map(el => {
-            el.style.display = JSON.parse(sessionStorage.getItem("efiqo user data")).isPremiumUser ? "none" : "block";
+            el.style.display = JSON.parse(localStorage.getItem("efiqo user data")).isPremiumUser ? "none" : "block";
         });
     } else {
         return;
@@ -413,7 +413,7 @@ function INIT_SEARCH() {
 }
 
 function INIT_PAY() {
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
     let isBetaUser = BETA_USERS.some(user => user.email === profile.email);
     
     if (isBetaUser && !profile.isPremiumUser) {

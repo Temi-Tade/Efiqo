@@ -9,17 +9,17 @@ var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessi
     number: 0,
     id : crypto.randomUUID(),
     created : new Date().toUTCString(),
-    by: JSON.parse(sessionStorage.getItem("efiqo user data"))?.email,
+    by: JSON.parse(localStorage.getItem("efiqo user data"))?.email,
     mode: "edit",
 };
 
 const TOGGLE_FORMS = (e, el, other) => {
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
     e.preventDefault();
 
     profile.flashcards.push(flashcardData);
     updateDB(profile.email, {flashcards: profile.flashcards}, () => {
-        sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+        localStorage.setItem("efiqo user data", JSON.stringify(profile));
         sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcardData));
     });
 
@@ -173,13 +173,13 @@ class Flashcard{
                 img: this.img,
             });
 
-            profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+            profile = JSON.parse(localStorage.getItem("efiqo user data"));
             profile.flashcards.forEach((deck, i) => {
                 if (deck.id === flashcardData.id) {
                     flashcardData.number = flashcardData.flashcards.length;
                     profile.flashcards[i] = flashcardData;
                     sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.flashcards[i]));
-                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                    localStorage.setItem("efiqo user data", JSON.stringify(profile));
                 }
             })
             updateDB(profile.email, profile, () => true);
@@ -217,12 +217,12 @@ class Flashcard{
             ADD_CARD();
             isEdit = !isEdit;
 
-            profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+            profile = JSON.parse(localStorage.getItem("efiqo user data"));
             profile.flashcards.forEach((deck, i) => {
                 if (deck.id === flashcardData.id) {
                     profile.flashcards[i] = flashcardData;
                     sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.flashcards[i]));
-                    sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+                    localStorage.setItem("efiqo user data", JSON.stringify(profile));
                 }
             })
             updateDB(profile.email, profile, () => true);
@@ -287,13 +287,13 @@ function DELETE_FLASHCARD(){
     card = new Flashcard(flashcardData.flashcards[index].term, flashcardData.flashcards[index].def);
     card.delete(index);
 
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
     profile.flashcards.forEach((deck, i) => {
         if (deck.id === flashcardData.id) {
             flashcardData.number = flashcardData.flashcards.length;
             profile.flashcards[i] = flashcardData;
             sessionStorage.setItem("efiqo temp data", JSON.stringify(profile.flashcards[i]));
-            sessionStorage.setItem("efiqo user data", JSON.stringify(profile));
+            localStorage.setItem("efiqo user data", JSON.stringify(profile));
         }
     })
     updateDB(profile.email, profile, () => true);
@@ -396,7 +396,7 @@ const SET_PROGRESS = () => {
 }
 
 if (sessionStorage.getItem("efiqo temp data")) {
-    profile = JSON.parse(sessionStorage.getItem("efiqo user data"));
+    profile = JSON.parse(localStorage.getItem("efiqo user data"));
     document.querySelector("#flashcard-data").style.display = "flex";
     document.querySelector("#flashcard-name").style.display = "none";
     
@@ -425,7 +425,7 @@ if (sessionStorage.getItem("efiqo temp data")) {
         let param = new URLSearchParams(location.href).get("share_id");
         location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
         sessionStorage.setItem("efiqo share data", param)
-    }else if(!sessionStorage.getItem("efiqo user data")){
+    }else if(!localStorage.getItem("efiqo user data")){
         alert("Proceed to create an account first.")
         location.href = `https://efiqo-app.web.app/`;
     }

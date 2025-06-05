@@ -20,7 +20,7 @@ function registerUser(email) {
     .then((doc) => {
         if (doc.exists) {
             user_data = doc.data();
-            sessionStorage.setItem("efiqo user data", JSON.stringify(user_data));
+            localStorage.setItem("efiqo user data", JSON.stringify(user_data));
             history.go(0);
         } else {
             db.collection("users").doc(email)
@@ -63,7 +63,7 @@ function signInWithGoogle(){
             })
 
             profile = user_data;
-            sessionStorage.setItem("efiqo user data", JSON.stringify(user_data));
+            localStorage.setItem("efiqo user data", JSON.stringify(user_data));
 
             registerUser(user_data.email);
         } else {
@@ -94,7 +94,7 @@ function signOut(){
 
     firebase.auth().signOut().then(() => {
         profile = null;
-        sessionStorage.removeItem("efiqo user data");
+        localStorage.removeItem("efiqo user data");
         sessionStorage.removeItem("efiqo temp data");
         history.go(0);
     }).catch((error) => {
