@@ -204,8 +204,12 @@ ul{
     align-items: center;
 }
 
+#searchtagline img{
+    object-fit: fill;
+}
+
 #tagline-text{
-    border: 0;
+    width: 90%;
 }
 
 #tagline-text p{
@@ -367,18 +371,20 @@ ul{
 }
 
 #buddy{
-    display: flex;
+    display: grid;
+    grid-template-columns: 0fr 5fr;
+    width: 100%;
 }
 
 #buddy-text{
     padding-right: 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 
 #buddy div img{
-    object-fit: contain;
+    object-fit:fill;
 }
 
 #features{
