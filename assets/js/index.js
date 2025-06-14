@@ -53,6 +53,8 @@ const TOGGLE_MATERIALS_LIST = (parent) => {
     parent.nextElementSibling.classList.toggle("expand");
 };
 
+if (localStorage.getItem("efiqo user data")) getUserData(JSON.parse(localStorage.getItem("efiqo user data")).email);
+
 //get saved flashcards
 function GET_CARDS(){
     if (localStorage.getItem("efiqo user data")) {
@@ -61,9 +63,6 @@ function GET_CARDS(){
     } else {
         return;
     }
-        
-    document.querySelector("#recent ul").innerHTML = "Loading...";
-    document.querySelector("#recent ul").innerHTML = "";
             
     document.querySelector("#recent ul").innerHTML = "";
     if (flashcardSets.length === 0) {

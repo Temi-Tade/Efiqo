@@ -6,7 +6,7 @@ if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
     quizData = JSON.parse(sessionStorage.getItem("efiqo temp data"));
     profile = JSON.parse(localStorage.getItem("efiqo user data"));
     document.title = `efIQo | Quiz Maker (${quizData.name})`
-    hide(QUIZ_DATA_FORM);
+    hide(QUIZ_DATA_FORM.parentElement);
     show(document.querySelector("#quiz-wrap"));
 
     if (quizData.by !== profile.email) {
@@ -246,7 +246,7 @@ function PREVIEW_QUIZ(index) {
     show(document.querySelector("#quiz-preview-wrap"));
     hide(document.querySelector("#question-preview"));
     hide(document.querySelector("#quiz-form"));
-    document.querySelector("#preview-btn").style.display = 'none'
+    document.querySelector("#preview-btn").style.display = 'none';
 
     if (quizData.questions.length < 1) {
         document.querySelector("#quiz-preview").innerHTML = "<p style='text-align: center; font-style: italic'>No questions added yet.</p>"

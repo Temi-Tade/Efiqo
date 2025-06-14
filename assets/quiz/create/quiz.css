@@ -101,9 +101,10 @@ input[type=radio]{
     height: 100%;
 }
 
-.options li input:checked+span{
+/* .options li input:checked+span{
     border: 1px solid;
-}
+    padding: 2rem !important;
+} */
 
 .options li label{
     display: flex;

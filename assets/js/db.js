@@ -1,3 +1,7 @@
+let DATA;
+let genAI;
+
+
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         // alert()
@@ -64,10 +68,18 @@ function getUserData(id){
             FETCH_USER_PROFILE();
             document.querySelector("#modalbg").style.display = "none";
         }
-    });
+    })
+    .catch(error => {
+        // console.log(error.toString())
+        if (error.toString().includes("offline")) {
+            CREATE_MODAL("<i class='fa-solid fa-info-circle'></i> Cannot fetch data. Check your connection and try again.");
+            return;
+        }
+        CREATE_MODAL("An error occured while fetching data.");
+    })
 }
 
-function getGenData() {
+function getGenData(callback) {
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     window.onclick = function(e){
         if (e.target === document.querySelector("#modalbg")) {
@@ -78,12 +90,12 @@ function getGenData() {
     db.collection("generate").doc("model")
     .get()
     .then((doc) => {
-        console.log(doc.data());
+        document.querySelector("#modalbg").style.display = "none";
+        DATA = doc.data();
+        callback(DATA);
     })
     .catch(error => {
         console.log(error);
         CREATE_MODAL("An error occured while trying to connect.");
-    })
+    });
 }
-
-getGenData();

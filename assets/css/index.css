@@ -60,7 +60,7 @@ header{
 
 header h1{
     display: flex;
-    align-items: start;
+    align-items: center;
 }
 
 header nav ul{
@@ -199,6 +199,19 @@ ul{
     /* padding-top: 2rem; */
 }
 
+#search-tagline{
+    display: flex;
+    align-items: center;
+}
+
+#tagline-text{
+    border: 0;
+}
+
+#tagline-text p{
+    font-style: italic;
+}
+
 #filtered-list{
     height: 50dvh;
     overflow-y: scroll;
@@ -248,11 +261,12 @@ ul{
     margin-right: .5rem;
     /* border-left: .5px inset #cccc; */
     background-color: #4949494d;
+    position: relative;
 }
 
 #recent-header{
     display: flex;
-    justify-content: space-evenly   ;
+    justify-content: center;
 }
 
 #recent-header button{
@@ -261,13 +275,18 @@ ul{
     padding: .25rem !important;
 }
 
+#recent-header button label{
+    display: grid;
+    place-items: center;
+}
+
 #recent-header input[type=radio]{
     display: none;
 }
 
 #recent-header span{
     display: block;
-    width: 100%;
+    width: 90%;
     padding: 1rem 0 .5rem;
     cursor: pointer;
 }
@@ -327,6 +346,39 @@ ul{
 
 #recent button:hover{
     background-color: #3337;
+}
+
+#recent .refresh-btn-wrap button{
+    color: var(--text-color);
+    display: block;
+    font-size: 1.25rem;
+    width: 100%;
+    margin: auto;
+}
+
+#recent .refresh-btn-wrap{
+    position: absolute;
+    right: 0;
+    width: 3.5rem;
+}
+
+#buddy-wrap{
+    margin-top: 1rem;
+}
+
+#buddy{
+    display: flex;
+}
+
+#buddy-text{
+    padding-right: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+#buddy div img{
+    object-fit: contain;
 }
 
 #features{
@@ -688,6 +740,18 @@ footer #copyright span{
 
 .ai-btn{
     margin-top: 1rem;
+}
+
+.ai-btn button{
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+}
+
+#gen-form h3, #gen-form button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media screen and (max-width: 600px) {

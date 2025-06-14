@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/index.css">
     <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="" class="userdef"></link>
+    <link rel="stylesheet" href="" class="userdef">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit">
@@ -16,7 +16,7 @@
 </head>
 <body>
     <main>
-        <header>
+        <header style="display: none;">
             <div class="header-img">
                 <h1>
                     <img src="../../assets/images/efiQo_logo.png" alt="" width="40">
@@ -34,7 +34,7 @@
             <div>
                 <button class="transparent-btn back-to-home" onclick="location.pathname = '/'">&larr;</button>
                 <h3></h3>
-                <button style="padding: .5rem;" class="fa-solid fa-share-nodes transparent-btn" onclick="SHARE_FLASHCARD()"></button>
+                <button id="share-flashcard-btn" style="padding: .5rem;" class="fa-solid fa-share-nodes transparent-btn" onclick="SHARE_FLASHCARD()"></button>
             </div>
             <p id="tagline">
                 <small><em></em></small>
@@ -46,11 +46,21 @@
                 <fieldset>
                     <legend>Flashcard Information</legend>
                     <div class="field">
-                        <input type="text" id="fname" name="fname" placeholder="Flashcard Set" class="req" oninput="VALIDATE_FLASHCARD_NAME(this.value)">
+                        <input type="text" id="fname" name="fname" placeholder="Title" class="req" oninput="VALIDATE_FLASHCARD_NAME(this.value)">
                      </div>
          
                      <div class="field">
                          <textarea name="desc" id="desc" cols="30" rows="5" class="opt" placeholder="Description (Optional)" oninput="SET_DESC(this.value)"></textarea>
+                     </div>
+
+                     <div class="ai-data" hidden>
+                        <div class="field">
+                            <input type="number" name="number" id="number" value="10" placeholder="Number" min="5" max="20" required>
+                        </div>
+
+                        <div class="field">
+                            <input type="file" name="material" id="material">
+                        </div>
                      </div>
 
                      <div class="btn-wrap">
@@ -58,10 +68,9 @@
                      </div>
                 </fieldset>
             </form>
-            
+
             <div class="ai-btn">
-                <button disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture material</button>
-                <small><em>This feature is not available yet.</em></small>
+                <button class="transparent-btn" id="gen-btn">Create Flashcard with Efi <img src="../images/Efi2.png" alt="Efi" width="30"></button>
             </div>
         </section>
 
@@ -141,13 +150,22 @@
 
         <div class="pseudo loader-wrap">
             <div class="spinner"></div>
-            <p><small>Loading...</small></p>
+            <p><small>Please wait...</small></p>
+        </div>
+
+        <div class="pseudo buddy-loader">
+            <div>
+                <img src="../images/Efi2.png" alt="Efi" width="120">
+            </div>
+            <p>Creating your flashcards...</p>
         </div>
     </main>
 
+    <script src="../js/main.js"></script>
     <script src="../../assets/js/signin.js"></script>
     <script src="../../assets/js/db.js"></script>
     <script src="./flashcard.js"></script>
+    <script type="module" src="./generator.js"></script>
     <script src="../js/theme.js"></script>
 </body>
 </html>

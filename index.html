@@ -35,7 +35,7 @@
                     <li id="profile"><button class="transparent-btn" id="profile-image" onclick="VIEW_PROFILE()"></button></li>&nbsp;&nbsp;
                     <li>
                         <button class="create-new-btn" onclick="CREATE_MODAL(this.nextElementSibling.innerHTML)">+</button>
-                        <div class="pseudo">
+                        <div class="pseudo" id="options-wrap">
                             <h4>CREATE</h4>
                             <ul type="none" id="options">
                                 <li><button onclick="CREATE_NEW('quiz')">New Quiz <i class="fa-regular fa-question-circle"></i></button></li>
@@ -63,6 +63,13 @@
                         <ul id="filtered-list"></ul>
                     </div>
                 </div>
+                <div id='search-tagline'>
+                    <img src='./assets/images/Efi2.png' width='200' loading='lazy'/>
+                    <div id='tagline-text'>
+                        <h4>Efi says:</h4><br>
+                        <p>"The future of learning is collaborative , let us build build, share and absorb knowledge together!"</p>
+                    </div>
+                </div>
             </section>
 
             <section id="recent" class="signed-out">
@@ -85,9 +92,25 @@
                             </span>
                         </label>
                     </button>
+                    <div class="refresh-btn-wrap">
+                        <button class="transparent-btn  fa-solid fa-redo" onclick="getUserData(JSON.parse(localStorage.getItem('efiqo user data')).email)"></button>
+                    </div>
                 </div>
                 <small class="premium quota"></small>
                 <ul type="none"></ul>
+            </section>
+
+            <section id="buddy-wrap" class="signed-out">
+                <div id="buddy">
+                    <img src="./assets/images/Efi2.png" alt="Efi" width="200">
+                    <div id="buddy-text">
+                        <p style="background-color: #ff012255; text-align: center; border-radius: .25rem;">
+                            <small><em>Experimental feature</em> <i class="fa-solid fa-flask"></i></small>
+                        </p>
+                        <h4>Create flashcards and quizzes in any topic from any subject with Efi, your AI-powered study buddy.</h4>
+                        <button onclick="CREATE_MODAL(document.querySelector('#options-wrap').innerHTML)">Try it Now ✨</button>
+                    </div>
+                </div>
             </section>
 
             <!-- <section id="materials" class="signed-out">
@@ -238,7 +261,7 @@
         
         <div class="pseudo loader-wrap">
             <div class="spinner"></div>
-            <p><small>Loading...</small></p>
+            <p><small>Please wait...</small></p>
         </div>
     </main>
 

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../../flashcard/style.css">
     <link rel="stylesheet" href="./quiz.css">
     <link rel="stylesheet" href="" class="userdef">
+    <link rel="shortcut icon" href="../../images/efIQo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit">
@@ -54,9 +55,7 @@
                 </fieldset>
 
                 <div class="ai-btn">
-                    <button type="button" disabled><i class="fa-solid fa-file-pdf"></i> Generate Quiz from lecture
-                        material</button>
-                    <small><em>This feature is not available yet.</em></small>
+                    <button class="transparent-btn" id="gen-btn" type="button">Create Quiz with Efi <img src="../../images/Efi2.png" alt="Efi" width="30"></button>
                 </div>
             </form>
 
@@ -114,7 +113,14 @@
 
         <div class="pseudo loader-wrap">
             <div class="spinner"></div>
-            <p><small>Loading...</small></p>
+            <p><small>Please wait...</small></p>
+        </div>
+
+        <div class="pseudo buddy-loader">
+            <div>
+                <img src="../../images/Efi2.png" alt="Efi" width="120">
+            </div>
+            <p>Creating your flashcards...</p>
         </div>
     </main>
 
@@ -123,6 +129,7 @@
     <script src="../../js/db.js"></script>
     <script src="../../js/theme.js"></script>
     <script src="./quiz.js"></script>
+    <script type="module" src="./generator.js"></script>
 </body>
 
 </html>

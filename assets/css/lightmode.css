@@ -116,7 +116,7 @@ hr{
 /* styles for flashcard page */
 input, textarea{
     border: 1.75px solid var(--textcol);
-    color: var(--textcol);
+    color: var(--textcol) !important;
 }
 
 ::placeholder{
@@ -165,4 +165,8 @@ button.prev{
 
 #search-wrap{
     background-color: #fff7;
+}
+
+#recent .refresh-btn-wrap button{
+    color: var(--textcol);
 }

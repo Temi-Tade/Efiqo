@@ -13,6 +13,8 @@ var flashcardData = sessionStorage.getItem("efiqo temp data") ? JSON.parse(sessi
     mode: "edit",
 };
 
+if (!sessionStorage.getItem("efiqo temp data")) document.querySelector("#share-flashcard-btn").style.display = "none";
+
 const TOGGLE_FORMS = (e, el, other) => {
     profile = JSON.parse(localStorage.getItem("efiqo user data"));
     e.preventDefault();
@@ -33,6 +35,7 @@ const TOGGLE_FORMS = (e, el, other) => {
 
     document.querySelector("#info h3").innerHTML = flashcardData.name;
     document.querySelector("#info em").innerHTML = flashcardData.desc;
+    document.querySelector("#share-flashcard-btn").style.display = "block";
 };
 
 const VALIDATE_FLASHCARD_NAME = (val) => {
@@ -48,30 +51,30 @@ const SET_DESC = (val) => {
     flashcardData.desc = val;
 }
 
-const CREATE_MODAL = (text) => {
-    document.querySelector("#modalbg").style.display = "block"
-    document.querySelector("#modalbg").animate({
-        opacity: ["0", "1"],
-    }, {
-        iterations: 1,
-        duration: 500,
-    });
-    document.querySelector("#modal").innerHTML = text;
+// const CREATE_MODAL = (text) => {
+//     document.querySelector("#modalbg").style.display = "block"
+//     document.querySelector("#modalbg").animate({
+//         opacity: ["0", "1"],
+//     }, {
+//         iterations: 1,
+//         duration: 500,
+//     });
+//     document.querySelector("#modal").innerHTML = text;
 
-    window.onclick = (ev) => {
-        if (ev.target === document.querySelector("#modalbg")) {
-            document.querySelector("#modalbg").animate({
-                opacity: ["1", "0"],
-            }, {
-                iterations: 1,
-                duration: 500,
-            });
-            setTimeout(() => {
-                document.querySelector("#modalbg").style.display = "none"
-            }, 490);
-        };
-    };
-};
+//     window.onclick = (ev) => {
+//         if (ev.target === document.querySelector("#modalbg")) {
+//             document.querySelector("#modalbg").animate({
+//                 opacity: ["1", "0"],
+//             }, {
+//                 iterations: 1,
+//                 duration: 500,
+//             });
+//             setTimeout(() => {
+//                 document.querySelector("#modalbg").style.display = "none"
+//             }, 490);
+//         };
+//     };
+// };
 
 function ROTATE_CARD(card) {
     card.animate({
@@ -130,6 +133,8 @@ const PREVIEW_CARD = (content) => {
 
     SHOW_MENU = (e) => {
         e.preventDefault(); 
+
+        var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
         if (session.by !== profile.email) {
             return;
         }
