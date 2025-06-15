@@ -78,8 +78,6 @@ async function main(course, topic, number) {
 
         const prompt = `create ${number} flashcards on the topic - ${topic}, in the subject ${course}.`;
 
-        console.log(prompt);
-
         const result = await model.generateContent(prompt);
         const response = await result.response;
 
@@ -100,7 +98,6 @@ async function main(course, topic, number) {
             FLASHCARD_COUNT();
         });
 
-        console.log(flashcardData);
     } catch (error) {
         console.error("Error generating content:", error);
         console.error("Error: Could not get response from AI. Check console for details.");
