@@ -27,7 +27,7 @@ if (JSON.parse(sessionStorage.getItem("efiqo temp data"))){
 } else{
     if (new URLSearchParams(location.href).has("share_id")) {
         let param = new URLSearchParams(location.href).get("share_id");
-        location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
+        location.href = `https://efiqo-app.web.app/?&share_id=${param}&type=quiz`;
         sessionStorage.setItem("efiqo share data", param)
     }else if(!localStorage.getItem("efiqo user data")){
         alert("Proceed to create an account first.");
