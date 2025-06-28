@@ -170,10 +170,7 @@ legend {
 
 #modalbg {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-color: #3337;
     padding-top: 10dvh;
     display: none;
@@ -184,8 +181,8 @@ legend {
 #modal {
     position: fixed;
     bottom: 0;
-    right: 20rem;
-    left: 20rem;
+    right: 20%;
+    left: 20%;
     background-color: #111;
     padding: 1rem;
     max-height: 50dvh;
@@ -250,7 +247,6 @@ legend {
 .card {
     padding: 1.5rem;
     padding-top: 2rem;
-    text-overflow: ellipsis;
     text-align: center;
     height: 100%;
     display: flex;
@@ -263,7 +259,8 @@ legend {
 }
 
 .card p {
-    font-size: 150%;
+    font-size: 120%;
+    height: auto;
 }
 
 .card img{

@@ -78,14 +78,18 @@ input[type=radio]{
 
 .options{
     padding: .5rem;
+    width: 100%;
 }
 
 .options li{
-    /* margin: .5rem 0; */
     padding: .5rem .125rem;
+    padding: .25rem;
+    display: flex;
     padding-left: .5rem;
     height: 3rem;
-    width: 80%;
+    margin-bottom: 1rem;
+    width: fit-content;
+    height: fit-content;
 }
 
 .options li input{
@@ -97,8 +101,9 @@ input[type=radio]{
     align-items: center;
     padding-left: .25rem;
     border-radius: .25rem;
-    width: 100%;
+    width: fit-content;
     height: 100%;
+    /* text-align: justify; */
 }
 
 /* .options li input:checked+span{
@@ -109,7 +114,6 @@ input[type=radio]{
 .options li label{
     display: flex;
     align-items: center;
-    /* display: block; */
     width: 100%;
     height: 100%;
 }

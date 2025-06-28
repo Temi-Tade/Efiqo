@@ -43,8 +43,34 @@
     margin-top: .5rem;
 }
 
+.correct-ans{
+    color: #00ac42;
+}
+
+.user-ans{
+    color: #b10f0f;
+}
+
 #result-actions{
     padding: .5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: 
+        "item1 item2"
+        "item3 item3";
+}
+
+.retakebtn{
+    grid-area: item1;
+}
+
+.sharebtn{
+    grid-area: item2;
+}
+
+.gotobtn{
+    grid-area: item3;
 }
 
 #result-actions button{

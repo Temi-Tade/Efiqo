@@ -176,6 +176,13 @@ ul{
     font-weight: 700;
 }
 
+#greeting span{
+    background: linear-gradient(to right, var(--theme), #f72342);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
 #search-wrap .close-btn-wrap{
     display: flex;
     justify-content: flex-end;
@@ -754,10 +761,40 @@ footer #copyright span{
     align-items: center;
 }
 
-#gen-form h3, #gen-form button{
+.gen-form{
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.gen-form h3, .gen-form button{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.upload-field{
+    margin: 0 !important;
+}
+
+.upload-btn{
+    font-size: .95rem;
+    font-style: italic;
+    font-weight: 300;
+}
+
+#doc{
+    display: none;
+}
+
+.doc-label{
+    display: block;
+    /* width: 12rem; */
+    text-align: center !important;
+    margin: auto;
+    background-color: #1c3adf;
+    color: var(--text-color);
+    padding: .65rem;
+    border-radius: .6rem;
 }
 
 @media screen and (max-width: 600px) {

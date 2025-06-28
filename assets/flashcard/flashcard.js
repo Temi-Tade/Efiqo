@@ -355,9 +355,28 @@ const GO_TO_NEXT_CARD = () => {
                 CREATE_MODAL(`
                     <p class='error-head'>You have reached the last Flashcard.</p>
                     <div class='end-of'>
-                        <button onclick='history.go(-1)'>Go to Home <i class='fa-solid fa-home'></i></button>
+                        <button onclick='history.go(-1)'>Go to Dashboard <i class='fa-solid fa-home'></i></button>
+                        <button id='share-this'>Share this Flashcard <i class='fa-solid fa-share-nodes'></i></button>
                     </div>
                 `);
+
+                document.querySelector('#share-this').onclick = function(){
+                    var session = JSON.parse(sessionStorage.getItem("efiqo temp data"));
+
+                    if ("share" in navigator) {
+                        try {
+                            navigator.share({
+                                title: "efIQo",
+                                text: `Study ${session.name} with me on efIQo!`,
+                                url: `https://efiqo-app.web.app/assets/flashcard/index.html?&share_id=${session.id}`,
+                            })
+                        } catch (error) {
+                            console.error("An error occured")
+                        }
+                    }else{
+                        CREATE_MODAL("Share Error");
+                    }
+                }
             }else{
                 CREATE_MODAL('OOPS... You have not added any flashcards yet.');
             }

@@ -31,7 +31,7 @@ function FETCH_USER_PROFILE(){
 
     document.querySelector("#profile-image").innerHTML = sessionProfile && sessionProfile.pfp.url ? `<img src='${sessionProfile.pfp.url}' width='50' loading="lazy">` : `<i class='fa-solid fa-user'></i>`;
     if(sessionProfile) var displayName = sessionProfile.userName ? sessionProfile.userName : sessionProfile.fullName.slice(0, sessionProfile.fullName.indexOf(" "));
-    document.querySelector("#greeting").innerHTML = !sessionProfile ? "" : `Hello, ${displayName} 👋`;
+    document.querySelector("#greeting").innerHTML = !sessionProfile ? "" : `Hello, <span>${displayName}</span> 👋`;
 
     [...document.querySelectorAll(".signed-in")].map(el => el.style.display = !sessionProfile ? 'block' : 'none');
     [...document.querySelectorAll(".signed-out")].map(el => el.style.display = !sessionProfile ? 'none' : '');
@@ -88,7 +88,7 @@ function VIEW_PROFILE() {
                 <div class='field pfp-field'>
                     <img id="avatar" src='${!profile.pfp.url ? "./assets/images/default_avatar.png" : profile.pfp.url}' alt="User Avatar" loading='lazy' draggable="false"/>
                     <label for='pfp' id='upload-pfp'>Upload Avatar <i class='fa-solid fa-upload'></i></label>
-                    <input type='file' name='pfp' id='pfp' value='${profile.pfp.file.name}' accept='*.png, *.jpg, *.jpeg, *.tiff, *.gif, *.webp' disabled/>
+                    <input type='file' name='pfp' id='pfp' value='${profile.pfp.file.name}' accept='.png, .jpg, .jpeg, .tiff, .gif, .webp' disabled/>
                 </div>
     
                 <h5>Personal Information</h5><br>

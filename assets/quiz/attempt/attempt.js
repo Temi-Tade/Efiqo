@@ -44,8 +44,8 @@ function SUBMIT_QUIZ() {
                     <li class='correction-question'>
                         <p>${question.question}</p>
                         <!--<ul class='options'></ul>-->
-                        <p>The correct answer is <strong><em>${question.answer}</em></strong></p>
-                        <p>You selected <strong><em>${USER_ANSWERS[index]}</em></strong></p>
+                        <p>The correct answer is <strong class='correct-ans'><em>${question.answer}</em></strong></p>
+                        <p>You selected <strong class=${question.answer === USER_ANSWERS[index] ? 'correct-ans' : 'user-ans'}><em>${USER_ANSWERS[index]}</em></strong></p>
                     </li>
                 `
                 // quizData.questions[index].options.forEach(option => {

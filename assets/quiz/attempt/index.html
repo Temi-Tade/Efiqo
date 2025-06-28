@@ -57,8 +57,9 @@
             <div id="result-wrap"></div>
             <ul id="corrections"></ul>
             <div id="result-actions">
-                <button onclick="history.go(0)">Retake Quiz</button>
-                <button onclick="location.pathname = '/'">Go to Dashboard</button>
+                <button class="retakebtn" onclick="history.go(0)">Retake Quiz</button>
+                <button class="sharebtn" onclick="SHARE_QUIZ()">Share Quiz <i class="fa-solid fa-share-nodes"></i></button>
+                <button class="gotobtn" onclick="location.pathname = '/'">Go to Dashboard</button>
             </div>
         </section>
 
