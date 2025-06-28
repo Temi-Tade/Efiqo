@@ -157,7 +157,7 @@ function SHARE_QUIZ() {
             navigator.share({
                 title: "efIQo",
                 text: `Study ${session.name} with me on efIQo!`,
-                url: `https://efiqo-app.web.app/assets/quiz/create/index.html?&share_id=${session.id}`,
+                url: `https://efiqo-app.web.app/assets/quiz/create/index.html?&share_id=${session.id}&type=quiz`,
             })
         } catch (error) {
             console.error("An error occured");

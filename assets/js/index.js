@@ -3,7 +3,7 @@ let quizSets;
 let flashcardsFromDB = [];
 let quizzesFromDB = [];
 
-if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("efiqo user data")) {
+if (new URLSearchParams(location.href).has("share_id") && (new URLSearchParams(location.href).get("type") === "flashcard") && localStorage.getItem("efiqo user data")) {
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     db.collection("users")
         .where("flashcards", "!=", "[]")
@@ -13,10 +13,13 @@ if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("
                 if(doc.data().flashcards.length !== 0) flashcardsFromDB.push(...doc.data().flashcards);
         })
         
-        flashcardsFromDB.forEach(flashcard => {
+        flashcardsFromDB.forEach((flashcard, index) => {
             if (flashcard.id === new URLSearchParams(location.href).get("share_id")) {
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(flashcard));
                 location.href = `https://efiqo-app.web.app/assets/flashcard/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
+            }else if (index === flashcardsFromDB.length - 1 && !sessionStorage.getItem("efiqo temp data")) {
+                alert("This flashcard does not exist, it may have been deleted by the creator.");
+                location.href = `https://efiqo-app.web.app/`;
             }
         })
     })
@@ -26,7 +29,7 @@ if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("
     })
 }
 
-if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("efiqo user data")) {
+if (new URLSearchParams(location.href).has("share_id") && (new URLSearchParams(location.href).get("type") === "quiz") && localStorage.getItem("efiqo user data")) {
     CREATE_MODAL(document.querySelector(".loader-wrap").innerHTML); //spinner
     db.collection("users")
         .where("quizzes", "!=", "[]")
@@ -36,10 +39,13 @@ if (new URLSearchParams(location.href).has("share_id") && localStorage.getItem("
                 if(doc.data().quizzes.length !== 0) quizzesFromDB.push(...doc.data().quizzes);
         })
         
-        quizzesFromDB.forEach(quiz => {
+        quizzesFromDB.forEach((quiz, index) => {
             if (quiz.id === new URLSearchParams(location.href).get("share_id")) {
                 sessionStorage.setItem("efiqo temp data", JSON.stringify(quiz));
                 location.href = `https://efiqo-app.web.app/assets/quiz/create/index.html?&share_id=${sessionStorage.getItem("efiqo share data")}`
+            } else if (index === quizzesFromDB.length - 1 && !sessionStorage.getItem("efiqo temp data")) {
+                alert("This quiz does not exist, it may have been deleted by the creator.");
+                location.href = `https://efiqo-app.web.app/`;
             }
         })
     })

@@ -400,7 +400,7 @@ const SHARE_FLASHCARD = () => {
             navigator.share({
                 title: "efIQo",
                 text: `Study ${session.name} with me on efIQo!`,
-                url: `https://efiqo-app.web.app/assets/flashcard/index.html?&share_id=${session.id}`,
+                url: `https://efiqo-app.web.app/assets/flashcard/index.html?&share_id=${session.id}&type=flashcard`,
             })
         } catch (error) {
             console.error("An error occured")
@@ -448,7 +448,7 @@ if (sessionStorage.getItem("efiqo temp data")) {
     if (new URLSearchParams(location.href).has("share_id")) {
         let param = new URLSearchParams(location.href).get("share_id");
         location.href = `https://efiqo-app.web.app/?&share_id=${param}`;
-        sessionStorage.setItem("efiqo share data", param)
+        sessionStorage.setItem("efiqo share data", param);
     }else if(!localStorage.getItem("efiqo user data")){
         alert("Proceed to create an account first.")
         location.href = `https://efiqo-app.web.app/`;
