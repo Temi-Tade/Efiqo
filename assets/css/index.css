@@ -38,6 +38,17 @@ html{
     font-family: Ubuntu, sans-serif;
     scroll-behavior: smooth;
     user-select: none;
+    height: 100dvh;
+}
+
+body{
+    height: 100%;
+    overflow-y: auto;
+}
+
+main{
+    height: 100%;
+    overflow-y: auto;
 }
 
 header{
@@ -46,7 +57,8 @@ header{
     align-items: center;
     padding: .5rem;
     box-shadow: 0 1px 1px #7777;
-    position: fixed;
+    position: sticky;
+    top: 0;
     left: 0;
     right: 0;
     backdrop-filter: blur(20px);
@@ -162,6 +174,8 @@ ul{
 #content{
     padding: .75rem;
     padding-bottom: 0;
+    height: 90dvh;
+    /* overflow-y: auto; */
 }
 
 .search-bar{
@@ -234,12 +248,35 @@ ul{
 #filtered-list li{
     margin: .5rem auto;
     padding: .25rem;
+    display: flex;
+    border: 1px solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: .6rem;
 }
 
 #filtered-list button{
-    border: 1px solid;
-    width: 100%;
+    width: 90%;
     text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#filtered-list span:first-child{
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#filtered-list .name{
+    width: 100%;
+}
+
+#filtered-list .num{
+    width: fit-content;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -325,7 +362,7 @@ ul{
     padding: .5rem .25rem;
 }
 
-#recent ul li{
+#recent ul li, #sidebar-list ul li{
     margin: .5rem 0;
     padding: .25rem;
     /* border-bottom: 1px solid; */
@@ -335,27 +372,30 @@ ul{
     border-radius: .85rem;
 }
 
-#recent ul li:nth-child(odd){
+#recent ul li:nth-child(odd), #sidebar-list ul li:nth-child(odd){
     background-color: #13131377;
 }
 
-#recent ul li:nth-child(even){
+#recent ul li:nth-child(even), #sidebar-list ul li:nth-child(even){
     border: 1px solid #fff5;
 }
 
-#recent ul li:nth-child(even) button:hover{
+#recent ul li:nth-child(even) button:hover, #sidebar-list ul li:nth-child(even) button:hover{
     background-color: #333;
 }
 
-#recent button{
+#recent button, #sidebar-list ul li button{
     width: 100%;
     background: transparent;
     text-align: left;
     padding: 1rem;
     word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-#recent button:hover{
+#recent button:hover, #sidebar-list ul li button:hover{
     background-color: #3337;
 }
 
@@ -891,6 +931,11 @@ footer #copyright span{
         display: block;
     }
 
+    #content{
+        display: grid;
+        grid-template-columns: 1fr 4fr;
+    }
+
     #greeting{
         padding: .5rem;
     }
@@ -898,6 +943,10 @@ footer #copyright span{
     #search-wrap{
         text-align: center;
         width: 100%;
+    }
+
+    .search-bar{
+        height: 10%;
     }
 
     #recent{
@@ -966,6 +1015,129 @@ footer #copyright span{
         width: 100%;
         display: flex;
         justify-content: space-evenly;
+    }
+
+    #sidebar-wrap{
+        position: sticky;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+    }
+
+    #sidebar-search input{
+        margin: .25rem auto;
+    }
+
+    #sidebar-search input::placeholder{
+        font-size: .75rem;
+    }
+
+    #sidebar-list{
+        padding: .25rem;
+    }
+
+    #sidebar-list ul{
+        padding-right: 1rem;
+        /* height: 15rem;
+        max-height: 20rem; */
+        overflow-y: auto;
+    }
+
+    #sidebar-list div ul li {
+        margin: .5rem auto;
+        height: fit-content;
+    }
+
+    #sidebar-list div ul li button{
+        height: fit-content;
+        padding: .5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #sidebar-list div{
+        /* border: 1px solid; */
+        padding: .25rem;
+        margin: .5rem auto;
+        text-align: center;
+    }
+
+    #reading{
+        width: 100%;
+        height: 90%;
+    }
+
+    .file-picker-wrap{
+        padding: 1rem;
+        height: 100%;
+        display: grid;
+        place-items: center;
+    }
+
+    .file-picker-wrap input{
+        display: none;
+    }
+
+    .file-picker-wrap label{
+        display: block;
+        background-color: #1c3adf;
+        padding: .65rem;
+        border-radius: .6rem;
+        width: fit-content;
+        margin: auto;
+        cursor: pointer;
+    }
+
+    .file-picker-wrap label:hover, .file-picker-wrap label:focus{
+        background-color: #3451f7;
+    }
+
+    .file-picker-wrap p{
+        text-align: center;
+        padding: 1rem;
+    }
+
+    #embed-wrap{
+        width: 95%;
+        margin: auto;
+        display: none;
+        height: 100%;
+        padding-bottom: .5rem;
+    }
+    
+    embed{
+        position: relative;
+        display: block;
+        width: 100%;
+        margin: auto;
+        height: 100%;
+    }
+
+    .embed-header{
+        padding: .25rem;
+        width: fit-content;
+        position: absolute;
+        top: .125rem;
+        left: .5rem;
+        border-radius: .6rem;
+        background-color: #0007;
+        backdrop-filter: blur(.5rem);
+        box-shadow: 0 0 2px 2px #3337;
+    }
+
+    #pdf-menu-btn{
+        margin: .25rem 0;
+    }
+
+    .embed-menu-options{
+        height: 0;
+        overflow: hidden;
+    }
+
+    .embed-header button{
+        margin: .5rem 0;
     }
 }
 

@@ -172,7 +172,7 @@ legend {
     position: fixed;
     inset: 0;
     background-color: #3337;
-    padding-top: 10dvh;
+    /* padding-top: 10dvh; */
     display: none;
     backdrop-filter: blur(.25rem);
     z-index: 30;
@@ -180,17 +180,18 @@ legend {
 
 #modal {
     position: fixed;
-    bottom: 0;
-    right: 20%;
-    left: 20%;
+    top: 15%;
+    right: 25%;
+    left: 25%;
     background-color: #111;
     padding: 1rem;
-    max-height: 50dvh;
+    height: fit-content;
+    max-height: 70dvh;
     border-radius: .75rem;
     color: var(--text-color);
     text-align: center;
     overflow-y: auto;
-    box-shadow: 0 0 7px 0 #777;
+    box-shadow: 0 0 7px 0 #7777;
 }
 
 #recent-info {
@@ -419,5 +420,7 @@ button.prev{
     #modal{
         left: .5rem;
         right: .5rem;
+        top: 15%;
+        /* bottom: 25%; */
     }
 }

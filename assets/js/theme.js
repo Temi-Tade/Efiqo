@@ -62,5 +62,5 @@ LOAD_THEME(document.querySelector("header nav ul li button"));
 
 // restore header position if logged in
 if (localStorage.getItem("efiqo user data")) {
-    document.querySelector("header").style.position = "static"
+    // document.querySelector("header").style.position = "static"
 }

@@ -26,6 +26,7 @@
                     efIQo
                 </h1>
             </div>
+
             <nav>
                 <div class="get-started">
                     <button class="signup">Sign In</button>
@@ -48,97 +49,148 @@
         </header>
 
         <section id="content">
-            <div class="search-bar signed-out">
-                <p id="greeting"></p>
-                <button class="transparent-btn fa-solid fa-search" onclick="INIT_SEARCH()"></button>
+            <div id="sidebar-wrap" class="desktop">
+                <div id="sidebar">
+                    <div id="sidebar-search">
+                        <input type="search" placeholder="Search for flashcards, quizzes..." oninput="SEARCH_RECENT(this.value)">
+                    </div>
+
+                    <div id="sidebar-list">
+                        <div>
+                            <h4>Flashcards <i class="fa-solid fa-layer-group"></i></h4>
+                            <ul id="sidebar-flashcards">
+    
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4>Quizzes <i class="fa-regular fa-question-circle"></i></h4>
+                            <ul id="sidebar-quizzes">
+    
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <section id="search-wrap" class="signed-out" hidden>
-                <div class="close-btn-wrap">
-                    <button class="close-btn transparent-btn" id="close-btn">&times;</button>
+            <div>
+                <div class="search-bar signed-out">
+                    <p id="greeting"></p>
+                    <button class="transparent-btn fa-solid fa-search" onclick="INIT_SEARCH()"></button>
                 </div>
-                <div id="search-form-warp">
-                    <div id="search-form">
-                        <input type="search" placeholder="Search flashcards, quizzes" autocomplete="off" spellcheck="false" oninput="SEARCH_DB(this.value)" autofocus/>
-                        <ul id="filtered-list"></ul>
+    
+                <section id="search-wrap" class="signed-out" hidden>
+                    <div class="close-btn-wrap">
+                        <button class="close-btn transparent-btn" id="close-btn">&times;</button>
                     </div>
-                </div>
-                <div id='search-tagline'>
-                    <img src='./assets/images/Efi2.png' width='150' loading='lazy'/>
-                    <div id='tagline-text'>
-                        <h4>Efi says:</h4><br>
-                        <p>"The future of learning is collaborative , let us build build, share and absorb knowledge together!"</p>
+                    <div id="search-form-warp">
+                        <div id="search-form">
+                            <input type="search" placeholder="Search flashcards, quizzes" autocomplete="off" spellcheck="false" oninput="SEARCH_DB(this.value)" autofocus/>
+                            <ul id="filtered-list"></ul>
+                        </div>
                     </div>
-                </div>
-            </section>
+                    <div id='search-tagline'>
+                        <img src='./assets/images/Efi2.png' width='150' loading='lazy'/>
+                        <div id='tagline-text'>
+                            <h4>Efi says:</h4><br>
+                            <p>"The future of learning is collaborative , let us build build, share and absorb knowledge together!"</p>
+                        </div>
+                    </div>
+                </section>
+    
+                <section id="recent" class="signed-out mobile">
+                    <div id="recent-header">
+                        <button>
+                            <label>
+                                <input type="radio" name="recent-type" oninput="GET_CARDS(document.querySelector('#recent ul'))" checked>
+                                <span>
+                                    Flashcards
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </span>
+                            </label>
+                        </button>
+                        <button>
+                            <label>
+                                <input type="radio" name="recent-type" oninput="GET_QUIZZES(document.querySelector('#recent ul'))">
+                                <span>
+                                    Quizzes
+                                    <i class="fa-regular fa-question-circle"></i>
+                                </span>
+                            </label>
+                        </button>
+                        <div class="refresh-btn-wrap">
+                            <button class="transparent-btn  fa-solid fa-redo" onclick="getUserData(JSON.parse(localStorage.getItem('efiqo user data')).email)"></button>
+                        </div>
+                    </div>
+                    <small class="premium quota"></small>
+                    <ul type="none"></ul>
+                </section>
+    
+                <!-- <section id="buddy-wrap" class="signed-out">
+                    <div id="buddy">
+                        <img src="./assets/images/Efi2.png" alt="Efi" width="150">
+                        <div id="buddy-text">
+                            <p style="background-color: #ff012255; text-align: center; border-radius: .25rem;">
+                                <small><em>Experimental feature</em> <i class="fa-solid fa-flask"></i></small>
+                            </p>
+                            <h4>Create flashcards and quizzes in any topic from any subject with Efi, your AI-powered study buddy.</h4>
+                            <button onclick="CREATE_MODAL(document.querySelector('#options-wrap').innerHTML)">Try it Now ✨</button>
+                        </div>
+                    </div>
+                </section> -->
+    
+                <!-- <section id="materials" class="signed-out">
+                    <h3>From other learners</h3>
+                    <div class="materials">
+                        <ul class="materials-list"></ul>
+                    </div>
+                </section> -->
 
-            <section id="recent" class="signed-out">
-                <div id="recent-header">
-                    <button>
-                        <label>
-                            <input type="radio" name="recent-type" oninput="GET_CARDS()" checked>
-                            <span>
-                                Flashcards
-                                <i class="fa-solid fa-layer-group"></i>
-                            </span>
-                        </label>
-                    </button>
-                    <button>
-                        <label>
-                            <input type="radio" name="recent-type" oninput="GET_QUIZZES()">
-                            <span>
-                                Quizzes
-                                <i class="fa-regular fa-question-circle"></i>
-                            </span>
-                        </label>
-                    </button>
-                    <div class="refresh-btn-wrap">
-                        <button class="transparent-btn  fa-solid fa-redo" onclick="getUserData(JSON.parse(localStorage.getItem('efiqo user data')).email)"></button>
+                <section id="reading" class="desktop">
+                    <div class="file-picker-wrap">
+                        <div>
+                            <p>To start reading:</p>
+                            <label for="read-pdf-doc">Upload a PDF</label>
+                        </div>
+                        <input type="file" id="read-pdf-doc" accept="*.pdf, application/pdf">
                     </div>
-                </div>
-                <small class="premium quota"></small>
-                <ul type="none"></ul>
-            </section>
 
-            <section id="buddy-wrap" class="signed-out">
-                <div id="buddy">
-                    <img src="./assets/images/Efi2.png" alt="Efi" width="150">
-                    <div id="buddy-text">
-                        <p style="background-color: #ff012255; text-align: center; border-radius: .25rem;">
-                            <small><em>Experimental feature</em> <i class="fa-solid fa-flask"></i></small>
-                        </p>
-                        <h4>Create flashcards and quizzes in any topic from any subject with Efi, your AI-powered study buddy.</h4>
-                        <button onclick="CREATE_MODAL(document.querySelector('#options-wrap').innerHTML)">Try it Now ✨</button>
+                    <div id="embed-wrap">
+                        <div style="position: relative; height: 100%;">
+                            <embed src="" type="application/pdf"></embed>
+                            <div>
+                                <div class="embed-header">
+                                    <button class="fa-solid fa-bars" id="pdf-menu-btn" title="Open Menu"></button>
+                                    <div class="embed-menu-options">
+                                        <button id="close-pdf-btn">Close PDF &times;</button>
+                                        <button id="focus-mode-btn">Focus Mode <i class="fa-solid fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
-
-            <!-- <section id="materials" class="signed-out">
-                <h3>From other learners</h3>
-                <div class="materials">
-                    <ul class="materials-list"></ul>
-                </div>
-            </section> -->
-
-            <section id="features" class="signed-in">
-                <h2>Learning tools and resources... all in one place</h2>
-                <div class="feature-list">
-                    <ul>
-                        <li>Create custom flashcards.</li>
-                        <li>Create custom quizzes.</li>
-                        <li>Learn with flashcards and quizzes created by others.</li>
-                        <li>Share your flashcards with other learners.</li>
-                        <li class="coming-soon">Generate AI-powered summary from lecture materials. [coming soon]</li>
-                        <li>...and many more to come</li>
-                    </ul>
-                    <div class="img-wrap">
-                        <img src="./assets/images/efiQo_logo.png" alt="efIQo logo" width="250" loading="lazy">
+                </section>
+    
+                <section id="features" class="signed-in">
+                    <h2>Learning tools and resources... all in one place</h2>
+                    <div class="feature-list">
+                        <ul>
+                            <li>Create custom flashcards.</li>
+                            <li>Create custom quizzes.</li>
+                            <li>Learn with flashcards and quizzes created by others.</li>
+                            <li>Share your flashcards and quizzes with other learners.</li>
+                            <li>Generate AI-powered flashcards and quizzes from lecture materials.</li>
+                            <li>...and many more to come</li>
+                        </ul>
+                        <div class="img-wrap">
+                            <img src="./assets/images/efiQo_logo.png" alt="efIQo logo" width="250" loading="lazy">
+                        </div>
                     </div>
-                </div>
-                <div class="get-started">
-                    <button class="signup">Get Started</button>
-                </div>
-            </section>
+                    <div class="get-started">
+                        <button class="signup">Get Started</button>
+                    </div>
+                </section>
+            </div>
         </section>
         
         <section id="snapshots_wrap" class="signed-in">
@@ -155,21 +207,23 @@
             <h3 id="reason">Pricing</h3>
             <small style="display: block; text-align: center;"><em>Plans may be subject to change as new features are added.</em></small>
             <div id="perks">
-                <ul>
-                    <h4>Free Plan</h4>
-                    <li>7 quiz sets.</li>
-                    <li>7 flashcard sets.</li>
-                    <li>20 questions to per quiz set.</li>
-                    <li>20 decks to per flashcard set.</li>
-                </ul>
-
-                <ul>
-                    <h4>Premium Plan</h4>
-                    <li>Unlimited quiz sets.</li>
-                    <li>Unlimited flashcard sets.</li>
-                    <li>Unlimited questions per quiz set.</li>
-                    <li>Unlimited decks per flashcard set.</li>
-                </ul>
+                <div style="display: flex;">
+                    <ul>
+                        <h4>Free Plan</h4>
+                        <li>7 quiz sets.</li>
+                        <li>7 flashcard sets.</li>
+                        <li>20 questions to per quiz set.</li>
+                        <li>20 decks to per flashcard set.</li>
+                    </ul>
+    
+                    <ul>
+                        <h4>Premium Plan ($4.99 one-time payment)</h4>
+                        <li>Unlimited quiz sets.</li>
+                        <li>Unlimited flashcard sets.</li>
+                        <li>Unlimited questions per quiz set.</li>
+                        <li>Unlimited decks per flashcard set.</li>
+                    </ul>
+                </div>
 
                 <div class="get-started">
                     <button class="signup">Try it Now</button>

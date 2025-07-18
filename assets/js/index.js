@@ -62,22 +62,22 @@ const TOGGLE_MATERIALS_LIST = (parent) => {
 if (localStorage.getItem("efiqo user data")) getUserData(JSON.parse(localStorage.getItem("efiqo user data")).email);
 
 //get saved flashcards
-function GET_CARDS(){
+function GET_CARDS(target){
     if (localStorage.getItem("efiqo user data")) {
         profile = JSON.parse(localStorage.getItem("efiqo user data"));
         flashcardSets = profile.flashcards;
     } else {
         return;
     }
-            
-    document.querySelector("#recent ul").innerHTML = "";
+
+    target.innerHTML = "";
     if (flashcardSets.length === 0) {
-        document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
+        target.innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
     }
 
     flashcardSets.forEach(flashcard => {
         let info = `"Decks: ${flashcard.number}\nCreated on: ${flashcard.created}\nId: ${flashcard.id}"`;
-        document.querySelector("#recent ul").innerHTML += `
+        target.innerHTML += `
             <li title=${info}>
                 <button class='saved-flashcard'>${flashcard.name}</button>
             </li>
@@ -86,12 +86,12 @@ function GET_CARDS(){
     
     document.querySelector(".quota").innerHTML = `Quota: ${flashcardSets.length}/7`;
 
-    [...document.querySelectorAll("#recent .saved-flashcard")].forEach((val, i) => {
+    [...document.querySelectorAll(".saved-flashcard")].forEach((val, i) => {
         val.onclick = function(event){
             event.preventDefault();
             CREATE_MODAL(`
                 <div id='recent-info'>
-                    <h3>${flashcardSets[i].name} </h3>
+                    <h3>${flashcardSets[i].name}</h3>
                     <strong><em>${flashcardSets[i].desc}</em></strong>
                     <table>
                         <tr>
@@ -136,34 +136,34 @@ function GET_CARDS(){
 };
 
 // get quizzes
-function GET_QUIZZES(){
+function GET_QUIZZES(target){
     if (localStorage.getItem("efiqo user data")) {
         profile = JSON.parse(localStorage.getItem("efiqo user data"));
         quizSets = profile.quizzes;
     } else {
         return;
     }
-        
-    document.querySelector("#recent ul").innerHTML = "Loading...";
-    document.querySelector("#recent ul").innerHTML = "";
+    
+    target.innerHTML = "Loading...";
+    target.innerHTML = "";
             
-    document.querySelector("#recent ul").innerHTML = "";
+    target.innerHTML = "";
     if (quizSets.length === 0) {
-        document.querySelector("#recent ul").innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
+        target.innerHTML = "<p class='no-data'>You have not created any sets yet.</p>";
     }
 
     quizSets.forEach(quiz => {
-        let info = `"Questions: ${quiz.length}\nCreated on: ${quiz.timeStamp}\nId: ${quiz.id}"`;
-        document.querySelector("#recent ul").innerHTML += `
+        let info = `"Questions: ${quiz.questions.length}\nCreated on: ${quiz.timeStamp}\nId: ${quiz.id}"`;
+        target.innerHTML += `
             <li title=${info}>
-                <button class='saved-flashcard'>${quiz.name}</button>
+                <button class='saved-quiz'>${quiz.name}</button>
             </li>
         `;
     });
     
     document.querySelector(".quota").innerHTML = `Quota: ${quizSets.length}/7`;
 
-    [...document.querySelectorAll("#recent .saved-flashcard")].forEach((val, i) => {
+    [...document.querySelectorAll(".saved-quiz")].forEach((val, i) => {
         val.onclick = function(event){
             event.preventDefault();
             CREATE_MODAL(`
@@ -230,8 +230,8 @@ function CREATE_NEW(material){
     location.pathname = `./assets/${material === "flashcard" ? "flashcard" : "quiz/create"}/index.html`;
 }
 
-GET_QUIZZES();
-GET_CARDS();
+GET_QUIZZES(window.innerWidth >= 600 ? document.querySelector("#sidebar-quizzes") : document.querySelector("#recent ul"));
+GET_CARDS(window.innerWidth >= 600 ? document.querySelector("#sidebar-flashcards") : document.querySelector("#recent ul"));
 
 async function INIT_SHARE(){
     if ("share" in navigator) {
@@ -332,11 +332,11 @@ function getDataFromDB() {
                 document.querySelector("#filtered-list").innerHTML += `
                     <li>
                         <button class='transparent-btn'>
-                            <span>${data.name}</span>
-                            <span class='${data.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"}'>
-                                <small>${data.flashcards ? data.number : data.questions.length}</small>
-                            </span>
+                            <span class='name'>${data.name}</span>
                         </button>
+                        <span class='${data.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"} num'>
+                            <small>${data.flashcards ? data.number : data.questions.length}</small>
+                        </span>
                     </li>
                 `; 
             })
@@ -364,11 +364,11 @@ function SEARCH_DB(param) {
             document.querySelector("#filtered-list").innerHTML += `
                 <li>
                     <button class='transparent-btn'>
-                        <span>${data.name}</span>
-                        <span class='${data.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"}'>
-                            <small>${data.flashcards ? data.number : data.questions.length}</small>
-                        </span>
+                        <span class='name'>${data.name}</span>
                     </button>
+                    <span class='${data.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"} num'>
+                        <small>${data.flashcards ? data.number : data.questions.length}</small>
+                    </span>
                 </li>
             `;
         });
@@ -386,11 +386,11 @@ function SEARCH_DB(param) {
                 document.querySelector("#filtered-list").innerHTML += `
                     <li>
                         <button class='transparent-btn'>
-                            <span>${el.name}</span>
-                            <span class='${el.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"}'>
-                                <small>${el.flashcards ? el.number : el.questions.length}</small>
-                            </span>
+                            <span class='name'>${el.name}</span>
                         </button>
+                        <span class='${el.flashcards ? "fa-solid fa-layer-group" : "fa-regular fa-question-circle"} num'>
+                            <small>${el.flashcards ? el.number : el.questions.length}</small>
+                        </span>
                     </li>
                 `;
             });
@@ -427,4 +427,93 @@ function INIT_PAY() {
     } else {
         CREATE_MODAL(document.querySelector("#paynow").innerHTML);
     }
+}
+
+document.querySelector("#read-pdf-doc").onchange = function(e){
+    const fileReader = new FileReader();
+    const file = e.target.files[0];
+    console.log(file);
+
+    fileReader.onloadend = function (ev) {
+        document.querySelector(".search-bar").style.display = "none";
+        document.querySelector("#embed-wrap").style = "display: block";
+        document.querySelector("#reading").style.height = "100%";
+        document.querySelector("embed").src = ev.target.result;
+        document.querySelector(".file-picker-wrap").style.display = "none";
+        // widgets (fcs, quizzes)
+        // timer
+        // two PDFs 
+        // collapse sidebar
+        // responsive sidebar
+    }
+
+    fileReader.readAsDataURL(file);
+     
+    document.querySelector("#pdf-menu-btn").onclick = function(e) {
+        if(e.target.classList.contains("fa-bars")) {
+            e.target.setAttribute("class", "fa-solid fa-x");
+            e.target.title = "Close Menu";
+            document.querySelector(".embed-menu-options").style.height = "fit-content";
+        }else{
+            e.target.setAttribute("class", "fa-solid fa-bars");
+            e.target.title = "Open Menu";
+            document.querySelector(".embed-menu-options").style.height = "0";
+        }
+    }
+    
+    document.querySelector("#close-pdf-btn").onclick = function (e) {
+        document.querySelector(".search-bar").style.display = "flex";
+        document.querySelector("#embed-wrap").style = "display: none";
+        document.querySelector("#reading").style.height = "90%";
+        document.querySelector("embed").src = "";
+        document.querySelector(".file-picker-wrap").style.display = "grid";
+        document.querySelector(".file-picker-wrap input").value = "";
+
+        document.querySelector("#pdf-menu-btn").setAttribute("class", "fa-solid fa-bars");
+        document.querySelector("#pdf-menu-btn").title = "Open Menu";
+        document.querySelector(".embed-menu-options").style.height = "0";
+
+        if (document.fullscreenEnabled) {
+            document.exitFullscreen();
+        }
+    }
+
+    document.querySelector("#focus-mode-btn").onclick = function(e) {
+        const element = document.querySelector("#embed-wrap");
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+            e.target.innerHTML = "Focus Mode <i class='fa-solid fa-eye'></i>";
+            return;
+        }
+
+        document.onfullscreenchange = function (e) {
+            console.log(e)
+        }
+
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.msRequestFullScreen) {
+            element.msRequestFullScreen();
+        }
+
+        e.target.innerText = "Exit Focus Mode";
+    }
+}
+
+function SEARCH_RECENT(param) {
+    const recents = [...document.querySelectorAll(".saved-flashcard"), ...document.querySelectorAll(".saved-quiz")];
+
+    // if (!param.trim()) return;
+
+    recents.forEach((term => {
+        if (term.innerHTML.toLowerCase().indexOf(param.toLowerCase().trim()) > -1) {
+            term.parentElement.style.display = 'block';
+        } else {
+            term.parentElement.style.display = "none";
+        }
+    }));
 }
