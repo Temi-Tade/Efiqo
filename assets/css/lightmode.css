@@ -43,7 +43,7 @@ header nav ul li:hover {
     border-bottom: 3px solid var(--textcol);
 }
 
-#recent ul li button{
+#recent ul li button, #sidebar-list ul li button{
     color: var(--textcol);
 }
 
@@ -51,15 +51,15 @@ header nav ul li:hover {
     background-color: #ccc;
 }
 
-#recent ul li:nth-child(odd){
+#recent ul li:nth-child(odd), #sidebar-list ul li:nth-child(odd){
     background-color: #ccc7;
 }
 
-#recent ul li:nth-child(even){
+#recent ul li:nth-child(even), #sidebar-list ul li:nth-child(even){
     background-color: #aaa7;
 }
 
-#recent ul li:nth-child(even) button:hover{
+#recent ul li:nth-child(even) button:hover, #sidebar-list ul li:nth-child(even) button:hover    {
     background-color: #aaa7;
 }
 
@@ -169,4 +169,8 @@ button.prev{
 
 #recent .refresh-btn-wrap button{
     color: var(--textcol);
+}
+
+.file-picker-wrap label{
+    color: var(--bgcol);
 }

@@ -120,7 +120,7 @@ button{
     border: 0;
     color: var(--text-color);
     padding: .75rem;
-    border-radius: 1rem;
+    border-radius: .6rem;
     cursor: pointer;
     font-size: 1rem;
     display: block;
@@ -369,7 +369,7 @@ ul{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: .85rem;
+    border-radius: .6rem;
 }
 
 #recent ul li:nth-child(odd), #sidebar-list ul li:nth-child(odd){
@@ -1030,7 +1030,7 @@ footer #copyright span{
     }
 
     #sidebar-search input::placeholder{
-        font-size: .75rem;
+        font-size: 1rem;
     }
 
     #sidebar-list{
