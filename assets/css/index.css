@@ -863,6 +863,11 @@ footer #copyright span{
         margin-bottom: 1rem;
     }
 
+    #features {
+        background-color: red;
+        margin-top: 1rem;
+    }
+
     #recent{
         padding: .5rem;
         margin: 0;
