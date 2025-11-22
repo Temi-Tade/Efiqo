@@ -55,7 +55,7 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .5rem;
+    padding: .25rem;
     box-shadow: 0 1px 1px #7777;
     position: sticky;
     top: 0;
@@ -1018,11 +1018,15 @@ footer #copyright span{
     }
 
     #sidebar-wrap{
+        padding-top: .5rem;
+        margin: .25rem;
         position: sticky;
         top: 0;
         left: 0;
         bottom: 0;
         overflow-y: auto;
+        background-color: #1c1c1c;
+        border-radius: .4rem;
     }
 
     #sidebar-search input{
