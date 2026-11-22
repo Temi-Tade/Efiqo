@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { EfiqoProvider } from "@/context/EfiqoContext";
+import { AppFrame } from "@/components/AppFrame";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -49,7 +50,9 @@ export default function RootLayout({
       className={`${bricolage.variable} ${jakarta.variable} ${jetbrains.variable}`}
     >
       <body className="min-h-screen overflow-x-clip bg-[#F7F8FA] text-[#0F172A] dark:bg-[#0B0F19] dark:text-[#F1F5F9] selection:bg-blue-600/20 selection:text-blue-700 dark:selection:text-blue-300 transition-colors duration-200">
-        <EfiqoProvider>{children}</EfiqoProvider>
+        <EfiqoProvider>
+          <AppFrame>{children}</AppFrame>
+        </EfiqoProvider>
       </body>
     </html>
   );

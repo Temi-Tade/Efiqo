@@ -50,7 +50,7 @@ interface EfiqoContextValue {
   setIsTermsOpen: (open: boolean) => void;
   toast: ToastState | null;
   showToast: (message: string, tone?: "info" | "success" | "error") => void;
-  handleSignIn: (mode?: "google" | "local") => Promise<void>;
+  handleSignIn: (mode?: "google" | "local", onSuccess?: () => void) => Promise<void>;
   handleSignOut: () => Promise<void>;
   cycleTheme: () => Promise<void>;
   updateProfile: (next: UserProfile) => Promise<void>;
@@ -234,7 +234,10 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
     setPomodoroSeconds(POMODORO_DURATIONS[mode]);
   };
 
-  const handleSignIn = async (mode: "google" | "local" = "google") => {
+  const handleSignIn = async (
+    mode: "google" | "local" = "google",
+    onSuccess?: () => void
+  ) => {
     setAuthError("");
     try {
       if (mode === "local") {
@@ -247,6 +250,7 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
         applyThemeClass(localProf.theme || "device");
         setIsAuthModalOpen(false);
         showToast(`Signed in as ${localProf.userName} (Guest Mode)`, "info");
+        onSuccess?.();
         return;
       }
 
@@ -262,6 +266,7 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
         applyThemeClass(res.profile.theme || "device");
         setIsAuthModalOpen(false);
         showToast(`Welcome back, ${res.profile.userName}`, "success");
+        onSuccess?.();
       }
     } catch (err) {
       const msg =

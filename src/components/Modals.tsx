@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import {
   X,
   Check,
@@ -57,6 +58,8 @@ export function GlobalModals() {
   } = useEfiqo();
 
   const [authLoading, setAuthLoading] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <>
@@ -122,7 +125,9 @@ export function GlobalModals() {
                   disabled={authLoading}
                   onClick={async () => {
                     setAuthLoading(true);
-                    await handleSignIn("google");
+                    await handleSignIn("google", () => {
+                      if (pathname === "/") router.push("/dashboard");
+                    });
                     setAuthLoading(false);
                   }}
                   className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-900 dark:text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
@@ -146,7 +151,9 @@ export function GlobalModals() {
                   disabled={authLoading}
                   onClick={async () => {
                     setAuthLoading(true);
-                    await handleSignIn("local");
+                    await handleSignIn("local", () => {
+                      if (pathname === "/") router.push("/dashboard");
+                    });
                     setAuthLoading(false);
                   }}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
@@ -191,10 +198,12 @@ export function GlobalModals() {
           onSelectFlashcard={(set) => {
             setIsSearchModalOpen(false);
             setActiveStudio({ type: "flashcard", set });
+            router.push(`/materials/flashcards/${encodeURIComponent(set.id)}`);
           }}
           onSelectQuiz={(set) => {
             setIsSearchModalOpen(false);
             setActiveStudio({ type: "quiz", set, initialMode: "preview" });
+            router.push(`/materials/quizzes/${encodeURIComponent(set.id)}`);
           }}
         />
       )}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,11 +23,14 @@ import { EfiGeneratorModal } from "./Modals";
 export function QuizStudio({
   initialSet,
   initialMode = "create",
+  onBack,
 }: {
   initialSet: QuizSet | null;
   initialMode?: "create" | "preview" | "attempt";
+  onBack?: () => void;
 }) {
-  const { profile, saveQuizSet, setActiveStudio, openPremiumModal, showToast } = useEfiqo();
+  const router = useRouter();
+  const { profile, saveQuizSet, openPremiumModal, showToast } = useEfiqo();
 
   const [quiz, setQuiz] = useState<QuizSet | null>(initialSet);
   const [mode, setMode] = useState<"create" | "preview" | "attempt" | "result">(
@@ -126,7 +130,7 @@ export function QuizStudio({
     await saveQuizSet(created);
     setQuiz(created);
     setMode("create");
-    setActiveStudio({ type: "quiz", set: created, initialMode: "create" });
+    router.push(`/materials/quizzes/${encodeURIComponent(created.id)}?mode=create`);
     showToast("Quiz created. Add your questions below.", "success");
   };
 
@@ -195,7 +199,7 @@ export function QuizStudio({
 
   const handleShare = async () => {
     if (!quiz) return;
-    const url = `${window.location.origin}/?share_id=${encodeURIComponent(quiz.id)}&type=quiz`;
+    const url = `${window.location.origin}/materials/quizzes/${encodeURIComponent(quiz.id)}`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -246,11 +250,11 @@ export function QuizStudio({
       <div className="max-w-2xl mx-auto py-6">
         <button
           type="button"
-          onClick={() => setActiveStudio({ type: "overview" })}
+          onClick={() => (onBack ? onBack() : router.push("/materials/quizzes"))}
           className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white mb-6 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Library</span>
+          <span>Back to Quizzes</span>
         </button>
 
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
@@ -330,7 +334,7 @@ export function QuizStudio({
               await saveQuizSet(generated);
               setQuiz(generated);
               setMode("preview");
-              setActiveStudio({ type: "quiz", set: generated, initialMode: "preview" });
+              router.push(`/materials/quizzes/${encodeURIComponent(generated.id)}?mode=preview`);
             }}
           />
         )}
@@ -345,8 +349,9 @@ export function QuizStudio({
         <div className="flex items-start gap-3 min-w-0">
           <button
             type="button"
-            onClick={() => setActiveStudio({ type: "overview" })}
+            onClick={() => (onBack ? onBack() : router.push("/materials/quizzes"))}
             className="mt-0.5 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
+            aria-label="Back to Quizzes"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -718,10 +723,10 @@ export function QuizStudio({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setActiveStudio({ type: "overview" })}
+                    onClick={() => (onBack ? onBack() : router.push("/materials/quizzes"))}
                     className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold cursor-pointer"
                   >
-                    Return to Library
+                    Return to Quizzes
                   </button>
                 </div>
               </div>

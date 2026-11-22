@@ -1,22 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  BookOpen,
   Check,
   ChevronDown,
   Clock,
   FileText,
   Layers,
   RotateCw,
-  Share2,
-  Sun,
-  Moon,
-  Laptop,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
 import { STARTER_FLASHCARDS, STARTER_QUIZZES } from "@/types/efiqo";
+import { Footer } from "./Footer";
 
 const DEMO_CARDS = STARTER_FLASHCARDS[0].flashcards;
 const DEMO_QUIZ = STARTER_QUIZZES[0].questions[0];
@@ -49,7 +47,8 @@ const FAQS = [
 ];
 
 export function LandingPage() {
-  const { setIsAuthModalOpen, setIsTermsOpen, cycleTheme, theme, showToast, handleSignIn } = useEfiqo();
+  const { profile, setIsAuthModalOpen, handleSignIn } = useEfiqo();
+  const router = useRouter();
 
   // Interactive hero/demo flashcard state
   const [demoIndex, setDemoIndex] = useState(0);
@@ -65,23 +64,11 @@ export function LandingPage() {
   const currentDemoCard = DEMO_CARDS[demoIndex];
   const masteredCount = Object.values(demoMastered).filter(Boolean).length;
 
-  const handleShareSite = async () => {
-    const url = typeof window !== "undefined" ? window.location.origin : "";
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({
-          title: "efIQo",
-          text: "Make your study sessions more engaging with efIQo, your all-in-one study toolkit!",
-          url,
-        });
-        return;
-      } catch {
-        // Fallback to clipboard
-      }
-    }
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      await navigator.clipboard.writeText(url);
-      showToast("Link copied to clipboard.", "success");
+  const openWorkspaceOrAuth = () => {
+    if (profile) {
+      router.push("/dashboard");
+    } else {
+      setIsAuthModalOpen(true);
     }
   };
 
@@ -104,10 +91,10 @@ export function LandingPage() {
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <button
                 type="button"
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={openWorkspaceOrAuth}
                 className="px-5 sm:px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm sm:text-base inline-flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
               >
-                <span>Open Study Workspace</span>
+                <span>{profile ? "Open Dashboard" : "Open Study Workspace"}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
               <a
@@ -508,10 +495,16 @@ export function LandingPage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleSignIn("local")}
+                    onClick={() => {
+                      if (profile) {
+                        router.push("/materials");
+                      } else {
+                        handleSignIn("local", () => router.push("/materials"));
+                      }
+                    }}
                     className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap shrink-0 cursor-pointer"
                   >
-                    Load All in Workspace
+                    Browse All Materials
                   </button>
                 </div>
 
@@ -524,13 +517,12 @@ export function LandingPage() {
                           {deck.subject} · Flashcard Deck · {deck.flashcards.length} cards
                         </p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleSignIn("local")}
-                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 whitespace-nowrap shrink-0 cursor-pointer"
+                      <Link
+                        href={`/materials/flashcards/${encodeURIComponent(deck.id)}`}
+                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 whitespace-nowrap shrink-0"
                       >
                         Study Deck
-                      </button>
+                      </Link>
                     </div>
                   ))}
                   {STARTER_QUIZZES.map((quiz) => (
@@ -541,13 +533,12 @@ export function LandingPage() {
                           {quiz.subject} · Practice Quiz · {quiz.questions.length} questions
                         </p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleSignIn("local")}
-                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 whitespace-nowrap shrink-0 cursor-pointer"
+                      <Link
+                        href={`/materials/quizzes/${encodeURIComponent(quiz.id)}?mode=attempt`}
+                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 whitespace-nowrap shrink-0"
                       >
                         Attempt Quiz
-                      </button>
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -599,16 +590,16 @@ export function LandingPage() {
             </div>
             <button
               type="button"
-              onClick={() => setIsAuthModalOpen(true)}
+              onClick={openWorkspaceOrAuth}
               className="mt-8 w-full py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-semibold text-slate-900 dark:text-white transition-colors cursor-pointer"
             >
-              Start Free Workspace
+              {profile ? "Go to Dashboard" : "Start Free Workspace"}
             </button>
           </div>
 
           <div className="min-w-0 rounded-2xl border border-blue-600/50 bg-white dark:bg-slate-900 p-6 sm:p-8 flex flex-col justify-between">
             <div>
-              <div className="flex items-baseline justify-between gap-4 mb-4">
+              <div className="flex flex-wrap items-baseline justify-between gap-4 mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Premium Plan</h3>
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">One-time lifetime unlock</p>
@@ -634,13 +625,12 @@ export function LandingPage() {
                 </li>
               </ul>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsAuthModalOpen(true)}
-              className="mt-8 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white transition-colors cursor-pointer"
+            <Link
+              href="/pricing"
+              className="mt-8 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-sm font-semibold text-white transition-colors text-center block"
             >
-              Get Started & Unlock Anytime
-            </button>
+              View Plan Details
+            </Link>
           </div>
         </div>
       </section>
@@ -682,64 +672,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Quiet Editorial Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-[#F7F8FA] dark:bg-[#0B0F19] py-10 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2">
-              <img src="/images/efIQo_logo.png" alt="efIQo" className="w-6 h-6 object-contain" />
-              <span className="text-lg font-bold text-slate-900 dark:text-white">efIQo</span>
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              &copy; TenderLuxe Tech. Enterprises {new Date().getFullYear()}. All rights reserved.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-5 text-xs font-medium text-slate-600 dark:text-slate-300">
-            <button
-              type="button"
-              onClick={cycleTheme}
-              className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-            >
-              {theme === "light" ? (
-                <Sun className="w-3.5 h-3.5" />
-              ) : theme === "dark" ? (
-                <Moon className="w-3.5 h-3.5" />
-              ) : (
-                <Laptop className="w-3.5 h-3.5" />
-              )}
-              <span className="capitalize">Theme: {theme}</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleShareSite}
-              className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>Share efIQo</span>
-            </button>
-            <a
-              href="https://buymeacoffee.com/temiloluwa"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Support efIQo</span>
-            </a>
-            <button
-              type="button"
-              onClick={() => setIsTermsOpen(true)}
-              className="hover:text-slate-900 dark:hover:text-white cursor-pointer"
-            >
-              Terms of Use
-            </button>
-            <a href="mailto:tenderluxetechenterprises@gmail.com" className="hover:text-slate-900 dark:hover:text-white">
-              Contact
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,10 +23,15 @@ import { EfiGeneratorModal } from "./Modals";
 
 export function FlashcardStudio({
   initialSet,
+  onBack,
+  initialEdit = false,
 }: {
   initialSet: FlashcardSet | null;
+  onBack?: () => void;
+  initialEdit?: boolean;
 }) {
-  const { profile, saveFlashcardSet, setActiveStudio, openPremiumModal, showToast } = useEfiqo();
+  const router = useRouter();
+  const { profile, saveFlashcardSet, openPremiumModal, showToast } = useEfiqo();
 
   const [deck, setDeck] = useState<FlashcardSet | null>(initialSet);
   const [title, setTitle] = useState("");
@@ -42,7 +48,9 @@ export function FlashcardStudio({
   const [loadingMnemonic, setLoadingMnemonic] = useState(false);
 
   // Add/Edit card form
-  const [showEditor, setShowEditor] = useState(Boolean(initialSet && initialSet.flashcards.length === 0));
+  const [showEditor, setShowEditor] = useState(
+    Boolean(initialEdit || (initialSet && initialSet.flashcards.length === 0))
+  );
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [termInput, setTermInput] = useState("");
   const [defInput, setDefInput] = useState("");
@@ -122,7 +130,7 @@ export function FlashcardStudio({
     await saveFlashcardSet(created);
     setDeck(created);
     setShowEditor(true);
-    setActiveStudio({ type: "flashcard", set: created });
+    router.push(`/materials/flashcards/${encodeURIComponent(created.id)}?edit=1`);
     showToast("Flashcard set created. Add your first card below.", "success");
   };
 
@@ -215,7 +223,7 @@ export function FlashcardStudio({
 
   const handleShare = async () => {
     if (!deck) return;
-    const url = `${window.location.origin}/?share_id=${encodeURIComponent(deck.id)}&type=flashcard`;
+    const url = `${window.location.origin}/materials/flashcards/${encodeURIComponent(deck.id)}`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -282,11 +290,11 @@ export function FlashcardStudio({
       <div className="max-w-2xl mx-auto py-6">
         <button
           type="button"
-          onClick={() => setActiveStudio({ type: "overview" })}
+          onClick={() => (onBack ? onBack() : router.push("/materials/flashcards"))}
           className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white mb-6 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Library</span>
+          <span>Back to Flashcards</span>
         </button>
 
         <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8">
@@ -366,7 +374,7 @@ export function FlashcardStudio({
             onGeneratedFlashcards={async (generated) => {
               await saveFlashcardSet(generated);
               setDeck(generated);
-              setActiveStudio({ type: "flashcard", set: generated });
+              router.push(`/materials/flashcards/${encodeURIComponent(generated.id)}`);
             }}
           />
         )}
@@ -383,9 +391,9 @@ export function FlashcardStudio({
         <div className="flex items-start gap-3 min-w-0">
           <button
             type="button"
-            onClick={() => setActiveStudio({ type: "overview" })}
+            onClick={() => (onBack ? onBack() : router.push("/materials/flashcards"))}
             className="mt-0.5 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
-            aria-label="Back to Library"
+            aria-label="Back to Flashcards"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
