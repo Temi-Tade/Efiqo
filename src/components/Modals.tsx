@@ -69,7 +69,7 @@ export function GlobalModals() {
       {toast && (
         <div
           role="status"
-          className={`fixed bottom-4 left-3 right-3 sm:left-auto sm:right-5 sm:max-w-sm z-50 px-4 py-3 rounded-xl border shadow-lg text-sm font-medium flex items-center gap-2.5 transition-all break-words ${
+          className={`fixed bottom-20 md:bottom-5 left-3 right-3 sm:left-auto sm:right-5 sm:max-w-sm z-50 px-4 py-3 rounded-xl border shadow-lg text-sm font-medium flex items-center gap-2.5 transition-all break-words ${
             toast.tone === "error"
               ? "bg-rose-50 dark:bg-rose-950/90 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200"
               : toast.tone === "success"
