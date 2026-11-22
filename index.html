@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>efIQo — Active Recall Flashcards, Quizzes &amp; Study Workspace</title>
+  <meta name="description" content="Create, share and study with AI-powered flashcards, timed quizzes, and side-by-side PDF reading." />
+  <meta property="og:title" content="efIQo — Active Recall Flashcards, Quizzes &amp; Study Workspace" />
+  <meta property="og:description" content="Create, share and study with AI-powered flashcards, timed quizzes, and side-by-side PDF reading." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" href="/public/images/efIQo.png" />
+  <link rel="manifest" href="/public/manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F7F8FA;
+      --surface: #FFFFFF;
+      --border: #E2E8F0;
+      --text: #0F172A;
+      --muted: #475569;
+      --blue: #2563EB;
+      --rose: #E11D48;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0B0F19;
+        --surface: #131A29;
+        --border: #1E293B;
+        --text: #F1F5F9;
+        --muted: #94A3B8;
+      }
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    h1, h2, h3 { font-family: 'Bricolage Grotesque', system-ui, sans-serif; letter-spacing: -0.02em; }
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .nav-row {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .brand img { width: 28px; height: 28px; object-fit: contain; }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .nav-links a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 6px; }
+    main { flex: 1; padding: 4rem 0; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 820px) {
+      .hero { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+    .eyebrow {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+      line-height: 1.06;
+      margin-bottom: 1.25rem;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      max-width: 54ch;
+    }
+    .hero-card {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    .hero-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-card-caption {
+      padding: 1rem 1.25rem;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    .grid {
+      margin-top: 3.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .card-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+    .card h2 { font-size: 1.125rem; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.875rem; color: var(--muted); }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+    .footer-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav-row">
+      <a href="/" class="brand">
+        <img src="/public/images/efIQo_logo.png" alt="efIQo logo" />
+        <span>efIQo</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#toolkit">Toolkit</a>
+        <a href="mailto:tenderluxetechenterprises@gmail.com">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Active Recall Studio &middot; Flashcards, Quizzes &amp; PDF Synthesis</p>
+          <h1>Turn dense lecture notes into lasting recall.</h1>
+          <p>
+            Build custom flashcard decks, run timed multiple-choice exams, read course PDFs alongside a Pomodoro sprint timer, and synthesize study sets directly from lecture slides.
+          </p>
+        </div>
+        <div class="hero-card">
+          <img src="/public/images/hero_study_desk_1795358729158.jpg" alt="efIQo modern study workspace" />
+          <div class="hero-card-caption">
+            efIQo Study Toolkit &middot; Firebase Hosting Entry Document
+          </div>
+        </div>
+      </section>
+
+      <section id="toolkit" class="grid">
+        <div class="card">
+          <div class="card-num">01. Flashcard Studio</div>
+          <h2>Active Recall Decks</h2>
+          <p>3D tactile card flips, image attachments, spaced confidence tracking, and JSON export.</p>
+        </div>
+        <div class="card">
+          <div class="card-num">02. Quiz Engine</div>
+          <h2>Timed Practice Exams</h2>
+          <p>Multiple-choice authoring, optional countdown timer, and line-by-line answer review.</p>
+        </div>
+        <div class="card">
+          <div class="card-num">03. Efi AI Synthesis</div>
+          <h2>Lecture-to-Deck</h2>
+          <p>Generate structured flashcards and quizzes from course topics or 10 MB PDFs via Next.js API routes.</p>
+        </div>
+        <div class="card">
+          <div class="card-num">04. PDF &amp; Pomodoro</div>
+          <h2>Side-by-Side Reader</h2>
+          <p>Open local PDFs in distraction-free Focus Mode paired with a 25/5/15 sprint timer.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <span>&copy; TenderLuxe Tech. Enterprises. All rights reserved.</span>
+      <span>efIQo Study Workspace</span>
+    </div>
+  </footer>
+</body>
+</html>
