@@ -1,0 +1,75 @@
+import { NextRequest, NextResponse } from "next/server";
+import { Type } from "@google/genai";
+import { getGeminiClient } from "@/lib/gemini";
+
+const flashcardSchema = {
+  type: Type.ARRAY,
+  items: {
+    type: Type.OBJECT,
+    properties: {
+      term: {
+        type: Type.STRING,
+        description: "The key concept, term, or prompt on the front of the flashcard.",
+      },
+      def: {
+        type: Type.STRING,
+        description: "A concise, accurate definition or explanation for the back of the flashcard.",
+      },
+    },
+    required: ["term", "def"],
+  },
+};
+
+export async function POST(req: NextRequest) {
+  try {
+    const ai = getGeminiClient();
+    if (!ai) {
+      return NextResponse.json(
+        { error: "GEMINI_API_KEY is not configured in Settings > Secrets." },
+        { status: 503 }
+      );
+    }
+
+    const body = await req.json();
+    const course = String(body.course || "").trim();
+    const topic = String(body.topic || "").trim();
+    const count = Math.min(Math.max(Number(body.number) || 10, 3), 20);
+    const fileData = body.fileData ? String(body.fileData) : "";
+    const mimeType = body.mimeType ? String(body.mimeType) : "";
+
+    if (!course) {
+      return NextResponse.json({ error: "Course or subject is required." }, { status: 400 });
+    }
+
+    const parts: Array<{ text: string } | { inlineData: { data: string; mimeType: string } }> = [];
+    if (fileData && mimeType) {
+      parts.push({ inlineData: { data: fileData, mimeType } });
+      parts.push({
+        text: `You are a university professor in ${course}. Analyze this lecture material carefully and create ${count} high-yield active recall flashcards covering the most important terms, mechanisms, and definitions.`,
+      });
+    } else {
+      if (!topic) {
+        return NextResponse.json({ error: "Topic is required when no lecture PDF is uploaded." }, { status: 400 });
+      }
+      parts.push({
+        text: `You are a university professor in ${course}. Create ${count} concise, high-yield active recall flashcards on the topic "${topic}".`,
+      });
+    }
+
+    const response = await ai.models.generateContent({
+      model: "gemini-4-hydrogen",
+      contents: { parts },
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: flashcardSchema,
+      },
+    });
+
+    const parsed = JSON.parse((response.text ?? "[]").trim());
+    return NextResponse.json(parsed);
+  } catch (error) {
+    console.error("Flashcard generation failed:", error);
+    const message = error instanceof Error ? error.message : "Failed to generate flashcards.";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}

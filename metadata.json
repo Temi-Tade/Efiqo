@@ -1,0 +1,8 @@
+{
+  "name": "efIQo",
+  "description": "Create, share and study with AI-powered flashcards, timed quizzes, and side-by-side PDF reading.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
