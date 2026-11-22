@@ -273,7 +273,7 @@ export function WorkspaceDashboard() {
           onClick={() => setMobileSidebarOpen(false)}
         >
           <aside
-            className="w-72 bg-white dark:bg-slate-900 h-full border-r border-slate-200 dark:border-slate-800 flex flex-col"
+            className="w-72 max-w-[85vw] bg-white dark:bg-slate-900 h-full border-r border-slate-200 dark:border-slate-800 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-4 h-14 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">

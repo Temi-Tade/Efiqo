@@ -1,7 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Check, Loader2, Upload, Sun, Moon, Laptop, Sparkles, Search, BookOpen, HelpCircle, Trash2, LogOut, Star } from "lucide-react";
+import {
+  X,
+  Check,
+  Loader2,
+  Upload,
+  Sun,
+  Moon,
+  Laptop,
+  Sparkles,
+  Search,
+  BookOpen,
+  HelpCircle,
+  Trash2,
+  LogOut,
+  Star,
+  AlertCircle,
+} from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
 import {
   BETA_USERS,
@@ -23,6 +39,7 @@ export function GlobalModals() {
     cycleTheme,
     isAuthModalOpen,
     setIsAuthModalOpen,
+    authError,
     isProfileModalOpen,
     setIsProfileModalOpen,
     isSearchModalOpen,
@@ -48,7 +65,7 @@ export function GlobalModals() {
       {toast && (
         <div
           role="status"
-          className={`fixed bottom-5 right-5 z-50 px-4 py-3 rounded-lg border shadow-lg text-sm font-medium flex items-center gap-2.5 max-w-sm transition-all ${
+          className={`fixed bottom-4 left-3 right-3 sm:left-auto sm:right-5 sm:max-w-sm z-50 px-4 py-3 rounded-xl border shadow-lg text-sm font-medium flex items-center gap-2.5 transition-all break-words ${
             toast.tone === "error"
               ? "bg-rose-50 dark:bg-rose-950/90 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200"
               : toast.tone === "success"
@@ -56,43 +73,51 @@ export function GlobalModals() {
               : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100"
           }`}
         >
-          <span>{toast.message}</span>
+          <span className="min-w-0 break-words">{toast.message}</span>
         </div>
       )}
 
       {/* Auth Modal */}
       {isAuthModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4"
-          onClick={() => setIsAuthModalOpen(false)}
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+          onClick={() => !authLoading && setIsAuthModalOpen(false)}
         >
           <div
-            className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl"
+            className="w-full min-w-0 max-w-md my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="flex items-start justify-between gap-3 mb-5">
+              <div className="min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
                   Enter efIQo Workspace
                 </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  Sync flashcards, quizzes, and study mastery across sessions.
+                  Sync flashcards, quizzes, and study mastery with your Google account.
                 </p>
               </div>
               <button
                 type="button"
+                disabled={authLoading}
                 onClick={() => setIsAuthModalOpen(false)}
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
                 aria-label="Close sign-in dialog"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {authError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-200 flex items-start gap-2 break-words">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span className="min-w-0 break-words leading-relaxed">{authError}</span>
+              </div>
+            )}
+
             <div className="space-y-3">
               <button
                 type="button"
-                disabled={authLoading}
+                disabled={authLoading || !isFirebaseConfigured}
                 onClick={async () => {
                   setAuthLoading(true);
                   await handleSignIn("google");
@@ -101,12 +126,18 @@ export function GlobalModals() {
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-900 dark:text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
               >
                 {authLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin shrink-0" />
                 ) : (
-                  <img src="/images/google-logo.png" alt="Google" className="w-5 h-5" />
+                  <img src="/images/google-logo.png" alt="Google" className="w-5 h-5 shrink-0" />
                 )}
-                <span>{isFirebaseConfigured ? "Continue with Google" : "Sign In with Google"}</span>
+                <span>Sign In with Google</span>
               </button>
+
+              <div className="relative py-1 flex items-center">
+                <div className="flex-1 border-t border-slate-200 dark:border-slate-800" />
+                <span className="px-3 text-[11px] font-medium text-slate-400">or</span>
+                <div className="flex-1 border-t border-slate-200 dark:border-slate-800" />
+              </div>
 
               <button
                 type="button"
@@ -116,14 +147,14 @@ export function GlobalModals() {
                   await handleSignIn("local");
                   setAuthLoading(false);
                 }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
               >
-                <span>Quick Start as Guest Scholar</span>
+                <span>Continue as Guest (Local Only)</span>
               </button>
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-5 text-center leading-relaxed">
-              Starter Biology, Economics, and Neuroanatomy study sets are preloaded so you can test active recall immediately.
+              Sign in with Google via Firebase to save your decks to Firestore across devices.
             </p>
           </div>
         </div>
@@ -168,16 +199,18 @@ export function GlobalModals() {
       {/* Premium Upgrade Modal */}
       {isPremiumModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
           onClick={() => setIsPremiumModalOpen(false)}
         >
           <div
-            className="w-full max-w-xl rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl"
+            className="w-full min-w-0 max-w-xl my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{premiumReason}</h2>
+            <div className="flex items-start justify-between gap-3 mb-5">
+              <div className="min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white break-words">
+                  {premiumReason}
+                </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                   One-time lifetime upgrade. No recurring monthly subscriptions.
                 </p>
@@ -185,44 +218,46 @@ export function GlobalModals() {
               <button
                 type="button"
                 onClick={() => setIsPremiumModalOpen(false)}
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4 mb-6">
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50">
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 min-w-0">
                 <h3 className="font-bold text-slate-900 dark:text-white mb-2">Free Plan ($0)</h3>
                 <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   <li>Up to 7 flashcard sets</li>
                   <li>Up to 7 quiz sets</li>
                   <li>Up to 20 cards/questions per set</li>
-                  <li>PDF reader & Pomodoro timer</li>
+                  <li>PDF reader &amp; Pomodoro timer</li>
                 </ul>
               </div>
-              <div className="p-4 rounded-xl border border-blue-600/40 bg-blue-50/50 dark:bg-blue-950/20">
-                <h3 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+              <div className="p-4 rounded-xl border border-blue-600/40 bg-blue-50/50 dark:bg-blue-950/20 min-w-0">
+                <h3 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 flex-wrap">
                   <span>Premium Plan ($4.99)</span>
-                  <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                  <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
                 </h3>
                 <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
                   <li>Unlimited flashcard sets</li>
                   <li>Unlimited quiz sets</li>
-                  <li>Unlimited cards & questions per set</li>
-                  <li>Priority JSON/CSV export & Efi tutor</li>
+                  <li>Unlimited cards &amp; questions per set</li>
+                  <li>Priority JSON/CSV export &amp; Efi tutor</li>
                 </ul>
               </div>
             </div>
 
-            {profile && BETA_USERS.some((u) => u.email.toLowerCase() === profile.email.toLowerCase()) && !profile.isPremiumUser ? (
+            {profile &&
+            BETA_USERS.some((u) => u.email.toLowerCase() === profile.email.toLowerCase()) &&
+            !profile.isPremiumUser ? (
               <form
                 action="https://www.paypal.com/ncp/payment/8Y8A5MD9DW9B8"
                 method="post"
                 target="_blank"
-                className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-slate-200 dark:border-slate-800"
+                className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
               >
-                <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+                <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center sm:text-left">
                   Early access beta discount applied (50% off).
                 </p>
                 <button
@@ -237,7 +272,7 @@ export function GlobalModals() {
                 action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J"
                 method="post"
                 target="_blank"
-                className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-slate-200 dark:border-slate-800"
+                className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
               >
                 <span className="text-xs text-slate-500 dark:text-slate-400">
                   Checkout powered securely by PayPal.
@@ -257,24 +292,26 @@ export function GlobalModals() {
       {/* Terms Modal */}
       {isTermsOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
           onClick={() => setIsTermsOpen(false)}
         >
           <div
-            className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl"
+            className="w-full min-w-0 max-w-lg my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Terms of Use & Privacy</h2>
+            <div className="flex items-start justify-between gap-3 mb-4">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                Terms of Use &amp; Privacy
+              </h2>
               <button
                 type="button"
                 onClick={() => setIsTermsOpen(false)}
-                className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+            <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed break-words">
               <p>
                 By using efIQo, you agree that account information (display name, email, study decks, and preferences) is stored solely to provide, sync, and improve your study workspace.
               </p>
@@ -288,7 +325,10 @@ export function GlobalModals() {
                 <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Contact</h3>
                 <p>
                   For enquiries, reach out to{" "}
-                  <a href="mailto:tenderluxetechenterprises@gmail.com" className="text-blue-600 dark:text-blue-400 underline">
+                  <a
+                    href="mailto:tenderluxetechenterprises@gmail.com"
+                    className="text-blue-600 dark:text-blue-400 underline break-all"
+                  >
                     tenderluxetechenterprises@gmail.com
                   </a>
                   .
@@ -365,16 +405,16 @@ function ProfileModalContent({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg max-h-[88vh] overflow-y-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl"
+        className="w-full min-w-0 max-w-lg my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Scholar Profile</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={cycleTheme}
@@ -394,6 +434,7 @@ function ProfileModalContent({
               type="button"
               onClick={onClose}
               className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+              aria-label="Close profile dialog"
             >
               <X className="w-5 h-5" />
             </button>
@@ -401,15 +442,17 @@ function ProfileModalContent({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex items-center gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-3.5 pb-4 border-b border-slate-200 dark:border-slate-800">
             <img
               src={form.pfp.url || "/images/default_avatar.png"}
               alt={form.fullName}
-              className="w-16 h-16 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0"
               referrerPolicy="no-referrer"
             />
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-slate-900 dark:text-white truncate">{form.fullName || form.userName}</p>
+              <p className="font-semibold text-slate-900 dark:text-white truncate">
+                {form.fullName || form.userName}
+              </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{form.email}</p>
               <div className="mt-2 flex items-center gap-2">
                 {!editing ? (
@@ -431,8 +474,8 @@ function ProfileModalContent({
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+            <div className="min-w-0">
               <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
                 Username{" "}
                 {editing && (
@@ -452,39 +495,45 @@ function ProfileModalContent({
                 value={form.userName}
                 disabled={!editing}
                 onChange={(e) => handleUsernameChange(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Full Name</label>
+            <div className="min-w-0">
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Full Name
+              </label>
               <input
                 type="text"
                 value={form.fullName}
                 disabled={!editing}
                 onChange={(e) => setForm((p) => ({ ...p, fullName: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Date of Birth</label>
+            <div className="min-w-0">
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Date of Birth
+              </label>
               <input
                 type="date"
                 value={form.dob}
                 disabled={!editing}
                 onChange={(e) => setForm((p) => ({ ...p, dob: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Sex</label>
+            <div className="min-w-0">
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Sex
+              </label>
               <select
                 value={form.gender}
                 disabled={!editing}
                 onChange={(e) => setForm((p) => ({ ...p, gender: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               >
                 <option value="">-- Select --</option>
                 <option value="Male">Male</option>
@@ -492,24 +541,28 @@ function ProfileModalContent({
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Phone Number</label>
+            <div className="min-w-0">
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 value={form.tel}
                 disabled={!editing}
                 onChange={(e) => setForm((p) => ({ ...p, tel: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Academic Level</label>
+            <div className="min-w-0">
+              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                Academic Level
+              </label>
               <select
                 value={form.level}
                 disabled={!editing}
                 onChange={(e) => setForm((p) => ({ ...p, level: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               >
                 <option value="">-- Select --</option>
                 <option value="Pre-primary">Pre-primary</option>
@@ -523,7 +576,7 @@ function ProfileModalContent({
           </div>
 
           {editing && (
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex flex-wrap justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -556,7 +609,7 @@ function ProfileModalContent({
             </button>
           )}
 
-          <div className="flex items-center justify-between gap-4 pt-2">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
             <button
               type="button"
               onClick={onOpenTerms}
@@ -565,7 +618,7 @@ function ProfileModalContent({
               Terms of Use
             </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {!confirmDelete ? (
                 <button
                   type="button"
@@ -638,14 +691,14 @@ function CommunitySearchModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden"
+        className="w-full min-w-0 max-w-2xl my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[85dvh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+        <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 shrink-0">
           <Search className="w-5 h-5 text-slate-400 shrink-0" />
           <input
             type="search"
@@ -653,25 +706,25 @@ function CommunitySearchModal({
             value={queryText}
             onChange={(e) => setQueryText(e.target.value)}
             placeholder="Search community flashcards and quizzes..."
-            className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white focus:outline-none"
+            className="flex-1 min-w-0 bg-transparent text-sm text-slate-900 dark:text-white focus:outline-none"
           />
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-5 overflow-y-auto space-y-6">
+        <div className="p-4 sm:p-5 flex-1 min-h-0 overflow-y-auto overscroll-contain space-y-6">
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-sm text-slate-500">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span>Loading shared study library...</span>
             </div>
           ) : filteredFlashcards.length === 0 && filteredQuizzes.length === 0 ? (
-            <p className="py-12 text-center text-sm text-slate-500">
+            <p className="py-12 text-center text-sm text-slate-500 break-words">
               No matching flashcards or quizzes found for &ldquo;{queryText}&rdquo;.
             </p>
           ) : (
@@ -689,8 +742,10 @@ function CommunitySearchModal({
                         onClick={() => onSelectFlashcard(f)}
                         className="w-full px-4 py-3 text-left flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
                       >
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{f.name}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                            {f.name}
+                          </p>
                           <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                             {f.desc || "Flashcard deck"} · {f.flashcards.length} cards
                           </p>
@@ -715,8 +770,10 @@ function CommunitySearchModal({
                         onClick={() => onSelectQuiz(q)}
                         className="w-full px-4 py-3 text-left flex items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
                       >
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{q.name}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                            {q.name}
+                          </p>
                           <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                             {q.desc || "Multiple-choice quiz"} · {q.questions.length} questions
                           </p>
@@ -854,18 +911,18 @@ export function EfiGeneratorModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
       onClick={() => !loading && onClose()}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xl"
+        className="w-full min-w-0 max-w-md my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-4 mb-5">
-          <div className="flex items-center gap-3">
-            <img src="/images/Efi2.png" alt="Efi mascot" className="w-10 h-10 object-contain" />
-            <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+        <div className="flex items-start justify-between gap-3 mb-5">
+          <div className="flex items-center gap-3 min-w-0">
+            <img src="/images/Efi2.png" alt="Efi mascot" className="w-10 h-10 object-contain shrink-0" />
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">
                 {mode === "flashcard" ? "Generate Flashcards with Efi" : "Generate Quiz with Efi"}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -877,7 +934,7 @@ export function EfiGeneratorModal({
             type="button"
             disabled={loading}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            className="p-1.5 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -893,7 +950,7 @@ export function EfiGeneratorModal({
                 : "text-slate-600 dark:text-slate-400"
             }`}
           >
-            Course & Topic
+            Course &amp; Topic
           </button>
           <button
             type="button"
@@ -909,7 +966,7 @@ export function EfiGeneratorModal({
         </div>
 
         <form onSubmit={handleGenerate} className="space-y-4">
-          <div>
+          <div className="min-w-0">
             <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
               Course / Subject
             </label>
@@ -919,12 +976,12 @@ export function EfiGeneratorModal({
               value={course}
               onChange={(e) => setCourse(e.target.value)}
               placeholder={mode === "flashcard" ? "e.g. Organic Chemistry" : "e.g. Macroeconomics"}
-              className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm"
+              className="w-full min-w-0 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm"
             />
           </div>
 
           {sourceType === "topic" ? (
-            <div>
+            <div className="min-w-0">
               <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
                 Specific Topic
               </label>
@@ -934,17 +991,17 @@ export function EfiGeneratorModal({
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 placeholder={mode === "flashcard" ? "e.g. Nucleophilic Substitution" : "e.g. Monetary Policy"}
-                className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm"
+                className="w-full min-w-0 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm"
               />
             </div>
           ) : (
-            <div>
+            <div className="min-w-0">
               <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
                 Lecture PDF (Max 10 MB)
               </label>
-              <label className="flex flex-col items-center justify-center p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 cursor-pointer text-center">
-                <Upload className="w-5 h-5 text-blue-600 mb-1.5" />
-                <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
+              <label className="flex flex-col items-center justify-center p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 cursor-pointer text-center overflow-hidden">
+                <Upload className="w-5 h-5 text-blue-600 mb-1.5 shrink-0" />
+                <span className="text-xs font-medium text-slate-700 dark:text-slate-200 max-w-full truncate px-2">
                   {pdfFile ? pdfFile.name : "Choose a PDF document"}
                 </span>
                 <input
@@ -957,7 +1014,7 @@ export function EfiGeneratorModal({
             </div>
           )}
 
-          <div>
+          <div className="min-w-0">
             <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
               Number of {mode === "flashcard" ? "Cards" : "Questions"} (3–20)
             </label>
@@ -968,12 +1025,12 @@ export function EfiGeneratorModal({
               required
               value={count}
               onChange={(e) => setCount(Number(e.target.value))}
-              className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm tabular-nums"
+              className="w-full min-w-0 px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm tabular-nums"
             />
           </div>
 
           {error && (
-            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300">
+            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300 break-words">
               {error}
             </div>
           )}

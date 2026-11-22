@@ -1,5 +1,17 @@
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, type Auth } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  browserLocalPersistence,
+  setPersistence,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+  onAuthStateChanged,
+  signOut as fbSignOut,
+  type Auth,
+  type User,
+} from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -13,7 +25,14 @@ import {
   where,
   type Firestore,
 } from "firebase/firestore";
-import { BETA_USERS, STARTER_FLASHCARDS, STARTER_QUIZZES, type FlashcardSet, type QuizSet, type UserProfile } from "@/types/efiqo";
+import {
+  BETA_USERS,
+  STARTER_FLASHCARDS,
+  STARTER_QUIZZES,
+  type FlashcardSet,
+  type QuizSet,
+  type UserProfile,
+} from "@/types/efiqo";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
@@ -25,7 +44,9 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
 };
 
-export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+export const isFirebaseConfigured = Boolean(
+  firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId
+);
 
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
@@ -36,14 +57,36 @@ if (typeof window !== "undefined" && isFirebaseConfigured) {
   try {
     app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     auth = getAuth(app);
+    setPersistence(auth, browserLocalPersistence).catch(() => {
+      // Persistence may fall back to session/memory in strict browser modes
+    });
     firestore = getFirestore(app);
     provider = new GoogleAuthProvider();
+    provider.addScope("email");
+    provider.addScope("profile");
+    provider.setCustomParameters({ prompt: "select_account" });
   } catch (err) {
-    console.warn("Firebase initialization skipped, using local workspace store:", err);
+    console.warn("Firebase initialization failed:", err);
   }
 }
 
 export const STORAGE_KEY = "efiqo user data";
+
+function sanitizeForFirestore<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeForFirestore(item)) as unknown as T;
+  }
+  if (value !== null && typeof value === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      if (v !== undefined) {
+        out[k] = sanitizeForFirestore(v);
+      }
+    }
+    return out as T;
+  }
+  return value;
+}
 
 export function createEmptyProfile(overrides: Partial<UserProfile> = {}): UserProfile {
   const email = overrides.email || "learner@efiqo.local";
@@ -52,8 +95,13 @@ export function createEmptyProfile(overrides: Partial<UserProfile> = {}): UserPr
     userName: overrides.userName || "Scholar",
     theme: overrides.theme || "device",
     createdOn: overrides.createdOn || new Date().toUTCString(),
-    userId: overrides.userId || (typeof crypto !== "undefined" ? crypto.randomUUID() : `user-${Date.now()}`),
-    pfp: overrides.pfp || { file: "/images/default_avatar.png", url: "/images/default_avatar.png" },
+    userId:
+      overrides.userId ||
+      (typeof crypto !== "undefined" ? crypto.randomUUID() : `user-${Date.now()}`),
+    pfp: overrides.pfp || {
+      file: "/images/default_avatar.png",
+      url: "/images/default_avatar.png",
+    },
     fullName: overrides.fullName || "efIQo Scholar",
     gender: overrides.gender || "",
     dob: overrides.dob || "",
@@ -68,6 +116,46 @@ export function createEmptyProfile(overrides: Partial<UserProfile> = {}): UserPr
   };
 }
 
+export async function buildOrFetchFirebaseUserProfile(user: User): Promise<UserProfile> {
+  const email = user.email || `${user.uid}@efiqo.app`;
+  const existing = await getUserProfileFromStore(email);
+  const displayName = user.displayName || "efIQo Scholar";
+  const firstName = displayName.includes(" ")
+    ? displayName.slice(0, displayName.indexOf(" "))
+    : displayName;
+  const photoUrl = user.photoURL || "/images/default_avatar.png";
+  const isBeta = BETA_USERS.some((u) => u.email.toLowerCase() === email.toLowerCase());
+
+  if (existing) {
+    const merged: UserProfile = {
+      ...existing,
+      userId: existing.userId || user.uid,
+      email,
+      fullName: existing.fullName || displayName,
+      userName: existing.userName || firstName,
+      pfp: existing.pfp?.url ? existing.pfp : { file: photoUrl, url: photoUrl },
+      isBetaUser: existing.isBetaUser ?? isBeta,
+    };
+    await saveUserProfileToStore(merged);
+    return merged;
+  }
+
+  const fresh = createEmptyProfile({
+    userId: user.uid,
+    email,
+    fullName: displayName,
+    userName: firstName,
+    pfp: {
+      file: photoUrl,
+      url: photoUrl,
+    },
+    tel: user.phoneNumber || user.providerData?.[0]?.phoneNumber || "",
+    isBetaUser: isBeta,
+  });
+  await saveUserProfileToStore(fresh);
+  return fresh;
+}
+
 export async function getUserProfileFromStore(email: string): Promise<UserProfile | null> {
   if (firestore) {
     try {
@@ -76,7 +164,7 @@ export async function getUserProfileFromStore(email: string): Promise<UserProfil
         return snap.data() as UserProfile;
       }
     } catch {
-      // Fallback to local API store if Firestore rules or network block read
+      // Fallback to local API / localStorage if network/rules fail
     }
   }
 
@@ -105,11 +193,13 @@ export async function saveUserProfileToStore(profile: UserProfile): Promise<void
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
   }
 
-  if (firestore && auth?.currentUser) {
+  if (firestore && auth?.currentUser && profile.email !== "scholar@efiqo.local") {
     try {
-      await setDoc(doc(firestore, "users", profile.email), profile, { merge: true });
-    } catch {
-      // Fall through to local API backup
+      await setDoc(doc(firestore, "users", profile.email), sanitizeForFirestore(profile), {
+        merge: true,
+      });
+    } catch (err) {
+      console.warn("Firestore saveUserProfileToStore error:", err);
     }
   }
 
@@ -124,7 +214,10 @@ export async function saveUserProfileToStore(profile: UserProfile): Promise<void
   }
 }
 
-export async function updateUserProfileFields(email: string, patch: Partial<UserProfile>): Promise<void> {
+export async function updateUserProfileFields(
+  email: string,
+  patch: Partial<UserProfile>
+): Promise<void> {
   if (typeof window !== "undefined") {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
@@ -133,11 +226,14 @@ export async function updateUserProfileFields(email: string, patch: Partial<User
     }
   }
 
-  if (firestore && auth?.currentUser) {
+  if (firestore && auth?.currentUser && email !== "scholar@efiqo.local") {
     try {
-      await updateDoc(doc(firestore, "users", email), patch as Record<string, unknown>);
-    } catch {
-      // Fallback
+      await updateDoc(
+        doc(firestore, "users", email),
+        sanitizeForFirestore(patch) as Record<string, unknown>
+      );
+    } catch (err) {
+      console.warn("Firestore updateUserProfileFields error:", err);
     }
   }
 
@@ -153,7 +249,7 @@ export async function updateUserProfileFields(email: string, patch: Partial<User
 }
 
 export async function deleteUserAccountFromStore(email: string): Promise<void> {
-  if (firestore && auth?.currentUser) {
+  if (firestore && auth?.currentUser && email !== "scholar@efiqo.local") {
     try {
       await deleteDoc(doc(firestore, "users", email));
     } catch {
@@ -171,7 +267,10 @@ export async function deleteUserAccountFromStore(email: string): Promise<void> {
   }
 }
 
-export async function fetchCommunityLibrary(): Promise<{ flashcards: FlashcardSet[]; quizzes: QuizSet[] }> {
+export async function fetchCommunityLibrary(): Promise<{
+  flashcards: FlashcardSet[];
+  quizzes: QuizSet[];
+}> {
   const flashcards: FlashcardSet[] = [...STARTER_FLASHCARDS];
   const quizzes: QuizSet[] = [...STARTER_QUIZZES];
 
@@ -181,8 +280,16 @@ export async function fetchCommunityLibrary(): Promise<{ flashcards: FlashcardSe
       const snap = await getDocs(q);
       snap.forEach((docSnap) => {
         const data = docSnap.data() as Partial<UserProfile>;
-        if (Array.isArray(data.flashcards)) flashcards.push(...data.flashcards);
-        if (Array.isArray(data.quizzes)) quizzes.push(...data.quizzes);
+        if (Array.isArray(data.flashcards)) {
+          data.flashcards.forEach((f) => {
+            if (!flashcards.some((existing) => existing.id === f.id)) flashcards.push(f);
+          });
+        }
+        if (Array.isArray(data.quizzes)) {
+          data.quizzes.forEach((qz) => {
+            if (!quizzes.some((existing) => existing.id === qz.id)) quizzes.push(qz);
+          });
+        }
       });
     } catch {
       // Fallback to local API
@@ -213,7 +320,10 @@ export async function fetchCommunityLibrary(): Promise<{ flashcards: FlashcardSe
   return { flashcards, quizzes };
 }
 
-export async function isUsernameAvailable(username: string, currentEmail: string): Promise<boolean> {
+export async function isUsernameAvailable(
+  username: string,
+  currentEmail: string
+): Promise<boolean> {
   const normalized = username.trim().toLowerCase();
   if (normalized.length < 4) return false;
 
@@ -250,49 +360,80 @@ export async function isUsernameAvailable(username: string, currentEmail: string
   return true;
 }
 
-export async function signInWithGoogleAccount(): Promise<{ profile: UserProfile; mode: "firebase" | "local" }> {
-  if (auth && provider) {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const email = user.email || "scholar@efiqo.local";
-      const existing = await getUserProfileFromStore(email);
-      if (existing) {
-        await saveUserProfileToStore(existing);
-        return { profile: existing, mode: "firebase" };
-      }
+function formatFirebaseAuthError(err: unknown): string {
+  const code = (err as { code?: string })?.code || "";
+  const host = typeof window !== "undefined" ? window.location.hostname : "this domain";
 
-      const displayName = user.displayName || "efIQo Scholar";
-      const firstName = displayName.includes(" ") ? displayName.slice(0, displayName.indexOf(" ")) : displayName;
-      const fresh = createEmptyProfile({
-        email,
-        fullName: displayName,
-        userName: firstName,
-        pfp: {
-          file: user.photoURL || "/images/default_avatar.png",
-          url: user.photoURL || "/images/default_avatar.png",
-        },
-        tel: user.providerData?.[0]?.phoneNumber || "",
-      });
-      await saveUserProfileToStore(fresh);
-      return { profile: fresh, mode: "firebase" };
-    } catch (err) {
-      // In preview iframes or unauthorized domains, gracefully fall back to local session
-      console.warn("Google popup auth unavailable in current origin, starting local study session:", err);
+  switch (code) {
+    case "auth/popup-closed-by-user":
+    case "auth/cancelled-popup-request":
+      return "Google sign-in popup was closed before completing.";
+    case "auth/popup-blocked":
+      return "Popup was blocked by your browser. Please allow popups for this site and try again.";
+    case "auth/unauthorized-domain":
+      return `Google sign-in is blocked on "${host}". Add "${host}" in Firebase Console -> Authentication -> Settings -> Authorized domains.`;
+    case "auth/network-request-failed":
+      return "Network error while contacting Google/Firebase Authentication. Check your connection and try again.";
+    case "auth/operation-not-allowed":
+      return "Google sign-in provider is not enabled in Firebase Authentication settings.";
+    default:
+      return err instanceof Error ? err.message : "Could not complete Google sign-in with Firebase.";
+  }
+}
+
+export async function checkGoogleRedirectResult(): Promise<UserProfile | null> {
+  if (!auth) return null;
+  try {
+    const result = await getRedirectResult(auth);
+    if (result?.user) {
+      return await buildOrFetchFirebaseUserProfile(result.user);
     }
+  } catch (err) {
+    throw new Error(formatFirebaseAuthError(err));
+  }
+  return null;
+}
+
+export function subscribeToFirebaseAuth(
+  onUser: (user: User | null) => void
+): () => void {
+  if (!auth) {
+    onUser(null);
+    return () => {};
+  }
+  return onAuthStateChanged(auth, onUser);
+}
+
+export async function signInWithGoogleAccount(): Promise<{
+  profile?: UserProfile;
+  mode: "firebase" | "redirect";
+}> {
+  if (!auth || !provider) {
+    throw new Error(
+      "Firebase Authentication is not configured. Verify NEXT_PUBLIC_FIREBASE_* environment variables."
+    );
   }
 
-  const fallbackEmail = "scholar@efiqo.local";
-  const existing = await getUserProfileFromStore(fallbackEmail);
-  const localProfile =
-    existing ||
-    createEmptyProfile({
-      email: fallbackEmail,
-      fullName: "efIQo Scholar",
-      userName: "Scholar",
-    });
-  await saveUserProfileToStore(localProfile);
-  return { profile: localProfile, mode: "local" };
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const profile = await buildOrFetchFirebaseUserProfile(result.user);
+    return { profile, mode: "firebase" };
+  } catch (err) {
+    const code = (err as { code?: string })?.code || "";
+    const isTopWindow = typeof window !== "undefined" && window.self === window.top;
+
+    // On mobile browsers (or popup-restricted top-level tabs), seamlessly fall back to Firebase Redirect flow
+    if (
+      isTopWindow &&
+      (code === "auth/popup-blocked" ||
+        code === "auth/operation-not-supported-in-this-environment")
+    ) {
+      await signInWithRedirect(auth, provider);
+      return { mode: "redirect" };
+    }
+
+    throw new Error(formatFirebaseAuthError(err));
+  }
 }
 
 export async function signOutAccount(): Promise<void> {

@@ -4,11 +4,14 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import type { FlashcardSet, QuizSet, UserProfile } from "@/types/efiqo";
 import {
   STORAGE_KEY,
+  buildOrFetchFirebaseUserProfile,
+  checkGoogleRedirectResult,
   createEmptyProfile,
   getUserProfileFromStore,
   saveUserProfileToStore,
   signInWithGoogleAccount,
   signOutAccount,
+  subscribeToFirebaseAuth,
   updateUserProfileFields,
 } from "@/lib/firebase";
 
@@ -32,6 +35,8 @@ interface EfiqoContextValue {
   setActiveStudio: React.Dispatch<React.SetStateAction<ActiveStudio>>;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
+  authError: string;
+  setAuthError: (msg: string) => void;
   isProfileModalOpen: boolean;
   setIsProfileModalOpen: (open: boolean) => void;
   isSearchModalOpen: boolean;
@@ -74,7 +79,8 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<"device" | "light" | "dark">("device");
   const [activeStudio, setActiveStudio] = useState<ActiveStudio>({ type: "overview" });
 
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpenState] = useState(false);
+  const [authError, setAuthError] = useState("");
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
@@ -87,12 +93,17 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
   const [pomodoroRunning, setPomodoroRunning] = useState(false);
   const [pomodoroSessions, setPomodoroSessions] = useState(0);
 
+  const setIsAuthModalOpen = useCallback((open: boolean) => {
+    setIsAuthModalOpenState(open);
+    if (!open) setAuthError("");
+  }, []);
+
   const showToast = useCallback((message: string, tone: "info" | "success" | "error" = "info") => {
     const id = Date.now();
     setToast({ id, message, tone });
     setTimeout(() => {
       setToast((curr) => (curr?.id === id ? null : curr));
-    }, 4000);
+    }, 4500);
   }, []);
 
   const applyThemeClass = useCallback((mode: "device" | "light" | "dark") => {
@@ -104,11 +115,35 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    let active = true;
+    let unsubscribeAuth = () => {};
+
     const init = async () => {
       try {
-        const storedTheme = (localStorage.getItem("efiqo theme") as "device" | "light" | "dark" | null) || "device";
+        const storedTheme =
+          (localStorage.getItem("efiqo theme") as "device" | "light" | "dark" | null) || "device";
+
+        // 1. Handle any pending Firebase mobile/redirect Google login first
+        try {
+          const redirectProfile = await checkGoogleRedirectResult();
+          if (redirectProfile && active) {
+            setProfile(redirectProfile);
+            const resolved = redirectProfile.theme || storedTheme;
+            setTheme(resolved);
+            applyThemeClass(resolved);
+            showToast(`Welcome back, ${redirectProfile.userName}`, "success");
+          }
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "Google sign-in redirect failed.";
+          if (active) {
+            setAuthError(msg);
+            showToast(msg, "error");
+          }
+        }
+
+        // 2. Load cached local session if present while Firebase auth resolves
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
+        if (raw && active) {
           const parsed = JSON.parse(raw) as UserProfile;
           setProfile(parsed);
           const resolvedTheme = parsed.theme || storedTheme;
@@ -116,24 +151,46 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
           applyThemeClass(resolvedTheme);
 
           const fresh = await getUserProfileFromStore(parsed.email);
-          if (fresh) {
+          if (fresh && active) {
             setProfile(fresh);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
             setTheme(fresh.theme || resolvedTheme);
             applyThemeClass(fresh.theme || resolvedTheme);
           }
-        } else {
+        } else if (active) {
           setTheme(storedTheme);
           applyThemeClass(storedTheme);
         }
+
+        // 3. Subscribe to live Firebase Auth state changes (matches pre-migration auth flow)
+        unsubscribeAuth = subscribeToFirebaseAuth(async (firebaseUser) => {
+          if (!active) return;
+          if (firebaseUser) {
+            try {
+              const fbProfile = await buildOrFetchFirebaseUserProfile(firebaseUser);
+              if (!active) return;
+              setProfile(fbProfile);
+              const resolved = fbProfile.theme || storedTheme;
+              setTheme(resolved);
+              applyThemeClass(resolved);
+            } catch {
+              // Keep existing cached profile if network unavailable
+            }
+          }
+        });
       } catch {
         applyThemeClass("device");
       } finally {
-        setIsHydrated(true);
+        if (active) setIsHydrated(true);
       }
     };
+
     init();
-  }, [applyThemeClass]);
+    return () => {
+      active = false;
+      unsubscribeAuth();
+    };
+  }, [applyThemeClass, showToast]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -175,6 +232,7 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleSignIn = async (mode: "google" | "local" = "google") => {
+    setAuthError("");
     try {
       if (mode === "local") {
         const localProf =
@@ -185,23 +243,28 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
         setTheme(localProf.theme || "device");
         applyThemeClass(localProf.theme || "device");
         setIsAuthModalOpen(false);
-        showToast(`Signed in as ${localProf.userName}`, "success");
+        showToast(`Signed in as ${localProf.userName} (Guest Mode)`, "info");
         return;
       }
 
       const res = await signInWithGoogleAccount();
-      setProfile(res.profile);
-      setTheme(res.profile.theme || "device");
-      applyThemeClass(res.profile.theme || "device");
-      setIsAuthModalOpen(false);
-      showToast(
-        res.mode === "firebase"
-          ? `Welcome back, ${res.profile.userName}`
-          : `Signed in as ${res.profile.userName} (Local Workspace)`,
-        "success"
-      );
-    } catch {
-      showToast("Could not complete sign in. Please try again.", "error");
+      if (res.mode === "redirect") {
+        showToast("Redirecting to Google sign-in...", "info");
+        return;
+      }
+
+      if (res.profile) {
+        setProfile(res.profile);
+        setTheme(res.profile.theme || "device");
+        applyThemeClass(res.profile.theme || "device");
+        setIsAuthModalOpen(false);
+        showToast(`Welcome back, ${res.profile.userName}`, "success");
+      }
+    } catch (err) {
+      const msg =
+        err instanceof Error ? err.message : "Could not complete Google sign-in. Please try again.";
+      setAuthError(msg);
+      showToast(msg, "error");
     }
   };
 
@@ -296,6 +359,8 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
         setActiveStudio,
         isAuthModalOpen,
         setIsAuthModalOpen,
+        authError,
+        setAuthError,
         isProfileModalOpen,
         setIsProfileModalOpen,
         isSearchModalOpen,

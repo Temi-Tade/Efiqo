@@ -48,7 +48,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${bricolage.variable} ${jakarta.variable} ${jetbrains.variable}`}
     >
-      <body className="min-h-screen bg-[#F7F8FA] text-[#0F172A] dark:bg-[#0B0F19] dark:text-[#F1F5F9] selection:bg-blue-600/20 selection:text-blue-700 dark:selection:text-blue-300 transition-colors duration-200">
+      <body className="min-h-screen overflow-x-clip bg-[#F7F8FA] text-[#0F172A] dark:bg-[#0B0F19] dark:text-[#F1F5F9] selection:bg-blue-600/20 selection:text-blue-700 dark:selection:text-blue-300 transition-colors duration-200">
         <EfiqoProvider>{children}</EfiqoProvider>
       </body>
     </html>

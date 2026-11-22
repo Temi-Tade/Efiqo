@@ -660,13 +660,13 @@ export function QuizStudio({
 
           {/* Confirmation Modal */}
           {confirmSubmit && (
-            <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-              <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-xl">
+            <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4">
+              <div className="w-full min-w-0 max-w-sm my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xl">
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">Submit Quiz Attempt?</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 break-words">
                   You have answered {Object.keys(userAnswers).length} of {quiz.questions.length} questions in {quiz.name}.
                 </p>
-                <div className="mt-6 flex justify-end gap-2">
+                <div className="mt-6 flex flex-wrap justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setConfirmSubmit(false)}
@@ -679,7 +679,7 @@ export function QuizStudio({
                     onClick={finalizeSubmit}
                     className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold cursor-pointer"
                   >
-                    Confirm & Grade
+                    Confirm &amp; Grade
                   </button>
                 </div>
               </div>
