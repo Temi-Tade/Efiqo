@@ -268,8 +268,6 @@ export default function UserPage() {
                   className="w-full min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
                 >
                   <option value="">-- Select --</option>
-                  <option value="Pre-primary">Pre-primary</option>
-                  <option value="Primary">Primary</option>
                   <option value="Secondary (High School)">Secondary (High School)</option>
                   <option value="College (Undergrad)">College (Undergrad)</option>
                   <option value="College (Postgrad)">College (Postgrad)</option>

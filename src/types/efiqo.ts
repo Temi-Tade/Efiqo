@@ -63,6 +63,8 @@ export interface UserProfile {
   flashcards: FlashcardSet[];
   quizzes: QuizSet[];
   studyMinutes?: number;
+  aiUsageDate?: string;
+  aiUsageCount?: number;
 }
 
 export const PLAN_LIMITS = {

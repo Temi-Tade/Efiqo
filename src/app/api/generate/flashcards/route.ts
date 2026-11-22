@@ -58,19 +58,19 @@ export async function POST(req: NextRequest) {
     if (fileData && mimeType) {
       parts.push({ inlineData: { data: fileData, mimeType } });
       parts.push({
-        text: `You are a university professor in ${course}. Analyze this lecture material carefully and create ${count} high-yield active recall flashcards covering the most important terms, mechanisms, and definitions.`,
+        text: `You are Efi, an elite academic AI tutor optimized for the Nigerian and global education markets (WAEC, NECO, JAMB, GCE, Undergraduate & Postgraduate studies). Analyze this lecture material thoroughly and create exactly ${count} rigorous, high-yield active-recall flashcards covering core concepts, definitions, formulas, and mechanisms in ${course}. Keep terms precise and definitions concise yet comprehensive (1-3 sentences).`,
       });
     } else {
       if (!topic) {
         return NextResponse.json({ error: "Topic is required when no lecture PDF is uploaded." }, { status: 400 });
       }
       parts.push({
-        text: `You are a university professor in ${course}. Create ${count} concise, high-yield active recall flashcards on the topic "${topic}".`,
+        text: `You are Efi, an elite academic AI tutor optimized for the Nigerian and global education markets (WAEC, NECO, JAMB, GCE, Undergraduate & Postgraduate studies). Create exactly ${count} rigorous, high-yield active-recall flashcards on the topic "${topic}" for ${course}. Keep terms precise and definitions concise yet comprehensive (1-3 sentences).`,
       });
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-4-hydrogen",
+      model: "gemini-2.0-flash",
       contents: { parts },
       config: {
         responseMimeType: "application/json",

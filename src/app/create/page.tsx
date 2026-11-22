@@ -23,7 +23,7 @@ function CreateStudioContent() {
   const initialTab: "flashcard" | "quiz" | "ai" =
     initialParam === "quiz" ? "quiz" : initialParam === "ai" ? "ai" : "flashcard";
 
-  const { profile, isHydrated, saveFlashcardSet, saveQuizSet, openPremiumModal, showToast } = useEfiqo();
+  const { profile, isHydrated, saveFlashcardSet, saveQuizSet, openPremiumModal, showToast, checkAndConsumeAiUsage } = useEfiqo();
 
   const [tab, setTab] = useState<"flashcard" | "quiz" | "ai">(initialTab);
 
@@ -168,6 +168,9 @@ function CreateStudioContent() {
         return;
       }
     }
+
+    const allowed = await checkAndConsumeAiUsage();
+    if (!allowed) return;
 
     setAiLoading(true);
     try {

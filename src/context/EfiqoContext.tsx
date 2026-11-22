@@ -64,6 +64,7 @@ interface EfiqoContextValue {
   pomodoroSessions: number;
   togglePomodoro: () => void;
   resetPomodoro: (mode?: "focus" | "short" | "long") => void;
+  checkAndConsumeAiUsage: () => Promise<boolean>;
 }
 
 const EfiqoContext = createContext<EfiqoContextValue | null>(null);
@@ -365,6 +366,45 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
     setIsPremiumModalOpen(true);
   };
 
+  const checkAndConsumeAiUsage = async (): Promise<boolean> => {
+    const today = new Date().toISOString().slice(0, 10);
+    if (!profile) {
+      const guestDate = typeof window !== "undefined" ? localStorage.getItem("efiqo_guest_ai_date") : null;
+      const guestCount = typeof window !== "undefined" ? Number(localStorage.getItem("efiqo_guest_ai_count") || 0) : 0;
+      const currentCount = guestDate === today ? guestCount : 0;
+      if (currentCount >= 3) {
+        openPremiumModal("Free plan limit reached (3 AI generations per day). Sign in or upgrade to Premium for unlimited AI generations!");
+        showToast("Free plan limit reached (3 AI generations per day).", "error");
+        return false;
+      }
+      if (typeof window !== "undefined") {
+        localStorage.setItem("efiqo_guest_ai_date", today);
+        localStorage.setItem("efiqo_guest_ai_count", String(currentCount + 1));
+      }
+      return true;
+    }
+
+    if (profile.isPremiumUser) return true;
+
+    const lastDate = profile.aiUsageDate;
+    const currentCount = lastDate === today ? (profile.aiUsageCount || 0) : 0;
+    if (currentCount >= 3) {
+      openPremiumModal("Free plan limit reached (3 AI generations per day). Upgrade to Premium for unlimited AI generations!");
+      showToast("Free plan limit reached (3 AI generations per day).", "error");
+      return false;
+    }
+
+    const nextCount = currentCount + 1;
+    const updated: UserProfile = {
+      ...profile,
+      aiUsageDate: today,
+      aiUsageCount: nextCount,
+    };
+    setProfile(updated);
+    await saveUserProfileToStore(updated);
+    return true;
+  };
+
   return (
     <EfiqoContext.Provider
       value={{
@@ -403,6 +443,7 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
         pomodoroSessions,
         togglePomodoro,
         resetPomodoro,
+        checkAndConsumeAiUsage,
       }}
     >
       {children}

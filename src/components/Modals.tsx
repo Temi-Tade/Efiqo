@@ -599,8 +599,6 @@ function ProfileModalContent({
                 className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm disabled:opacity-60"
               >
                 <option value="">-- Select --</option>
-                <option value="Pre-primary">Pre-primary</option>
-                <option value="Primary">Primary</option>
                 <option value="Secondary (High School)">Secondary (High School)</option>
                 <option value="College (Undergrad)">College (Undergrad)</option>
                 <option value="College (Postgrad)">College (Postgrad)</option>
@@ -838,7 +836,7 @@ export function EfiGeneratorModal({
   onGeneratedFlashcards?: (set: FlashcardSet) => void;
   onGeneratedQuiz?: (set: QuizSet) => void;
 }) {
-  const { profile, showToast } = useEfiqo();
+  const { profile, showToast, checkAndConsumeAiUsage } = useEfiqo();
   const [sourceType, setSourceType] = useState<"topic" | "pdf">("topic");
   const [course, setCourse] = useState("");
   const [topic, setTopic] = useState("");
@@ -892,6 +890,9 @@ export function EfiGeneratorModal({
         return;
       }
     }
+
+    const allowed = await checkAndConsumeAiUsage();
+    if (!allowed) return;
 
     setLoading(true);
     try {

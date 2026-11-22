@@ -67,19 +67,19 @@ export async function POST(req: NextRequest) {
     if (fileData && mimeType) {
       parts.push({ inlineData: { data: fileData, mimeType } });
       parts.push({
-        text: `You are a university professor in ${course}. Analyze this lecture material and create ${count} multiple-choice exam questions with 4 distinct options each. Ensure the answer field matches one of the 4 options verbatim.`,
+        text: `You are Efi, an elite academic AI tutor optimized for the Nigerian and global education markets (WAEC, NECO, JAMB, GCE, Undergraduate & Postgraduate studies). Analyze this lecture material thoroughly and create exactly ${count} rigorous multiple-choice exam questions with 4 distinct, plausible options each for ${course}. Ensure the answer field matches one of the 4 options verbatim, and provide a clear, instructive explanation.`,
       });
     } else {
       if (!topic) {
         return NextResponse.json({ error: "Topic is required when no lecture PDF is uploaded." }, { status: 400 });
       }
       parts.push({
-        text: `You are a university professor in ${course}. Create ${count} multiple-choice exam questions on the topic "${topic}" with 4 distinct options each. Ensure the answer field matches one of the 4 options verbatim.`,
+        text: `You are Efi, an elite academic AI tutor optimized for the Nigerian and global education markets (WAEC, NECO, JAMB, GCE, Undergraduate & Postgraduate studies). Create exactly ${count} rigorous multiple-choice exam questions on the topic "${topic}" for ${course} with 4 distinct options each. Ensure the answer field matches one of the 4 options verbatim, and provide a clear explanation.`,
       });
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-4-hydrogen",
+      model: "gemini-2.0-flash",
       contents: { parts },
       config: {
         responseMimeType: "application/json",
