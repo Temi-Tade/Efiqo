@@ -43,7 +43,7 @@ function AppShell() {
   }, [searchParams, profile, handleSignIn, setActiveStudio, showToast]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen w-full min-w-0 overflow-x-clip flex flex-col">
       <Navbar />
       {!isHydrated ? (
         <div className="flex-1 flex items-center justify-center p-12 text-sm text-slate-500">

@@ -52,13 +52,18 @@ let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 let provider: GoogleAuthProvider | null = null;
+let lastInitError = "";
+let initPromise: Promise<boolean> | null = null;
 
 function initFirebaseWithConfig(cfg: typeof firebaseConfig): boolean {
   if (typeof window === "undefined") return false;
-  if (!cfg.apiKey || !cfg.authDomain || !cfg.projectId) return false;
+  if (!cfg.apiKey || !cfg.authDomain || !cfg.projectId) {
+    return false;
+  }
   try {
     firebaseConfig = cfg;
     isFirebaseConfigured = true;
+    lastInitError = "";
     app = getApps().length ? getApps()[0] : initializeApp(cfg);
     auth = getAuth(app);
     setPersistence(auth, browserLocalPersistence).catch(() => {
@@ -71,6 +76,8 @@ function initFirebaseWithConfig(cfg: typeof firebaseConfig): boolean {
     provider.setCustomParameters({ prompt: "select_account" });
     return true;
   } catch (err) {
+    lastInitError =
+      err instanceof Error ? err.message : "Firebase SDK initialization failed.";
     console.warn("Firebase initialization failed:", err);
     return false;
   }
@@ -85,16 +92,27 @@ export async function ensureFirebaseInitialized(): Promise<boolean> {
   if (initFirebaseWithConfig(firebaseConfig)) return true;
   if (typeof window === "undefined") return false;
 
-  try {
-    const res = await fetch("/api/firebase-config");
-    if (res.ok) {
-      const runtimeCfg = (await res.json()) as typeof firebaseConfig;
-      return initFirebaseWithConfig(runtimeCfg);
-    }
-  } catch {
-    // Ignore fetch error
+  if (!initPromise) {
+    initPromise = (async () => {
+      try {
+        const res = await fetch("/api/firebase-config", { cache: "no-store" });
+        if (!res.ok) {
+          lastInitError = `Could not load Firebase configuration (HTTP ${res.status}).`;
+          return false;
+        }
+        const runtimeCfg = (await res.json()) as typeof firebaseConfig;
+        return initFirebaseWithConfig(runtimeCfg);
+      } catch (err) {
+        lastInitError =
+          err instanceof Error ? err.message : "Could not load Firebase configuration.";
+        return false;
+      } finally {
+        initPromise = null;
+      }
+    })();
   }
-  return false;
+
+  return initPromise;
 }
 
 export const STORAGE_KEY = "efiqo user data";
@@ -439,7 +457,8 @@ export async function signInWithGoogleAccount(): Promise<{
   await ensureFirebaseInitialized();
   if (!auth || !provider) {
     throw new Error(
-      "Firebase Authentication is not configured. Verify NEXT_PUBLIC_FIREBASE_* environment variables."
+      lastInitError ||
+        "Firebase Authentication is not configured. Ensure NEXT_PUBLIC_FIREBASE_* values are set in .env (and restart the server) or your deployment environment variables."
     );
   }
 

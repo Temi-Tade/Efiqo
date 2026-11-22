@@ -15,12 +15,12 @@ export function Navbar() {
 
   if (profile) {
     return (
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#F7F8FA]/90 dark:bg-[#0B0F19]/90 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
+      <header className="sticky top-0 z-30 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-[#F7F8FA]/90 dark:bg-[#0B0F19]/90 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-8 min-w-0">
           <button
             type="button"
             onClick={() => setActiveStudio({ type: "overview" })}
-            className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap shrink-0 cursor-pointer"
+            className="flex items-center gap-2 text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap shrink-0 cursor-pointer"
           >
             <img
               src="/images/efIQo_logo.png"
@@ -31,7 +31,7 @@ export function Navbar() {
             <span>efIQo</span>
           </button>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300 min-w-0">
             <button
               type="button"
               onClick={() => setActiveStudio({ type: "overview" })}
@@ -85,19 +85,19 @@ export function Navbar() {
             </button>
           </nav>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0">
             <button
               type="button"
               onClick={() => setIsProfileModalOpen(true)}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-600 transition-colors whitespace-nowrap shrink-0 cursor-pointer max-w-[160px] sm:max-w-none"
             >
               <img
                 src={profile.pfp.url || "/images/default_avatar.png"}
                 alt={profile.userName}
-                className="w-6 h-6 rounded-full object-cover"
+                className="w-6 h-6 rounded-full object-cover shrink-0"
                 referrerPolicy="no-referrer"
               />
-              <span className="text-sm font-medium text-slate-900 dark:text-slate-100 max-w-[120px] truncate">
+              <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
                 {profile.userName || "Account"}
               </span>
             </button>
@@ -108,11 +108,11 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-slate-800/80 bg-[#F7F8FA]/90 dark:bg-[#0B0F19]/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
+    <header className="sticky top-0 z-30 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-[#F7F8FA]/90 dark:bg-[#0B0F19]/90 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-8 min-w-0">
         <a
           href="#top"
-          className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap shrink-0"
+          className="flex items-center gap-2 text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap shrink-0"
         >
           <img
             src="/images/efIQo_logo.png"
@@ -123,7 +123,7 @@ export function Navbar() {
           <span>efIQo</span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300 min-w-0">
           <a href="#toolkit" className="hover:text-slate-900 dark:hover:text-white hover:underline underline-offset-8 whitespace-nowrap shrink-0">
             Toolkit
           </a>
@@ -145,7 +145,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setIsAuthModalOpen(true)}
-            className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            className="px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
           >
             Start Studying
           </button>

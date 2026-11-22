@@ -339,20 +339,22 @@ export function QuizStudio({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0">
       {/* Quiz Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 min-w-0">
           <button
             type="button"
             onClick={() => setActiveStudio({ type: "overview" })}
-            className="mt-0.5 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            className="mt-0.5 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{quiz.name}</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white [overflow-wrap:anywhere]">
+              {quiz.name}
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums [overflow-wrap:anywhere]">
               {quiz.desc ? `${quiz.desc} · ` : ""}
               {quiz.questions.length} questions
               {typeof quiz.lastScore === "number" ? ` · Last score: ${quiz.lastScore}/${quiz.questions.length}` : ""}
@@ -425,8 +427,8 @@ export function QuizStudio({
 
       {/* CREATE MODE */}
       {mode === "create" && isOwner && (
-        <div className="grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 min-w-0">
+          <div className="lg:col-span-6 min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6">
             <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">Add Question</h2>
             <form onSubmit={handleAddQuestion} className="space-y-4">
               <div>
@@ -447,7 +449,7 @@ export function QuizStudio({
                 <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
                   Add Answer Options
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-2 min-w-0">
                   <input
                     type="text"
                     value={optionInput}
@@ -459,12 +461,12 @@ export function QuizStudio({
                       }
                     }}
                     placeholder="Type an option and press Add"
-                    className="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm"
+                    className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm"
                   />
                   <button
                     type="button"
                     onClick={handleAddOption}
-                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
                   >
                     Add
                   </button>
@@ -516,7 +518,7 @@ export function QuizStudio({
             </form>
           </div>
 
-          <div className="lg:col-span-6 space-y-3">
+          <div className="lg:col-span-6 min-w-0 space-y-3">
             <h2 className="text-base font-bold text-slate-900 dark:text-white">
               Question Bank ({quiz.questions.length})
             </h2>
@@ -615,7 +617,7 @@ export function QuizStudio({
                 })}
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   disabled={qIndex === 0}

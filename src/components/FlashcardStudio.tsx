@@ -377,21 +377,23 @@ export function FlashcardStudio({
   const masteredCount = deck.flashcards.filter((c) => c.mastery === "mastered").length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0">
       {/* Studio Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-3 min-w-0">
           <button
             type="button"
             onClick={() => setActiveStudio({ type: "overview" })}
-            className="mt-0.5 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            className="mt-0.5 p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
             aria-label="Back to Library"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{deck.name}</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white [overflow-wrap:anywhere]">
+              {deck.name}
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums [overflow-wrap:anywhere]">
               {deck.desc ? `${deck.desc} · ` : ""}
               {deck.flashcards.length} cards · {masteredCount} mastered
             </p>
@@ -464,11 +466,11 @@ export function FlashcardStudio({
       </div>
 
       {/* Main Stage Grid */}
-      <div className={`grid gap-8 ${showEditor ? "lg:grid-cols-12" : "max-w-3xl mx-auto"}`}>
+      <div className={`grid grid-cols-1 gap-8 min-w-0 ${showEditor ? "lg:grid-cols-12" : "max-w-3xl mx-auto"}`}>
         {/* Flashcard Study Stage */}
-        <div className={showEditor ? "lg:col-span-7 space-y-4" : "space-y-4"}>
+        <div className={showEditor ? "lg:col-span-7 min-w-0 space-y-4" : "min-w-0 space-y-4"}>
           {visibleIndices.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-12 text-center">
+            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-8 sm:p-12 text-center">
               <p className="text-base font-semibold text-slate-900 dark:text-white">
                 {missedOnly ? "All cards in this deck are mastered." : "No flashcards in this set yet."}
               </p>
@@ -497,55 +499,56 @@ export function FlashcardStudio({
             </div>
           ) : (
             <>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => setIsFlipped((f) => !f)}
-                className="perspective-1200 w-full h-80 sm:h-96 cursor-pointer focus:outline-none"
-                aria-label="Flip flashcard"
-              >
+              <div className="w-full overflow-hidden rounded-2xl">
                 <div
-                  className={`relative w-full h-full transition-transform duration-500 preserve-3d ${
-                    isFlipped ? "rotate-y-180" : ""
-                  }`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setIsFlipped((f) => !f)}
+                  className="perspective-1200 w-full h-80 sm:h-96 cursor-pointer focus:outline-none"
+                  aria-label="Flip flashcard"
                 >
-                  {/* Front */}
-                  <div className="absolute inset-0 backface-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-10 flex flex-col justify-between shadow-xs">
-                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 tabular-nums">
-                      <span>
-                        Card {currentIndex + 1} of {visibleIndices.length} ·{" "}
-                        {currentCard?.mastery === "mastered"
-                          ? "Mastered"
-                          : currentCard?.mastery === "learning"
-                          ? "Needs Review"
-                          : "New"}
-                      </span>
-                      <span className="inline-flex items-center gap-1">
-                        <RotateCw className="w-3.5 h-3.5" />
-                        Space / Click to flip
-                      </span>
+                  <div
+                    className={`relative w-full h-full transition-transform duration-500 preserve-3d ${
+                      isFlipped ? "rotate-y-180" : ""
+                    }`}
+                  >
+                    {/* Front */}
+                    <div className="absolute inset-0 backface-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-10 flex flex-col justify-between shadow-xs">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 tabular-nums">
+                        <span>
+                          Card {currentIndex + 1} of {visibleIndices.length} ·{" "}
+                          {currentCard?.mastery === "mastered"
+                            ? "Mastered"
+                            : currentCard?.mastery === "learning"
+                            ? "Needs Review"
+                            : "New"}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <RotateCw className="w-3.5 h-3.5" />
+                          Space / Click to flip
+                        </span>
+                      </div>
+
+                      <div className="text-center px-2">
+                        <p className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-white text-balance [overflow-wrap:anywhere]">
+                          {currentCard?.term}
+                        </p>
+                      </div>
+
+                      <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-blue-600 transition-all duration-300"
+                          style={{ width: `${((currentIndex + 1) / visibleIndices.length) * 100}%` }}
+                        />
+                      </div>
                     </div>
 
-                    <div className="text-center px-2">
-                      <p className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white text-balance">
-                        {currentCard?.term}
-                      </p>
-                    </div>
-
-                    <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-600 transition-all duration-300"
-                        style={{ width: `${((currentIndex + 1) / visibleIndices.length) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Back */}
-                  <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border border-blue-600/40 bg-white dark:bg-slate-900 p-6 sm:p-8 flex flex-col justify-between shadow-xs overflow-y-auto">
-                    <div className="flex items-center justify-between text-xs text-blue-600 dark:text-blue-400">
-                      <span>Definition · {currentCard?.term}</span>
-                      <span>Click to flip back</span>
-                    </div>
+                    {/* Back */}
+                    <div className="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border border-blue-600/40 bg-white dark:bg-slate-900 p-5 sm:p-8 flex flex-col justify-between shadow-xs overflow-y-auto">
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-blue-600 dark:text-blue-400">
+                        <span className="truncate max-w-full">Definition · {currentCard?.term}</span>
+                        <span>Click to flip back</span>
+                      </div>
 
                     <div className="my-auto py-4 text-center space-y-4">
                       {currentCard?.img?.url && (
@@ -599,9 +602,10 @@ export function FlashcardStudio({
                   </div>
                 </div>
               </div>
+              </div>
 
               {mnemonic && (
-                <div className="rounded-xl border border-blue-200 dark:border-blue-900 bg-blue-50/70 dark:bg-blue-950/30 p-4 text-sm text-slate-700 dark:text-slate-200">
+                <div className="rounded-xl border border-blue-200 dark:border-blue-900 bg-blue-50/70 dark:bg-blue-950/30 p-4 text-sm text-slate-700 dark:text-slate-200 [overflow-wrap:anywhere]">
                   <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">
                     Efi Study Mnemonic
                   </p>
@@ -610,7 +614,7 @@ export function FlashcardStudio({
               )}
 
               {/* Navigation & Card Actions */}
-              <div className="flex items-center justify-between gap-4 pt-1">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                 <button
                   type="button"
                   onClick={goPrev}
@@ -662,7 +666,7 @@ export function FlashcardStudio({
 
         {/* Add / Edit Panel */}
         {showEditor && isOwner && (
-          <div className="lg:col-span-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 h-fit">
+          <div className="lg:col-span-5 min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 h-fit">
             <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">
               {editingCardId ? "Edit Flashcard" : "Add New Flashcard"}
             </h2>

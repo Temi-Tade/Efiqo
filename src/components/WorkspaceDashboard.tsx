@@ -260,7 +260,7 @@ export function WorkspaceDashboard() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto w-full flex min-h-[calc(100vh-4rem)]">
+    <div className="max-w-7xl mx-auto w-full min-w-0 overflow-x-clip flex min-h-[calc(100vh-4rem)]">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:block w-64 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         {SidebarContent}
@@ -294,7 +294,7 @@ export function WorkspaceDashboard() {
       {/* Main Content Viewport */}
       <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
         {/* Mobile Workspace Bar */}
-        <div className="lg:hidden flex items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200 dark:border-slate-800">
+        <div className="lg:hidden flex flex-wrap items-center justify-between gap-2 mb-5 pb-4 border-b border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={() => setMobileSidebarOpen(true)}
@@ -304,7 +304,7 @@ export function WorkspaceDashboard() {
             <span>My Sets</span>
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => setActiveStudio({ type: "overview" })}
@@ -340,11 +340,11 @@ export function WorkspaceDashboard() {
         {activeStudio.type === "reader" && <PdfReaderStudio />}
 
         {activeStudio.type === "overview" && (
-          <div className="space-y-8">
+          <div className="space-y-8 min-w-0">
             {/* Greeting + Quick Toolbar */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white [overflow-wrap:anywhere]">
                   Hello, {profile.userName || "Scholar"}
                 </h1>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -386,36 +386,36 @@ export function WorkspaceDashboard() {
             </div>
 
             {/* Study Telemetry Strip */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-slate-800 overflow-hidden">
-              <div className="p-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
+              <div className="p-4 sm:p-5 min-w-0 bg-white dark:bg-slate-900">
                 <p className="text-xs text-slate-500 dark:text-slate-400">Flashcard Sets</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white tabular-nums mt-1">
+                <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tabular-nums mt-1">
                   {profile.flashcards.length}
                 </p>
               </div>
-              <div className="p-5">
+              <div className="p-4 sm:p-5 min-w-0 bg-white dark:bg-slate-900">
                 <p className="text-xs text-slate-500 dark:text-slate-400">Practice Quizzes</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white tabular-nums mt-1">
+                <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tabular-nums mt-1">
                   {profile.quizzes.length}
                 </p>
               </div>
-              <div className="p-5">
+              <div className="p-4 sm:p-5 min-w-0 bg-white dark:bg-slate-900">
                 <p className="text-xs text-slate-500 dark:text-slate-400">Cards Mastered</p>
-                <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-1">
+                <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-1">
                   {masteredCards}/{totalCards}
                 </p>
               </div>
-              <div className="p-5">
+              <div className="p-4 sm:p-5 min-w-0 bg-white dark:bg-slate-900">
                 <p className="text-xs text-slate-500 dark:text-slate-400">Focus Sprints</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white tabular-nums mt-1">
+                <p className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tabular-nums mt-1">
                   {pomodoroSessions}
                 </p>
               </div>
             </div>
 
             {/* Filter & Community Search Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 w-fit">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 min-w-0">
+              <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 w-fit max-w-full">
                 {(
                   [
                     { id: "all", label: "All Materials" },
@@ -441,7 +441,7 @@ export function WorkspaceDashboard() {
               <button
                 type="button"
                 onClick={() => setIsSearchModalOpen(true)}
-                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
               >
                 <Search className="w-3.5 h-3.5" />
                 <span>Browse Community Library</span>
@@ -451,15 +451,15 @@ export function WorkspaceDashboard() {
             {/* Flashcard Sets Grid */}
             {(libraryFilter === "all" || libraryFilter === "flashcards") && (
               <section className="space-y-3">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-3">
                   <h2 className="text-sm font-bold text-slate-900 dark:text-white inline-flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-blue-600" />
+                    <BookOpen className="w-4 h-4 text-blue-600 shrink-0" />
                     <span>Flashcard Sets</span>
                   </h2>
                   <button
                     type="button"
                     onClick={() => handleCreateNew("flashcard")}
-                    className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                    className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline shrink-0 cursor-pointer"
                   >
                     + New Flashcard Set
                   </button>
@@ -477,13 +477,13 @@ export function WorkspaceDashboard() {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                     {profile.flashcards.map((deck) => {
                       const mastered = deck.flashcards.filter((c) => c.mastery === "mastered").length;
                       return (
                         <div
                           key={deck.id}
-                          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+                          className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                         >
                           <div>
                             <p className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
@@ -576,13 +576,13 @@ export function WorkspaceDashboard() {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                     {profile.quizzes.map((quiz) => (
                       <div
                         key={quiz.id}
-                        className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+                        className="min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 flex flex-col justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                       >
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
                             {quiz.subject || "Quiz"} · {quiz.questions.length} questions
                             {typeof quiz.lastScore === "number"
@@ -597,7 +597,7 @@ export function WorkspaceDashboard() {
                           </p>
                         </div>
 
-                        <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
