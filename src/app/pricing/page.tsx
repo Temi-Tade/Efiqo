@@ -1,14 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Check, Star } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import { BETA_USERS } from "@/types/efiqo";
+import { BETA_USERS, PLAN_LIMITS } from "@/types/efiqo";
 import { Footer } from "@/components/Footer";
 
 export default function PricingPage() {
   const { profile, setIsAuthModalOpen } = useEfiqo();
+  const [showCheckoutInfo, setShowCheckoutInfo] = useState(false);
 
   const isBetaEligible = Boolean(
     profile &&
@@ -16,18 +17,31 @@ export default function PricingPage() {
       !profile.isPremiumUser
   );
 
+  const activePriceLabel = isBetaEligible
+    ? PLAN_LIMITS.premium.betaPriceLabel
+    : PLAN_LIMITS.premium.priceLabel;
+
+  const activationSubject = encodeURIComponent(
+    `efIQo Premium Activation (${activePriceLabel}) - ${profile?.email || "Scholar"}`
+  );
+  const activationBody = encodeURIComponent(
+    `Hello efIQo Team,\n\nI would like to activate efIQo Premium (${activePriceLabel}) for my account:\nEmail: ${
+      profile?.email || ""
+    }\nName: ${profile?.fullName || profile?.userName || ""}\n\nPlease share Nigerian bank transfer / Paystack payment details.`
+  );
+
   return (
     <div className="flex-1 flex flex-col min-w-0">
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-10 sm:py-16 space-y-12 min-w-0">
         <div className="max-w-2xl">
           <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-2">
-            Plans &amp; Pricing
+            Plans &amp; Pricing (NGN)
           </p>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white text-balance">
-            Transparent pricing with a one-time lifetime unlock.
+            Built for Nigerian scholars with a one-time Naira unlock.
           </h1>
           <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-            Use efIQo free for your core coursework, or unlock unlimited decks, quizzes, and items forever with a single payment.
+            Prepare for university exams, JAMB, WAEC, and professional certifications free—or unlock bigger study sets and 15 MB lecture PDFs forever with one Naira payment.
           </p>
         </div>
 
@@ -40,11 +54,11 @@ export default function PricingPage() {
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white">Free Scholar Plan</h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    For single-term courses and quick recall
+                    For semester courses &amp; daily active recall
                   </p>
                 </div>
                 <span className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">
-                  $0
+                  {PLAN_LIMITS.free.priceLabel}
                 </span>
               </div>
 
@@ -55,11 +69,11 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Up to 20 cards or questions per set</span>
+                  <span>Max 20 flashcards or quiz questions per set</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Efi AI synthesis from topics or 10 MB PDFs</span>
+                  <span>5 MB max PDF upload for Efi AI synthesis</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
@@ -96,11 +110,11 @@ export default function PricingPage() {
                     <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
                   </h2>
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                    One-time lifetime unlock · No subscriptions
+                    One-time Naira lifetime unlock · No monthly fees
                   </p>
                 </div>
                 <span className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">
-                  {isBetaEligible ? "$2.50" : "$4.99"}
+                  {activePriceLabel}
                 </span>
               </div>
 
@@ -111,7 +125,11 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Unlimited cards &amp; questions per set</span>
+                  <span>Max 50 flashcards or quiz questions per set</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>15 MB max PDF upload for Efi AI synthesis</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -119,7 +137,7 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>50% early-access discount for registered beta scholars</span>
+                  <span>50% early-access discount for beta scholars (₦2,500)</span>
                 </li>
               </ul>
             </div>
@@ -128,37 +146,61 @@ export default function PricingPage() {
               <div className="mt-8 w-full py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-sm font-semibold text-center">
                 Premium Unlocked on Your Account
               </div>
-            ) : isBetaEligible ? (
-              <form
-                action="https://www.paypal.com/ncp/payment/8Y8A5MD9DW9B8"
-                method="post"
-                target="_blank"
-                className="mt-8 space-y-2"
-              >
-                <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center">
-                  Beta scholar 50% discount detected for {profile?.email}
-                </p>
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold cursor-pointer"
-                >
-                  Unlock Beta Pro with PayPal
-                </button>
-              </form>
             ) : (
-              <form
-                action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J"
-                method="post"
-                target="_blank"
-                className="mt-8"
-              >
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold cursor-pointer"
-                >
-                  Upgrade Forever for $4.99
-                </button>
-              </form>
+              <div className="mt-8 space-y-3">
+                {isBetaEligible && (
+                  <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center">
+                    Beta scholar 50% discount detected for {profile?.email}
+                  </p>
+                )}
+
+                {!showCheckoutInfo ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!profile) {
+                        setIsAuthModalOpen(true);
+                        return;
+                      }
+                      setShowCheckoutInfo(true);
+                    }}
+                    className={`w-full py-3 rounded-xl text-white text-sm font-semibold cursor-pointer ${
+                      isBetaEligible
+                        ? "bg-rose-600 hover:bg-rose-700"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    {isBetaEligible
+                      ? `Unlock Beta Pro for ${PLAN_LIMITS.premium.betaPriceLabel}`
+                      : `Upgrade Forever for ${PLAN_LIMITS.premium.priceLabel}`}
+                  </button>
+                ) : (
+                  <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 space-y-2.5 text-xs">
+                    <p className="font-semibold text-slate-900 dark:text-white">
+                      Nigerian Bank Transfer / NGN Activation ({activePriceLabel})
+                    </p>
+                    <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                      Send a quick activation request with your registered email (
+                      <span className="font-semibold">{profile?.email}</span>) to receive Naira transfer or local card checkout instructions.
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <a
+                        href={`mailto:tenderluxetechenterprises@gmail.com?subject=${activationSubject}&body=${activationBody}`}
+                        className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                      >
+                        Request Naira Checkout
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setShowCheckoutInfo(false)}
+                        className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold cursor-pointer"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -173,8 +215,8 @@ export default function PricingPage() {
               <thead className="border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
                 <tr>
                   <th className="py-3 px-6 font-semibold">Feature</th>
-                  <th className="py-3 px-6 font-semibold">Free</th>
-                  <th className="py-3 px-6 font-semibold">Premium</th>
+                  <th className="py-3 px-6 font-semibold">Free ({PLAN_LIMITS.free.priceLabel})</th>
+                  <th className="py-3 px-6 font-semibold">Premium ({PLAN_LIMITS.premium.priceLabel})</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
@@ -189,14 +231,14 @@ export default function PricingPage() {
                   <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white">Unlimited</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-6 font-medium">Cards / Questions per Set</td>
-                  <td className="py-3 px-6 tabular-nums">Up to 20</td>
-                  <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white">Unlimited</td>
+                  <td className="py-3 px-6 font-medium">Max Flashcards or Questions per Set</td>
+                  <td className="py-3 px-6 tabular-nums">20 per set</td>
+                  <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white tabular-nums">50 per set</td>
                 </tr>
                 <tr>
-                  <td className="py-3 px-6 font-medium">Efi AI Topic &amp; 10 MB PDF Synthesis</td>
-                  <td className="py-3 px-6">Included</td>
-                  <td className="py-3 px-6">Included</td>
+                  <td className="py-3 px-6 font-medium">Max PDF Upload (Efi AI Synthesis)</td>
+                  <td className="py-3 px-6 tabular-nums">5 MB max</td>
+                  <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white tabular-nums">15 MB max</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-6 font-medium">Local PDF Reader &amp; Pomodoro Timer</td>

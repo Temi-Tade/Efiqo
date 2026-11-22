@@ -42,12 +42,25 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const course = String(body.course || "").trim();
     const topic = String(body.topic || "").trim();
-    const count = Math.min(Math.max(Number(body.number) || 10, 3), 20);
+    const isPremium = Boolean(body.isPremium);
+    const maxAllowedCount = isPremium ? 50 : 20;
+    const maxPdfMb = isPremium ? 15 : 5;
+    const count = Math.min(Math.max(Number(body.number) || 10, 3), maxAllowedCount);
     const fileData = body.fileData ? String(body.fileData) : "";
     const mimeType = body.mimeType ? String(body.mimeType) : "";
 
     if (!course) {
       return NextResponse.json({ error: "Course or subject is required." }, { status: 400 });
+    }
+
+    if (fileData) {
+      const approxBytes = Math.ceil((fileData.length * 3) / 4);
+      if (approxBytes > maxPdfMb * 1024 * 1024) {
+        return NextResponse.json(
+          { error: `Uploaded PDF exceeds the ${maxPdfMb} MB limit for your plan.` },
+          { status: 413 }
+        );
+      }
     }
 
     const parts: Array<{ text: string } | { inlineData: { data: string; mimeType: string } }> = [];

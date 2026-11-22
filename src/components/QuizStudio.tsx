@@ -17,7 +17,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import type { QuizQuestion, QuizSet } from "@/types/efiqo";
+import { PLAN_LIMITS, type QuizQuestion, type QuizSet } from "@/types/efiqo";
 import { EfiGeneratorModal } from "./Modals";
 
 export function QuizStudio({
@@ -148,8 +148,15 @@ export function QuizStudio({
   const handleAddQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!quiz || !profile) return;
-    if (!profile.isPremiumUser && quiz.questions.length >= 20) {
-      openPremiumModal("Free Quiz Limit Reached (20 Questions/Quiz)");
+    const maxItems = profile.isPremiumUser
+      ? PLAN_LIMITS.premium.maxItemsPerSet
+      : PLAN_LIMITS.free.maxItemsPerSet;
+    if (quiz.questions.length >= maxItems) {
+      if (!profile.isPremiumUser) {
+        openPremiumModal("Free Quiz Limit Reached (20 Questions/Quiz)");
+      } else {
+        showToast("Premium quiz limit reached (50 questions per quiz).", "info");
+      }
       return;
     }
     if (optionsList.length < 2 || !correctAnswer) {

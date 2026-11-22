@@ -65,6 +65,25 @@ export interface UserProfile {
   studyMinutes?: number;
 }
 
+export const PLAN_LIMITS = {
+  free: {
+    maxSets: 7,
+    maxItemsPerSet: 20,
+    maxPdfMb: 5,
+    priceNgn: 0,
+    priceLabel: "₦0",
+  },
+  premium: {
+    maxSets: Infinity,
+    maxItemsPerSet: 50,
+    maxPdfMb: 15,
+    priceNgn: 5000,
+    priceLabel: "₦5,000",
+    betaPriceNgn: 2500,
+    betaPriceLabel: "₦2,500",
+  },
+} as const;
+
 export const BETA_USERS = [
   { firstName: "Muhammad Jamshaid", lastName: "Ali", email: "jamshaid8081@gmail.com" },
   { firstName: "Deen", lastName: "", email: "Sharafadeenadewale35@gmail.com" },

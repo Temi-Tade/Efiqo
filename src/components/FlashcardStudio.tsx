@@ -18,7 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import type { FlashcardItem, FlashcardSet } from "@/types/efiqo";
+import { PLAN_LIMITS, type FlashcardItem, type FlashcardSet } from "@/types/efiqo";
 import { EfiGeneratorModal } from "./Modals";
 
 export function FlashcardStudio({
@@ -138,8 +138,15 @@ export function FlashcardStudio({
     e.preventDefault();
     if (!deck || !profile) return;
 
-    if (!editingCardId && !profile.isPremiumUser && deck.flashcards.length >= 20) {
-      openPremiumModal("Free Deck Limit Reached (20 Cards/Set)");
+    const maxItems = profile.isPremiumUser
+      ? PLAN_LIMITS.premium.maxItemsPerSet
+      : PLAN_LIMITS.free.maxItemsPerSet;
+    if (!editingCardId && deck.flashcards.length >= maxItems) {
+      if (!profile.isPremiumUser) {
+        openPremiumModal("Free Deck Limit Reached (20 Cards/Set)");
+      } else {
+        showToast("Premium deck limit reached (50 cards per set).", "info");
+      }
       return;
     }
 

@@ -18,10 +18,12 @@ import {
   LogOut,
   Star,
   AlertCircle,
+  Lock,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
 import {
   BETA_USERS,
+  PLAN_LIMITS,
   type FlashcardSet,
   type QuizSet,
   type UserProfile,
@@ -239,65 +241,61 @@ export function GlobalModals() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 mb-6">
                 <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 min-w-0">
-                  <h3 className="font-bold text-slate-900 dark:text-white mb-2">Free Plan ($0)</h3>
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-2">
+                    Free Plan ({PLAN_LIMITS.free.priceLabel})
+                  </h3>
                   <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                    <li>Up to 7 flashcard sets</li>
-                    <li>Up to 7 quiz sets</li>
-                    <li>Up to 20 cards/questions per set</li>
+                    <li>Up to 7 flashcard &amp; quiz sets</li>
+                    <li>Max 20 items per set</li>
+                    <li>Max 5 MB PDF upload</li>
                     <li>PDF reader &amp; Pomodoro timer</li>
                   </ul>
                 </div>
                 <div className="p-4 rounded-xl border border-blue-600/40 bg-blue-50/50 dark:bg-blue-950/20 min-w-0">
                   <h3 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 flex-wrap">
-                    <span>Premium Plan ($4.99)</span>
+                    <span>Premium Plan ({PLAN_LIMITS.premium.priceLabel})</span>
                     <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
                   </h3>
                   <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
-                    <li>Unlimited flashcard sets</li>
-                    <li>Unlimited quiz sets</li>
-                    <li>Unlimited cards &amp; questions per set</li>
-                    <li>Priority JSON/CSV export &amp; Efi tutor</li>
+                    <li>Unlimited flashcard &amp; quiz sets</li>
+                    <li>Max 50 items per set</li>
+                    <li>Max 15 MB PDF upload</li>
+                    <li>JSON export &amp; Efi AI tutor</li>
                   </ul>
                 </div>
               </div>
 
-              {profile &&
-              BETA_USERS.some((u) => u.email.toLowerCase() === profile.email.toLowerCase()) &&
-              !profile.isPremiumUser ? (
-                <form
-                  action="https://www.paypal.com/ncp/payment/8Y8A5MD9DW9B8"
-                  method="post"
-                  target="_blank"
-                  className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
-                >
-                  <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center sm:text-left">
-                    Early access beta discount applied (50% off).
-                  </p>
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm cursor-pointer"
-                  >
-                    Pay Now with PayPal
-                  </button>
-                </form>
-              ) : (
-                <form
-                  action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J"
-                  method="post"
-                  target="_blank"
-                  className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
-                >
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    Checkout powered securely by PayPal.
-                  </span>
-                  <button
-                    type="submit"
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm cursor-pointer"
-                  >
-                    Upgrade for $4.99
-                  </button>
-                </form>
-              )}
+              {(() => {
+                const isBeta = Boolean(
+                  profile &&
+                    BETA_USERS.some((u) => u.email.toLowerCase() === profile.email.toLowerCase()) &&
+                    !profile.isPremiumUser
+                );
+                const priceLabel = isBeta
+                  ? PLAN_LIMITS.premium.betaPriceLabel
+                  : PLAN_LIMITS.premium.priceLabel;
+                return (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
+                      {isBeta
+                        ? `Beta discount applied (${priceLabel} instead of ${PLAN_LIMITS.premium.priceLabel}).`
+                        : "One-time NGN unlock for Nigerian students."}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsPremiumModalOpen(false);
+                        router.push("/pricing");
+                      }}
+                      className={`w-full sm:w-auto px-5 py-2.5 rounded-lg text-white font-semibold text-sm cursor-pointer ${
+                        isBeta ? "bg-rose-600 hover:bg-rose-700" : "bg-blue-600 hover:bg-blue-700"
+                      }`}
+                    >
+                      Upgrade for {priceLabel}
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -529,6 +527,24 @@ function ProfileModalContent({
               />
             </div>
 
+            <div className="min-w-0 sm:col-span-2">
+              <label className="flex items-center justify-between gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
+                <span className="inline-flex items-center gap-1">
+                  <Lock className="w-3 h-3 shrink-0" />
+                  <span>Email Address</span>
+                </span>
+                <span className="text-[11px] text-slate-400">Uneditable</span>
+              </label>
+              <input
+                type="email"
+                value={profile.email}
+                readOnly
+                disabled
+                aria-readonly="true"
+                className="w-full min-w-0 max-w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/70 text-sm text-slate-600 dark:text-slate-300 cursor-not-allowed opacity-80"
+              />
+            </div>
+
             <div className="min-w-0">
               <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
                 Date of Birth
@@ -622,7 +638,7 @@ function ProfileModalContent({
               className="w-full px-4 py-2.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer"
             >
               <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span>Get efIQo Premium ($4.99)</span>
+              <span>Get efIQo Premium ({PLAN_LIMITS.premium.priceLabel})</span>
             </button>
           )}
 
@@ -841,17 +857,37 @@ export function EfiGeneratorModal({
       reader.readAsDataURL(file);
     });
 
+  const maxItems = profile?.isPremiumUser
+    ? PLAN_LIMITS.premium.maxItemsPerSet
+    : PLAN_LIMITS.free.maxItemsPerSet;
+  const maxPdfMb = profile?.isPremiumUser
+    ? PLAN_LIMITS.premium.maxPdfMb
+    : PLAN_LIMITS.free.maxPdfMb;
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
+    if (count > maxItems) {
+      setError(
+        `Your current plan supports up to ${maxItems} items per set${
+          !profile?.isPremiumUser ? " (up to 50 on Premium)" : ""
+        }.`
+      );
+      return;
+    }
+
     if (sourceType === "pdf") {
       if (!pdfFile) {
-        setError("Please select a PDF lecture file (max 10 MB).");
+        setError(`Please select a PDF lecture file (max ${maxPdfMb} MB).`);
         return;
       }
-      if (pdfFile.size > 10 * 1024 * 1024 || pdfFile.type !== "application/pdf") {
-        setError("Document must be a PDF under 10 MB.");
+      if (pdfFile.size > maxPdfMb * 1024 * 1024 || pdfFile.type !== "application/pdf") {
+        setError(
+          `Document must be a PDF under ${maxPdfMb} MB${
+            !profile?.isPremiumUser ? " on the Free plan (15 MB on Premium)" : ""
+          }.`
+        );
         return;
       }
     }
@@ -873,6 +909,7 @@ export function EfiGeneratorModal({
           course,
           topic: sourceType === "topic" ? topic : "",
           number: count,
+          isPremium: Boolean(profile?.isPremiumUser),
           fileData,
           mimeType,
         }),
@@ -1016,7 +1053,7 @@ export function EfiGeneratorModal({
           ) : (
             <div className="min-w-0">
               <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-                Lecture PDF (Max 10 MB)
+                Lecture PDF (Max {maxPdfMb} MB)
               </label>
               <label className="flex flex-col items-center justify-center p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 cursor-pointer text-center overflow-hidden">
                 <Upload className="w-5 h-5 text-blue-600 mb-1.5 shrink-0" />
@@ -1035,12 +1072,12 @@ export function EfiGeneratorModal({
 
           <div className="min-w-0">
             <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-              Number of {mode === "flashcard" ? "Cards" : "Questions"} (3–20)
+              Number of {mode === "flashcard" ? "Cards" : "Questions"} (3–{maxItems})
             </label>
             <input
               type="number"
               min={3}
-              max={20}
+              max={maxItems}
               required
               value={count}
               onChange={(e) => setCount(Number(e.target.value))}

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, Laptop, Loader2, LogOut, Moon, Star, Sun, Trash2, Upload } from "lucide-react";
+import { Check, Laptop, Loader2, Lock, LogOut, Moon, Star, Sun, Trash2, Upload } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
 import { deleteUserAccountFromStore, isUsernameAvailable } from "@/lib/firebase";
 import type { UserProfile } from "@/types/efiqo";
@@ -191,6 +191,30 @@ export default function UserPage() {
                 />
               </div>
 
+              <div className="min-w-0 sm:col-span-2">
+                <label
+                  htmlFor="user-email-field"
+                  className="flex items-center justify-between gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"
+                >
+                  <span className="inline-flex items-center gap-1.5">
+                    <Lock className="w-3 h-3 shrink-0" />
+                    <span>Email Address</span>
+                  </span>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                    Uneditable · Linked to sign-in account
+                  </span>
+                </label>
+                <input
+                  id="user-email-field"
+                  type="email"
+                  value={profile.email}
+                  readOnly
+                  disabled
+                  aria-readonly="true"
+                  className="w-full min-w-0 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/70 text-sm text-slate-600 dark:text-slate-300 cursor-not-allowed opacity-80"
+                />
+              </div>
+
               <div className="min-w-0">
                 <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">
                   Date of Birth
@@ -289,8 +313,8 @@ export default function UserPage() {
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               {profile.isPremiumUser
-                ? "Unlimited flashcard sets, quizzes, and items unlocked."
-                : `${profile.flashcards.length}/7 flashcard sets and ${profile.quizzes.length}/7 quiz sets used.`}
+                ? "Unlimited sets · Up to 50 items per set · 15 MB PDF uploads unlocked."
+                : `${profile.flashcards.length}/7 flashcard sets and ${profile.quizzes.length}/7 quiz sets used · Max 20 items/set & 5 MB PDFs.`}
             </p>
           </div>
 

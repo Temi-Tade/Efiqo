@@ -22,7 +22,7 @@ const DEMO_QUIZ = STARTER_QUIZZES[0].questions[0];
 const FAQS = [
   {
     q: "How does Efi synthesize flashcards and quizzes from my lecture PDFs?",
-    a: "Upload any PDF lecture deck or textbook chapter (up to 10 MB) inside the Flashcard or Quiz Studio. Our server-side Gemini pipeline extracts high-yield concepts, concise definitions, and 4-option multiple-choice exam questions with answer explanations.",
+    a: "Upload any PDF lecture deck or textbook chapter (up to 5 MB on Free, or 15 MB on Premium) inside the Create Studio. Our server-side Gemini pipeline extracts high-yield concepts, concise definitions, and 4-option multiple-choice exam questions with answer explanations.",
   },
   {
     q: "Can I use efIQo without uploading a PDF or using AI?",
@@ -30,15 +30,15 @@ const FAQS = [
   },
   {
     q: "How does the side-by-side PDF reader and Focus Mode work?",
-    a: "Open the PDF Reader tab in your workspace to load local course PDFs directly in your browser without uploading them to external servers. Pair your reading with the built-in 25-minute Pomodoro focus timer and switch into full-screen Focus Mode whenever you need deep concentration.",
+    a: "Open the PDF Reader route to load local course PDFs directly in your browser without uploading them to external servers. Pair your reading with the built-in 25-minute Pomodoro focus timer and switch into full-screen Focus Mode whenever you need deep concentration.",
   },
   {
     q: "How can I share a flashcard deck or quiz with classmates?",
     a: "Every flashcard set and quiz includes a Share action that generates a direct study link. Classmates can open the link to study your cards or attempt your quiz immediately.",
   },
   {
-    q: "What is included in the Free plan versus the $4.99 one-time Premium plan?",
-    a: "The Free plan gives you up to 7 flashcard sets, 7 quiz sets, and up to 20 items per set, plus full access to the PDF reader, Pomodoro timer, and Efi synthesis. Premium removes all set and item limits for a single $4.99 one-time payment.",
+    q: "What is included in the Free plan versus the ₦5,000 one-time Premium plan?",
+    a: "The Free plan gives you up to 7 flashcard sets, 7 quiz sets, max 20 flashcards or questions per set, and 5 MB PDF uploads. Premium removes the set limit and expands capacity to 50 items per set and 15 MB PDF uploads for a single ₦5,000 payment (₦2,500 for beta scholars).",
   },
   {
     q: "Is my study progress saved across light and dark sessions?",
@@ -130,12 +130,12 @@ export function LandingPage() {
             <p className="mt-1 text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tabular-nums">
               7 Decks + 7 Quizzes
             </p>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Up to 20 items each at $0</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Max 20 items/set at ₦0</p>
           </div>
           <div className="p-4 sm:p-6 min-w-0">
             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Lecture Upload Limit</p>
             <p className="mt-1 text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tabular-nums">
-              10 MB PDF
+              5 MB Free · 15 MB Pro
             </p>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Direct slide-to-deck synthesis</p>
           </div>
@@ -147,11 +147,11 @@ export function LandingPage() {
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Flip, Exam Timer, PDF &amp; Pomodoro</p>
           </div>
           <div className="p-4 sm:p-6 min-w-0">
-            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Lifetime Pro Upgrade</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Lifetime Pro Unlock</p>
             <p className="mt-1 text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tabular-nums">
-              $4.99 Once
+              ₦5,000 Once
             </p>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Unlimited decks &amp; questions forever</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Max 50 items/set · Unlimited sets</p>
           </div>
         </div>
       </section>
@@ -393,7 +393,7 @@ export function LandingPage() {
             <div>
               <p className="text-xs font-mono text-blue-600 dark:text-blue-400 mb-2">03. Lecture-to-Deck AI</p>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
-                Synthesize decks from topics or 10 MB PDFs.
+                Synthesize decks from topics or lecture PDFs.
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                 Feed Efi a syllabus topic or your professor&apos;s lecture slides. Receive structured flashcard sets or practice exams ready to edit, study, and share.
@@ -565,26 +565,26 @@ export function LandingPage() {
               <div className="flex items-baseline justify-between gap-4 mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Free Plan</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">For individual courses & exam prep</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">For semester courses &amp; exam prep</p>
                 </div>
-                <span className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">$0</span>
+                <span className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">₦0</span>
               </div>
               <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Up to 7 flashcard sets & 7 quiz sets</span>
+                  <span>Up to 7 flashcard sets &amp; 7 quiz sets</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Up to 20 cards or questions per set</span>
+                  <span>Max 20 flashcards or quiz questions per set</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Efi AI synthesis from topics or 10 MB PDFs</span>
+                  <span>5 MB max PDF upload for Efi AI synthesis</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Side-by-side PDF reader & Pomodoro focus timer</span>
+                  <span>Side-by-side PDF reader &amp; Pomodoro focus timer</span>
                 </li>
               </ul>
             </div>
@@ -602,26 +602,26 @@ export function LandingPage() {
               <div className="flex flex-wrap items-baseline justify-between gap-4 mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white">Premium Plan</h3>
-                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">One-time lifetime unlock</p>
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">One-time lifetime unlock (NGN)</p>
                 </div>
-                <span className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">$4.99</span>
+                <span className="text-3xl font-extrabold text-slate-900 dark:text-white tabular-nums">₦5,000</span>
               </div>
               <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Unlimited flashcard sets & quiz sets</span>
+                  <span>Unlimited flashcard sets &amp; quiz sets</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Unlimited cards & questions per set</span>
+                  <span>Max 50 flashcards or quiz questions per set</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Full deck JSON/CSV export & shareable links</span>
+                  <span>15 MB max PDF upload for Efi AI synthesis</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>50% early-access discount for registered beta scholars</span>
+                  <span>50% early-access discount for registered beta scholars (₦2,500)</span>
                 </li>
               </ul>
             </div>

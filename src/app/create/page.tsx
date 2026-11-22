@@ -12,7 +12,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import type { FlashcardSet, QuizSet } from "@/types/efiqo";
+import { PLAN_LIMITS, type FlashcardSet, type QuizSet } from "@/types/efiqo";
 import { AuthRequiredCard } from "@/components/AuthRequiredCard";
 import { Footer } from "@/components/Footer";
 
@@ -138,13 +138,33 @@ function CreateStudioContent() {
       }
     }
 
+    const maxItems = profile.isPremiumUser
+      ? PLAN_LIMITS.premium.maxItemsPerSet
+      : PLAN_LIMITS.free.maxItemsPerSet;
+    const maxPdfMb = profile.isPremiumUser
+      ? PLAN_LIMITS.premium.maxPdfMb
+      : PLAN_LIMITS.free.maxPdfMb;
+
+    if (aiCount > maxItems) {
+      if (!profile.isPremiumUser) {
+        openPremiumModal(`Free Plan supports up to ${maxItems} items per set. Upgrade for up to 50.`);
+      } else {
+        setAiError(`Premium sets support up to ${maxItems} items per generation.`);
+      }
+      return;
+    }
+
     if (aiSourceType === "pdf") {
       if (!aiPdf) {
-        setAiError("Please select a PDF document (max 10 MB).");
+        setAiError(`Please select a PDF document (max ${maxPdfMb} MB).`);
         return;
       }
-      if (aiPdf.size > 10 * 1024 * 1024 || aiPdf.type !== "application/pdf") {
-        setAiError("Document must be a PDF under 10 MB.");
+      if (aiPdf.size > maxPdfMb * 1024 * 1024 || aiPdf.type !== "application/pdf") {
+        setAiError(
+          `Document must be a PDF under ${maxPdfMb} MB${
+            !profile.isPremiumUser ? " on the Free plan (15 MB on Premium)" : ""
+          }.`
+        );
         return;
       }
     }
@@ -166,6 +186,7 @@ function CreateStudioContent() {
           course: aiCourse,
           topic: aiSourceType === "topic" ? aiTopic : "",
           number: aiCount,
+          isPremium: profile.isPremiumUser,
           fileData,
           mimeType,
         }),
@@ -463,7 +484,8 @@ function CreateStudioContent() {
                   Synthesize Study Material with Efi
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Generate structured flashcards or 4-option exam questions from a topic or 10 MB PDF.
+                  Generate structured flashcards or 4-option exam questions from a topic or PDF (
+                  {profile.isPremiumUser ? "15 MB max" : "5 MB max on Free"}).
                 </p>
               </div>
             </div>
@@ -547,12 +569,20 @@ function CreateStudioContent() {
 
               <div className="min-w-0">
                 <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-                  Number of {aiKind === "flashcard" ? "Cards" : "Questions"} (3–20)
+                  Number of {aiKind === "flashcard" ? "Cards" : "Questions"} (3–
+                  {profile.isPremiumUser
+                    ? PLAN_LIMITS.premium.maxItemsPerSet
+                    : PLAN_LIMITS.free.maxItemsPerSet}
+                  )
                 </label>
                 <input
                   type="number"
                   min={3}
-                  max={20}
+                  max={
+                    profile.isPremiumUser
+                      ? PLAN_LIMITS.premium.maxItemsPerSet
+                      : PLAN_LIMITS.free.maxItemsPerSet
+                  }
                   required
                   value={aiCount}
                   onChange={(e) => setAiCount(Number(e.target.value))}
@@ -580,7 +610,11 @@ function CreateStudioContent() {
             ) : (
               <div>
                 <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
-                  Lecture PDF (Max 10 MB)
+                  Lecture PDF (Max{" "}
+                  {profile.isPremiumUser
+                    ? PLAN_LIMITS.premium.maxPdfMb
+                    : PLAN_LIMITS.free.maxPdfMb}{" "}
+                  MB)
                 </label>
                 <label className="flex flex-col items-center justify-center p-6 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 cursor-pointer text-center overflow-hidden">
                   <Upload className="w-5 h-5 text-blue-600 mb-2 shrink-0" />
