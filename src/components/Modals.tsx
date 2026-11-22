@@ -28,7 +28,6 @@ import {
 import {
   deleteUserAccountFromStore,
   fetchCommunityLibrary,
-  isFirebaseConfigured,
   isUsernameAvailable,
 } from "@/lib/firebase";
 
@@ -80,82 +79,86 @@ export function GlobalModals() {
       {/* Auth Modal */}
       {isAuthModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain"
           onClick={() => !authLoading && setIsAuthModalOpen(false)}
         >
-          <div
-            className="w-full min-w-0 max-w-md my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-3 mb-5">
-              <div className="min-w-0">
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-                  Enter efIQo Workspace
-                </h2>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  Sync flashcards, quizzes, and study mastery with your Google account.
-                </p>
+          <div className="min-h-full w-full flex items-center justify-center p-3 sm:p-4">
+            <div
+              className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-7 shadow-xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-3 mb-5">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                    Enter efIQo Workspace
+                  </h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    Sync flashcards, quizzes, and study mastery with your Google account.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={authLoading}
+                  onClick={() => setIsAuthModalOpen(false)}
+                  className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
+                  aria-label="Close sign-in dialog"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                type="button"
-                disabled={authLoading}
-                onClick={() => setIsAuthModalOpen(false)}
-                className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
-                aria-label="Close sign-in dialog"
-              >
-                <X className="w-5 h-5" />
-              </button>
+
+              {authError && (
+                <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-200 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span className="min-w-0 flex-1 [overflow-wrap:anywhere] leading-relaxed">
+                    {authError}
+                  </span>
+                </div>
+              )}
+
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  disabled={authLoading}
+                  onClick={async () => {
+                    setAuthLoading(true);
+                    await handleSignIn("google");
+                    setAuthLoading(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/70 text-slate-900 dark:text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  {authLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                  ) : (
+                    <img src="/images/google-logo.png" alt="Google" className="w-5 h-5 shrink-0" />
+                  )}
+                  <span>Sign In with Google</span>
+                </button>
+
+                <div className="relative py-1 flex items-center">
+                  <div className="flex-1 border-t border-slate-200 dark:border-slate-800" />
+                  <span className="px-3 text-[11px] font-medium text-slate-400">or</span>
+                  <div className="flex-1 border-t border-slate-200 dark:border-slate-800" />
+                </div>
+
+                <button
+                  type="button"
+                  disabled={authLoading}
+                  onClick={async () => {
+                    setAuthLoading(true);
+                    await handleSignIn("local");
+                    setAuthLoading(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
+                >
+                  <span>Continue as Guest (Local Only)</span>
+                </button>
+              </div>
+
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-5 text-center leading-relaxed">
+                Sign in with Google via Firebase to save your decks to Firestore across devices.
+              </p>
             </div>
-
-            {authError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-200 flex items-start gap-2 break-words">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span className="min-w-0 break-words leading-relaxed">{authError}</span>
-              </div>
-            )}
-
-            <div className="space-y-3">
-              <button
-                type="button"
-                disabled={authLoading || !isFirebaseConfigured}
-                onClick={async () => {
-                  setAuthLoading(true);
-                  await handleSignIn("google");
-                  setAuthLoading(false);
-                }}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 text-slate-900 dark:text-white font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
-              >
-                {authLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin shrink-0" />
-                ) : (
-                  <img src="/images/google-logo.png" alt="Google" className="w-5 h-5 shrink-0" />
-                )}
-                <span>Sign In with Google</span>
-              </button>
-
-              <div className="relative py-1 flex items-center">
-                <div className="flex-1 border-t border-slate-200 dark:border-slate-800" />
-                <span className="px-3 text-[11px] font-medium text-slate-400">or</span>
-                <div className="flex-1 border-t border-slate-200 dark:border-slate-800" />
-              </div>
-
-              <button
-                type="button"
-                disabled={authLoading}
-                onClick={async () => {
-                  setAuthLoading(true);
-                  await handleSignIn("local");
-                  setAuthLoading(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60"
-              >
-                <span>Continue as Guest (Local Only)</span>
-              </button>
-            </div>
-
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-5 text-center leading-relaxed">
-              Sign in with Google via Firebase to save your decks to Firestore across devices.
-            </p>
           </div>
         </div>
       )}
@@ -199,92 +202,94 @@ export function GlobalModals() {
       {/* Premium Upgrade Modal */}
       {isPremiumModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain"
           onClick={() => setIsPremiumModalOpen(false)}
         >
-          <div
-            className="w-full min-w-0 max-w-xl my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-3 mb-5">
-              <div className="min-w-0">
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white break-words">
-                  {premiumReason}
-                </h2>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  One-time lifetime upgrade. No recurring monthly subscriptions.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsPremiumModalOpen(false)}
-                className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4 mb-6">
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 min-w-0">
-                <h3 className="font-bold text-slate-900 dark:text-white mb-2">Free Plan ($0)</h3>
-                <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                  <li>Up to 7 flashcard sets</li>
-                  <li>Up to 7 quiz sets</li>
-                  <li>Up to 20 cards/questions per set</li>
-                  <li>PDF reader &amp; Pomodoro timer</li>
-                </ul>
-              </div>
-              <div className="p-4 rounded-xl border border-blue-600/40 bg-blue-50/50 dark:bg-blue-950/20 min-w-0">
-                <h3 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 flex-wrap">
-                  <span>Premium Plan ($4.99)</span>
-                  <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
-                </h3>
-                <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
-                  <li>Unlimited flashcard sets</li>
-                  <li>Unlimited quiz sets</li>
-                  <li>Unlimited cards &amp; questions per set</li>
-                  <li>Priority JSON/CSV export &amp; Efi tutor</li>
-                </ul>
-              </div>
-            </div>
-
-            {profile &&
-            BETA_USERS.some((u) => u.email.toLowerCase() === profile.email.toLowerCase()) &&
-            !profile.isPremiumUser ? (
-              <form
-                action="https://www.paypal.com/ncp/payment/8Y8A5MD9DW9B8"
-                method="post"
-                target="_blank"
-                className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
-              >
-                <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center sm:text-left">
-                  Early access beta discount applied (50% off).
-                </p>
+          <div className="min-h-full w-full flex items-center justify-center p-3 sm:p-4">
+            <div
+              className="w-full max-w-xl rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-7 shadow-xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-3 mb-5">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white [overflow-wrap:anywhere]">
+                    {premiumReason}
+                  </h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    One-time lifetime upgrade. No recurring monthly subscriptions.
+                  </p>
+                </div>
                 <button
-                  type="submit"
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm cursor-pointer"
+                  type="button"
+                  onClick={() => setIsPremiumModalOpen(false)}
+                  className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
                 >
-                  Pay Now with PayPal
+                  <X className="w-5 h-5" />
                 </button>
-              </form>
-            ) : (
-              <form
-                action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J"
-                method="post"
-                target="_blank"
-                className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
-              >
-                <span className="text-xs text-slate-500 dark:text-slate-400">
-                  Checkout powered securely by PayPal.
-                </span>
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm cursor-pointer"
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 mb-6">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 min-w-0">
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-2">Free Plan ($0)</h3>
+                  <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                    <li>Up to 7 flashcard sets</li>
+                    <li>Up to 7 quiz sets</li>
+                    <li>Up to 20 cards/questions per set</li>
+                    <li>PDF reader &amp; Pomodoro timer</li>
+                  </ul>
+                </div>
+                <div className="p-4 rounded-xl border border-blue-600/40 bg-blue-50/50 dark:bg-blue-950/20 min-w-0">
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 flex-wrap">
+                    <span>Premium Plan ($4.99)</span>
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
+                  </h3>
+                  <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                    <li>Unlimited flashcard sets</li>
+                    <li>Unlimited quiz sets</li>
+                    <li>Unlimited cards &amp; questions per set</li>
+                    <li>Priority JSON/CSV export &amp; Efi tutor</li>
+                  </ul>
+                </div>
+              </div>
+
+              {profile &&
+              BETA_USERS.some((u) => u.email.toLowerCase() === profile.email.toLowerCase()) &&
+              !profile.isPremiumUser ? (
+                <form
+                  action="https://www.paypal.com/ncp/payment/8Y8A5MD9DW9B8"
+                  method="post"
+                  target="_blank"
+                  className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
                 >
-                  Upgrade for $4.99
-                </button>
-              </form>
-            )}
+                  <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium text-center sm:text-left">
+                    Early access beta discount applied (50% off).
+                  </p>
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm cursor-pointer"
+                  >
+                    Pay Now with PayPal
+                  </button>
+                </form>
+              ) : (
+                <form
+                  action="https://www.paypal.com/ncp/payment/FX7KJ62DYGV5J"
+                  method="post"
+                  target="_blank"
+                  className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-slate-800"
+                >
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    Checkout powered securely by PayPal.
+                  </span>
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm cursor-pointer"
+                  >
+                    Upgrade for $4.99
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -292,47 +297,49 @@ export function GlobalModals() {
       {/* Terms Modal */}
       {isTermsOpen && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain"
           onClick={() => setIsTermsOpen(false)}
         >
-          <div
-            className="w-full min-w-0 max-w-lg my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-3 mb-4">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                Terms of Use &amp; Privacy
-              </h2>
-              <button
-                type="button"
-                onClick={() => setIsTermsOpen(false)}
-                className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed break-words">
-              <p>
-                By using efIQo, you agree that account information (display name, email, study decks, and preferences) is stored solely to provide, sync, and improve your study workspace.
-              </p>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Your Rights</h3>
-                <p>
-                  You retain the right to access, correct, export, or permanently delete your account and study decks at any time from your Profile panel.
-                </p>
+          <div className="min-h-full w-full flex items-center justify-center p-3 sm:p-4">
+            <div
+              className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-7 shadow-xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                  Terms of Use &amp; Privacy
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setIsTermsOpen(false)}
+                  className="p-2 -mr-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Contact</h3>
+              <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed [overflow-wrap:anywhere]">
                 <p>
-                  For enquiries, reach out to{" "}
-                  <a
-                    href="mailto:tenderluxetechenterprises@gmail.com"
-                    className="text-blue-600 dark:text-blue-400 underline break-all"
-                  >
-                    tenderluxetechenterprises@gmail.com
-                  </a>
-                  .
+                  By using efIQo, you agree that account information (display name, email, study decks, and preferences) is stored solely to provide, sync, and improve your study workspace.
                 </p>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Your Rights</h3>
+                  <p>
+                    You retain the right to access, correct, export, or permanently delete your account and study decks at any time from your Profile panel.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Contact</h3>
+                  <p>
+                    For enquiries, reach out to{" "}
+                    <a
+                      href="mailto:tenderluxetechenterprises@gmail.com"
+                      className="text-blue-600 dark:text-blue-400 underline break-all"
+                    >
+                      tenderluxetechenterprises@gmail.com
+                    </a>
+                    .
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -405,13 +412,14 @@ function ProfileModalContent({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain"
       onClick={onClose}
     >
-      <div
-        className="w-full min-w-0 max-w-lg my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="min-h-full w-full flex items-center justify-center p-3 sm:p-4">
+        <div
+          className="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-7 shadow-xl overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Scholar Profile</h2>
           <div className="flex items-center gap-2 shrink-0">
@@ -654,6 +662,7 @@ function ProfileModalContent({
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }
@@ -691,11 +700,11 @@ function CommunitySearchModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4"
       onClick={onClose}
     >
       <div
-        className="w-full min-w-0 max-w-2xl my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[85dvh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden"
+        className="w-full max-w-2xl max-h-[85dvh] flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3 shrink-0">
@@ -911,13 +920,14 @@ export function EfiGeneratorModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain flex items-center justify-center p-3 sm:p-4"
+      className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs overflow-y-auto overscroll-contain"
       onClick={() => !loading && onClose()}
     >
-      <div
-        className="w-full min-w-0 max-w-md my-auto max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="min-h-full w-full flex items-center justify-center p-3 sm:p-4">
+        <div
+          className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 sm:p-7 shadow-xl overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className="flex items-start justify-between gap-3 mb-5">
           <div className="flex items-center gap-3 min-w-0">
             <img src="/images/Efi2.png" alt="Efi mascot" className="w-10 h-10 object-contain shrink-0" />
@@ -1053,6 +1063,7 @@ export function EfiGeneratorModal({
             )}
           </button>
         </form>
+      </div>
       </div>
     </div>
   );

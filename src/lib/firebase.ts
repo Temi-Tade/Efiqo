@@ -34,7 +34,7 @@ import {
   type UserProfile,
 } from "@/types/efiqo";
 
-const firebaseConfig = {
+let firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
@@ -44,7 +44,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
 };
 
-export const isFirebaseConfigured = Boolean(
+export let isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId
 );
 
@@ -53,9 +53,13 @@ let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 let provider: GoogleAuthProvider | null = null;
 
-if (typeof window !== "undefined" && isFirebaseConfigured) {
+function initFirebaseWithConfig(cfg: typeof firebaseConfig): boolean {
+  if (typeof window === "undefined") return false;
+  if (!cfg.apiKey || !cfg.authDomain || !cfg.projectId) return false;
   try {
-    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    firebaseConfig = cfg;
+    isFirebaseConfigured = true;
+    app = getApps().length ? getApps()[0] : initializeApp(cfg);
     auth = getAuth(app);
     setPersistence(auth, browserLocalPersistence).catch(() => {
       // Persistence may fall back to session/memory in strict browser modes
@@ -65,9 +69,32 @@ if (typeof window !== "undefined" && isFirebaseConfigured) {
     provider.addScope("email");
     provider.addScope("profile");
     provider.setCustomParameters({ prompt: "select_account" });
+    return true;
   } catch (err) {
     console.warn("Firebase initialization failed:", err);
+    return false;
   }
+}
+
+if (typeof window !== "undefined" && isFirebaseConfigured) {
+  initFirebaseWithConfig(firebaseConfig);
+}
+
+export async function ensureFirebaseInitialized(): Promise<boolean> {
+  if (auth && provider && firestore) return true;
+  if (initFirebaseWithConfig(firebaseConfig)) return true;
+  if (typeof window === "undefined") return false;
+
+  try {
+    const res = await fetch("/api/firebase-config");
+    if (res.ok) {
+      const runtimeCfg = (await res.json()) as typeof firebaseConfig;
+      return initFirebaseWithConfig(runtimeCfg);
+    }
+  } catch {
+    // Ignore fetch error
+  }
+  return false;
 }
 
 export const STORAGE_KEY = "efiqo user data";
@@ -382,6 +409,7 @@ function formatFirebaseAuthError(err: unknown): string {
 }
 
 export async function checkGoogleRedirectResult(): Promise<UserProfile | null> {
+  await ensureFirebaseInitialized();
   if (!auth) return null;
   try {
     const result = await getRedirectResult(auth);
@@ -408,6 +436,7 @@ export async function signInWithGoogleAccount(): Promise<{
   profile?: UserProfile;
   mode: "firebase" | "redirect";
 }> {
+  await ensureFirebaseInitialized();
   if (!auth || !provider) {
     throw new Error(
       "Firebase Authentication is not configured. Verify NEXT_PUBLIC_FIREBASE_* environment variables."

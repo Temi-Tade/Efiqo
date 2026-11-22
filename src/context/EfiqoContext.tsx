@@ -7,6 +7,7 @@ import {
   buildOrFetchFirebaseUserProfile,
   checkGoogleRedirectResult,
   createEmptyProfile,
+  ensureFirebaseInitialized,
   getUserProfileFromStore,
   saveUserProfileToStore,
   signInWithGoogleAccount,
@@ -122,6 +123,8 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
       try {
         const storedTheme =
           (localStorage.getItem("efiqo theme") as "device" | "light" | "dark" | null) || "device";
+
+        await ensureFirebaseInitialized();
 
         // 1. Handle any pending Firebase mobile/redirect Google login first
         try {
