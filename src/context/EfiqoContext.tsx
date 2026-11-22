@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import type { FlashcardSet, QuizSet, UserProfile } from "@/types/efiqo";
+import { capitalizeFirst, type FlashcardSet, type QuizSet, type UserProfile } from "@/types/efiqo";
 import {
   STORAGE_KEY,
   buildOrFetchFirebaseUserProfile,
@@ -304,10 +304,14 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
 
   const saveFlashcardSet = async (set: FlashcardSet) => {
     if (!profile) return;
-    const exists = profile.flashcards.some((f) => f.id === set.id);
+    const normalized: FlashcardSet = {
+      ...set,
+      name: capitalizeFirst(set.name) || set.name,
+    };
+    const exists = profile.flashcards.some((f) => f.id === normalized.id);
     const nextFlashcards = exists
-      ? profile.flashcards.map((f) => (f.id === set.id ? set : f))
-      : [set, ...profile.flashcards];
+      ? profile.flashcards.map((f) => (f.id === normalized.id ? normalized : f))
+      : [normalized, ...profile.flashcards];
     const updated = { ...profile, flashcards: nextFlashcards };
     setProfile(updated);
     await saveUserProfileToStore(updated);
@@ -329,10 +333,14 @@ export function EfiqoProvider({ children }: { children: React.ReactNode }) {
 
   const saveQuizSet = async (set: QuizSet) => {
     if (!profile) return;
-    const exists = profile.quizzes.some((q) => q.id === set.id);
+    const normalized: QuizSet = {
+      ...set,
+      name: capitalizeFirst(set.name) || set.name,
+    };
+    const exists = profile.quizzes.some((q) => q.id === normalized.id);
     const nextQuizzes = exists
-      ? profile.quizzes.map((q) => (q.id === set.id ? set : q))
-      : [set, ...profile.quizzes];
+      ? profile.quizzes.map((q) => (q.id === normalized.id ? normalized : q))
+      : [normalized, ...profile.quizzes];
     const updated = { ...profile, quizzes: nextQuizzes };
     setProfile(updated);
     await saveUserProfileToStore(updated);

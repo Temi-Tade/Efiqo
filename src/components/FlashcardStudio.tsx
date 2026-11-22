@@ -18,7 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import { PLAN_LIMITS, type FlashcardItem, type FlashcardSet } from "@/types/efiqo";
+import { capitalizeFirst, PLAN_LIMITS, type FlashcardItem, type FlashcardSet } from "@/types/efiqo";
 import { EfiGeneratorModal } from "./Modals";
 
 export function FlashcardStudio({
@@ -118,7 +118,7 @@ export function FlashcardStudio({
     }
     const created: FlashcardSet = {
       id: typeof crypto !== "undefined" ? crypto.randomUUID() : `fc-${Date.now()}`,
-      name: title.trim(),
+      name: capitalizeFirst(title),
       desc: desc.trim(),
       subject: subject.trim() || "General",
       flashcards: [],
@@ -406,7 +406,7 @@ export function FlashcardStudio({
           </button>
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white [overflow-wrap:anywhere]">
-              {deck.name}
+              {capitalizeFirst(deck.name)}
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums [overflow-wrap:anywhere]">
               {deck.desc ? `${deck.desc} · ` : ""}

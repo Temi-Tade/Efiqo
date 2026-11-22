@@ -23,6 +23,7 @@ import {
 import { useEfiqo } from "@/context/EfiqoContext";
 import {
   BETA_USERS,
+  capitalizeFirst,
   PLAN_LIMITS,
   type FlashcardSet,
   type QuizSet,
@@ -778,7 +779,7 @@ function CommunitySearchModal({
                       >
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                            {f.name}
+                            {capitalizeFirst(f.name)}
                           </p>
                           <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                             {f.desc || "Flashcard deck"} · {f.flashcards.length} cards
@@ -806,7 +807,7 @@ function CommunitySearchModal({
                       >
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                            {q.name}
+                            {capitalizeFirst(q.name)}
                           </p>
                           <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                             {q.desc || "Multiple-choice quiz"} · {q.questions.length} questions
@@ -929,7 +930,7 @@ export function EfiGeneratorModal({
         }));
         const set: FlashcardSet = {
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `fc-${Date.now()}`,
-          name: sourceType === "pdf" ? course : topic || course,
+          name: capitalizeFirst(sourceType === "pdf" ? course : topic || course),
           desc: sourceType === "pdf" ? `Synthesized from ${pdfFile?.name}` : `${course} · ${topic}`,
           subject: course,
           flashcards: items,
@@ -945,7 +946,7 @@ export function EfiGeneratorModal({
         const questions = payload as QuizSet["questions"];
         const set: QuizSet = {
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `qz-${Date.now()}`,
-          name: sourceType === "pdf" ? course : topic || course,
+          name: capitalizeFirst(sourceType === "pdf" ? course : topic || course),
           desc: sourceType === "pdf" ? `Synthesized from ${pdfFile?.name}` : `${course} · ${topic}`,
           subject: course,
           questions,

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { BookOpen, HelpCircle, Loader2, Search } from "lucide-react";
 import { fetchCommunityLibrary } from "@/lib/firebase";
-import type { FlashcardSet, QuizSet } from "@/types/efiqo";
+import { capitalizeFirst, type FlashcardSet, type QuizSet } from "@/types/efiqo";
 import { Footer } from "@/components/Footer";
 
 export default function CommunityPage() {
@@ -123,7 +123,7 @@ export default function CommunityPage() {
                             {deck.subject || "Flashcards"} · {deck.flashcards.length} cards
                           </p>
                           <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1 line-clamp-1">
-                            {deck.name}
+                            {capitalizeFirst(deck.name)}
                           </h3>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                             {deck.desc || "Shared community flashcard deck."}
@@ -160,7 +160,7 @@ export default function CommunityPage() {
                             {quiz.subject || "Quiz"} · {quiz.questions.length} questions
                           </p>
                           <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1 line-clamp-1">
-                            {quiz.name}
+                            {capitalizeFirst(quiz.name)}
                           </h3>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                             {quiz.desc || "Shared multiple-choice assessment."}

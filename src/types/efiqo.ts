@@ -84,6 +84,12 @@ export const PLAN_LIMITS = {
   },
 } as const;
 
+export function capitalizeFirst(text: string): string {
+  const trimmed = text.trim();
+  if (!trimmed) return "";
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+}
+
 export const BETA_USERS = [
   { firstName: "Muhammad Jamshaid", lastName: "Ali", email: "jamshaid8081@gmail.com" },
   { firstName: "Deen", lastName: "", email: "Sharafadeenadewale35@gmail.com" },

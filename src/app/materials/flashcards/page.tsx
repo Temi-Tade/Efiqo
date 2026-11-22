@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Layers, Plus, Search, Share2, Sparkles, Trash2 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import { STARTER_FLASHCARDS } from "@/types/efiqo";
+import { capitalizeFirst, STARTER_FLASHCARDS } from "@/types/efiqo";
 import { Footer } from "@/components/Footer";
 
 export default function FlashcardsLibraryPage() {
@@ -143,7 +143,7 @@ export default function FlashcardsLibraryPage() {
                       {deck.subject || "Flashcards"} · {total} cards · {mastered} mastered
                     </p>
                     <h2 className="text-base font-bold text-slate-900 dark:text-white line-clamp-1">
-                      {deck.name}
+                      {capitalizeFirst(deck.name)}
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
                       {deck.desc || "No description provided."}

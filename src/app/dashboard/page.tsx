@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
+import { capitalizeFirst } from "@/types/efiqo";
 import { AuthRequiredCard } from "@/components/AuthRequiredCard";
 import { Footer } from "@/components/Footer";
 
@@ -160,7 +161,7 @@ export default function DashboardPage() {
                     >
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                          {deck.name}
+                          {capitalizeFirst(deck.name)}
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400 truncate tabular-nums">
                           {deck.subject || "Flashcards"} · {deck.flashcards.length} cards · {mastered} mastered
@@ -218,7 +219,7 @@ export default function DashboardPage() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                        {quiz.name}
+                        {capitalizeFirst(quiz.name)}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400 truncate tabular-nums">
                         {quiz.subject || "Quiz"} · {quiz.questions.length} questions

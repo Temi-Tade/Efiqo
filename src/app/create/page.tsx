@@ -12,7 +12,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import { PLAN_LIMITS, type FlashcardSet, type QuizSet } from "@/types/efiqo";
+import { capitalizeFirst, PLAN_LIMITS, type FlashcardSet, type QuizSet } from "@/types/efiqo";
 import { AuthRequiredCard } from "@/components/AuthRequiredCard";
 import { Footer } from "@/components/Footer";
 
@@ -77,7 +77,7 @@ function CreateStudioContent() {
     }
     const created: FlashcardSet = {
       id: typeof crypto !== "undefined" ? crypto.randomUUID() : `fc-${Date.now()}`,
-      name: fcTitle.trim(),
+      name: capitalizeFirst(fcTitle),
       desc: fcDesc.trim(),
       subject: fcSubject.trim() || "General",
       flashcards: [],
@@ -99,7 +99,7 @@ function CreateStudioContent() {
     }
     const created: QuizSet = {
       id: typeof crypto !== "undefined" ? crypto.randomUUID() : `qz-${Date.now()}`,
-      name: qzTitle.trim(),
+      name: capitalizeFirst(qzTitle),
       desc: qzDesc.trim(),
       subject: qzSubject.trim() || "General",
       questions: [],
@@ -205,7 +205,7 @@ function CreateStudioContent() {
         }));
         const created: FlashcardSet = {
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `fc-${Date.now()}`,
-          name: aiSourceType === "pdf" ? aiCourse : aiTopic || aiCourse,
+          name: capitalizeFirst(aiSourceType === "pdf" ? aiCourse : aiTopic || aiCourse),
           desc: aiSourceType === "pdf" ? `Synthesized from ${aiPdf?.name}` : `${aiCourse} · ${aiTopic}`,
           subject: aiCourse,
           flashcards: items,
@@ -221,7 +221,7 @@ function CreateStudioContent() {
         const questions = payload as QuizSet["questions"];
         const created: QuizSet = {
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `qz-${Date.now()}`,
-          name: aiSourceType === "pdf" ? aiCourse : aiTopic || aiCourse,
+          name: capitalizeFirst(aiSourceType === "pdf" ? aiCourse : aiTopic || aiCourse),
           desc: aiSourceType === "pdf" ? `Synthesized from ${aiPdf?.name}` : `${aiCourse} · ${aiTopic}`,
           subject: aiCourse,
           questions,
@@ -250,6 +250,7 @@ function CreateStudioContent() {
         const imported: FlashcardSet = {
           ...parsed,
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `imp-${Date.now()}`,
+          name: capitalizeFirst(String(parsed.name || "Imported Flashcards")),
           by: profile.email,
           created: new Date().toUTCString(),
         };
@@ -260,6 +261,7 @@ function CreateStudioContent() {
         const imported: QuizSet = {
           ...parsed,
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `imp-${Date.now()}`,
+          name: capitalizeFirst(String(parsed.name || "Imported Quiz")),
           by: profile.email,
           timeStamp: new Date().toUTCString(),
         };

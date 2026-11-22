@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Clock, HelpCircle, Play, Plus, Search, Share2, Sparkles, Trash2 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
-import { STARTER_QUIZZES } from "@/types/efiqo";
+import { capitalizeFirst, STARTER_QUIZZES } from "@/types/efiqo";
 import { Footer } from "@/components/Footer";
 
 export default function QuizzesLibraryPage() {
@@ -142,7 +142,7 @@ export default function QuizzesLibraryPage() {
                         : ""}
                     </p>
                     <h2 className="text-base font-bold text-slate-900 dark:text-white mt-1 line-clamp-1">
-                      {quiz.name}
+                      {capitalizeFirst(quiz.name)}
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                       {quiz.desc || "No description provided."}

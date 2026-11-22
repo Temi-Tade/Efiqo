@@ -1,18 +1,21 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import type { PDFDocumentProxy, RenderTask } from "pdfjs-dist";
 import {
+  ChevronLeft,
+  ChevronRight,
   FileText,
+  Loader2,
   Maximize2,
   Minimize2,
-  Monitor,
   Pause,
   Play,
   RotateCcw,
-  Sparkles,
   Upload,
   X,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
 
@@ -29,13 +32,23 @@ export function PdfReaderStudio() {
     showToast,
   } = useEfiqo();
 
-  const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [pdfDoc, setPdfDoc] = useState<PDFDocumentProxy | null>(null);
   const [pdfName, setPdfName] = useState<string>("");
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [zoom, setZoom] = useState<number>(1);
+  const [loadingPdf, setLoadingPdf] = useState<boolean>(false);
+  const [renderingPage, setRenderingPage] = useState<boolean>(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [containerWidth, setContainerWidth] = useState<number>(0);
   const [notes, setNotes] = useState(() =>
     typeof window !== "undefined" ? localStorage.getItem(NOTES_STORAGE_KEY) || "" : ""
   );
+
   const readerRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const renderTaskRef = useRef<RenderTask | null>(null);
 
   useEffect(() => {
     const onFsChange = () => {
@@ -45,28 +58,136 @@ export function PdfReaderStudio() {
     return () => document.removeEventListener("fullscreenchange", onFsChange);
   }, []);
 
+  // Track container width for responsive fit-to-width rendering on mobile & desktop
   useEffect(() => {
-    return () => {
-      if (pdfUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(pdfUrl);
+    const el = viewportRef.current;
+    if (!el) return;
+
+    const updateWidth = () => {
+      if (el.clientWidth > 0) {
+        setContainerWidth(el.clientWidth);
       }
     };
-  }, [pdfUrl]);
+    updateWidth();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const observer = new ResizeObserver(() => updateWidth());
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [pdfDoc]);
+
+  // Cleanup active PDFDocumentProxy on unmount or replacement
+  useEffect(() => {
+    return () => {
+      if (pdfDoc) {
+        pdfDoc.loadingTask?.destroy().catch(() => {});
+      }
+    };
+  }, [pdfDoc]);
+
+  // Render active page onto responsive high-DPI canvas (works on iOS, Android, and Desktop)
+  useEffect(() => {
+    if (!pdfDoc || !canvasRef.current || containerWidth <= 0) return;
+    let cancelled = false;
+
+    const renderPage = async () => {
+      if (renderTaskRef.current) {
+        renderTaskRef.current.cancel();
+        renderTaskRef.current = null;
+      }
+
+      setRenderingPage(true);
+      try {
+        const page = await pdfDoc.getPage(pageNum);
+        if (cancelled || !canvasRef.current) return;
+
+        const baseViewport = page.getViewport({ scale: 1 });
+        const horizontalPadding = containerWidth < 640 ? 16 : 32;
+        const availableWidth = Math.max(containerWidth - horizontalPadding, 220);
+        const fitScale = availableWidth / baseViewport.width;
+        const targetScale = fitScale * zoom;
+        const viewport = page.getViewport({ scale: targetScale });
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+        canvas.width = Math.floor(viewport.width * dpr);
+        canvas.height = Math.floor(viewport.height * dpr);
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+        const task = page.render({
+          canvas,
+          canvasContext: ctx,
+          viewport,
+          transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : undefined,
+        });
+        renderTaskRef.current = task;
+        await task.promise;
+      } catch (err) {
+        const name = (err as { name?: string })?.name;
+        if (name !== "RenderingCancelledException" && !cancelled) {
+          showToast("Could not render this PDF page.", "error");
+        }
+      } finally {
+        if (!cancelled) {
+          setRenderingPage(false);
+        }
+      }
+    };
+
+    renderPage();
+    return () => {
+      cancelled = true;
+      if (renderTaskRef.current) {
+        renderTaskRef.current.cancel();
+        renderTaskRef.current = null;
+      }
+    };
+  }, [pdfDoc, pageNum, zoom, containerWidth, showToast]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
-    if (file.type !== "application/pdf") {
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       showToast("Please select a valid PDF document.", "error");
       return;
     }
-    if (pdfUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(pdfUrl);
+
+    setLoadingPdf(true);
+    try {
+      const pdfjsLib = await import("pdfjs-dist");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+      const buffer = await file.arrayBuffer();
+      const loadedDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
+
+      setPdfDoc(loadedDoc);
+      setPdfName(file.name);
+      setNumPages(loadedDoc.numPages);
+      setPageNum(1);
+      setZoom(1);
+      showToast(`Loaded "${file.name}" (${loadedDoc.numPages} pages).`, "success");
+    } catch {
+      showToast("Could not open this PDF file. Please try another document.", "error");
+    } finally {
+      setLoadingPdf(false);
     }
-    const url = URL.createObjectURL(file);
-    setPdfUrl(url);
-    setPdfName(file.name);
   };
+
+  const closePdf = useCallback(() => {
+    if (renderTaskRef.current) {
+      renderTaskRef.current.cancel();
+      renderTaskRef.current = null;
+    }
+    setPdfDoc(null);
+    setPdfName("");
+    setNumPages(0);
+    setPageNum(1);
+    setZoom(1);
+  }, []);
 
   const toggleFocusMode = async () => {
     if (!readerRef.current) return;
@@ -89,43 +210,39 @@ export function PdfReaderStudio() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-w-0">
-      {/* PDF Viewport */}
+      {/* PDF Viewport (Mobile & Desktop via PDF.js Canvas) */}
       <div
         ref={readerRef}
-        className="lg:col-span-8 min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden flex flex-col min-h-[280px] md:min-h-[540px] lg:h-[calc(100vh-12rem)]"
+        className="lg:col-span-8 min-w-0 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden flex flex-col min-h-[460px] h-[72vh] lg:h-[calc(100vh-12rem)]"
       >
-        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-slate-50 dark:bg-slate-950/60">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="px-3 sm:px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 bg-slate-50 dark:bg-slate-950/60">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <FileText className="w-4 h-4 text-blue-600 shrink-0" />
-            <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+            <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white truncate">
               {pdfName || "Course PDF Reader"}
             </span>
           </div>
 
-          <div className="hidden md:flex flex-wrap items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
             <label className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer inline-flex items-center gap-1.5">
               <Upload className="w-3.5 h-3.5" />
-              <span>{pdfUrl ? "Change PDF" : "Open PDF"}</span>
+              <span>{pdfDoc ? "Change PDF" : "Open PDF"}</span>
               <input type="file" accept="application/pdf,.pdf" className="hidden" onChange={handleFileChange} />
             </label>
 
-            {pdfUrl && (
+            {pdfDoc && (
               <>
                 <button
                   type="button"
                   onClick={toggleFocusMode}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 inline-flex items-center gap-1.5 cursor-pointer"
+                  className="hidden sm:inline-flex px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 items-center gap-1.5 cursor-pointer"
                 >
                   {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
                   <span>{isFullscreen ? "Exit Focus" : "Focus Mode"}</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    if (pdfUrl.startsWith("blob:")) URL.revokeObjectURL(pdfUrl);
-                    setPdfUrl("");
-                    setPdfName("");
-                  }}
+                  onClick={closePdf}
                   className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
                   title="Close PDF"
                 >
@@ -136,48 +253,100 @@ export function PdfReaderStudio() {
           </div>
         </div>
 
-        {/* Mobile Device Notice */}
-        <div className="flex md:hidden flex-1 flex-col items-center justify-center p-6 text-center">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
-            <Monitor className="w-6 h-6" />
-          </div>
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
-            Use a Desktop Device to View PDFs
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mt-2 leading-relaxed">
-            Mobile browsers do not display embedded PDF documents inside the reader. Please switch to a laptop or desktop computer to view lecture PDFs side-by-side.
-          </p>
-          <p className="text-xs text-slate-400 dark:text-slate-500 mt-3 mb-5">
-            Your Pomodoro Focus Timer and Study Scratchpad below still work on mobile.
-          </p>
-          <Link
-            href="/create?type=ai"
-            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold inline-flex items-center gap-2"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>Generate Flashcards from PDF with Efi</span>
-          </Link>
-        </div>
+        {/* Page & Zoom Controls Bar when a PDF is loaded */}
+        {pdfDoc && (
+          <div className="px-3 sm:px-4 py-2 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled={pageNum <= 1}
+                onClick={() => setPageNum((p) => Math.max(1, p - 1))}
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                aria-label="Previous page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <span className="px-2 font-medium text-slate-700 dark:text-slate-200 tabular-nums whitespace-nowrap">
+                Page {pageNum} of {numPages}
+              </span>
+              <button
+                type="button"
+                disabled={pageNum >= numPages}
+                onClick={() => setPageNum((p) => Math.min(numPages, p + 1))}
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                aria-label="Next page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
 
-        {/* Desktop PDF Viewport */}
-        {pdfUrl ? (
-          <iframe
-            src={pdfUrl}
-            title={pdfName}
-            className="hidden md:block w-full flex-1 border-0 bg-slate-100 dark:bg-slate-950"
-          />
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled={zoom <= 0.75}
+                onClick={() => setZoom((z) => Math.max(0.75, Number((z - 0.25).toFixed(2))))}
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                aria-label="Zoom out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setZoom(1)}
+                className="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 font-mono text-[11px] tabular-nums hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                title="Reset zoom to fit width"
+              >
+                {Math.round(zoom * 100)}%
+              </button>
+              <button
+                type="button"
+                disabled={zoom >= 2.25}
+                onClick={() => setZoom((z) => Math.min(2.25, Number((z + 0.25).toFixed(2))))}
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                aria-label="Zoom in"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Canvas Scroll Area or Empty State */}
+        {loadingPdf ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 gap-3 text-sm text-slate-500">
+            <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+            <span>Opening PDF document...</span>
+          </div>
+        ) : pdfDoc ? (
+          <div
+            ref={viewportRef}
+            className="flex-1 overflow-auto bg-slate-100 dark:bg-slate-950 p-2 sm:p-4 flex justify-center items-start relative"
+          >
+            {renderingPage && (
+              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-slate-900/80 text-white text-[11px] inline-flex items-center gap-1.5 z-10">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                <span>Rendering...</span>
+              </div>
+            )}
+            <canvas
+              ref={canvasRef}
+              className="rounded-lg shadow-sm bg-white block max-w-none"
+            />
+          </div>
         ) : (
-          <div className="hidden md:flex flex-1 flex-col items-center justify-center p-8 text-center">
+          <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-8 text-center">
             <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 flex items-center justify-center mb-4">
               <FileText className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Read Lecture Slides Side-by-Side</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              Read Lecture Slides on Mobile or Desktop
+            </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mt-1 mb-6">
-              Files open locally in your browser. Pair your reading with the Pomodoro sprint timer and scratchpad on the right.
+              Files render locally in your browser with PDF.js—no server upload needed. Pair reading with the Pomodoro timer and scratchpad.
             </p>
             <label className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold cursor-pointer inline-flex items-center gap-2">
               <Upload className="w-4 h-4" />
-              <span>Upload a PDF</span>
+              <span>Open PDF</span>
               <input type="file" accept="application/pdf,.pdf" className="hidden" onChange={handleFileChange} />
             </label>
           </div>

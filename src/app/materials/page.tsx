@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useEfiqo } from "@/context/EfiqoContext";
 import {
+  capitalizeFirst,
   STARTER_FLASHCARDS,
   STARTER_QUIZZES,
   type FlashcardSet,
@@ -82,6 +83,7 @@ export default function MaterialsPage() {
         const imported: FlashcardSet = {
           ...parsed,
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `imp-${Date.now()}`,
+          name: capitalizeFirst(String(parsed.name || "Imported Flashcards")),
           by: profile.email,
           created: new Date().toUTCString(),
         };
@@ -91,6 +93,7 @@ export default function MaterialsPage() {
         const imported: QuizSet = {
           ...parsed,
           id: typeof crypto !== "undefined" ? crypto.randomUUID() : `imp-${Date.now()}`,
+          name: capitalizeFirst(String(parsed.name || "Imported Quiz")),
           by: profile.email,
           timeStamp: new Date().toUTCString(),
         };
@@ -276,7 +279,7 @@ export default function MaterialsPage() {
                           {deck.subject || "Flashcards"} · {deck.flashcards.length} cards · {mastered} mastered
                         </p>
                         <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1 line-clamp-1">
-                          {deck.name}
+                          {capitalizeFirst(deck.name)}
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                           {deck.desc || "No description provided."}
@@ -390,7 +393,7 @@ export default function MaterialsPage() {
                             : ""}
                         </p>
                         <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1 line-clamp-1">
-                          {quiz.name}
+                          {capitalizeFirst(quiz.name)}
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                           {quiz.desc || "No description provided."}
