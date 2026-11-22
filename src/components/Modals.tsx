@@ -325,23 +325,41 @@ export function GlobalModals() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="space-y-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed [overflow-wrap:anywhere]">
+              <div className="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed [overflow-wrap:anywhere] max-h-[65vh] overflow-y-auto pr-1">
                 <p>
-                  By using efIQo, you agree that account information (display name, email, study decks, and preferences) is stored solely to provide, sync, and improve your study workspace.
+                  Welcome to <strong>efIQo</strong>. By accessing or using our platform, website, mobile application, and study services, you agree to be bound by these Terms of Use and our Privacy Policy.
                 </p>
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Your Rights</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">1. User Accounts &amp; Security</h3>
                   <p>
-                    You retain the right to access, correct, export, or permanently delete your account and study decks at any time from your Profile panel.
+                    You are responsible for maintaining the confidentiality of your account credentials (including Google Auth and local sessions). You agree to provide accurate information and notify us of any unauthorized account activity.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Contact</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">2. AI Study Assistant (Efi) &amp; Usage Limits</h3>
                   <p>
-                    For enquiries, reach out to{" "}
+                    efIQo provides AI-powered study generation (Efi) via Google Gemini. Free accounts are limited to 3 AI generations per day, while Premium accounts enjoy unlimited AI generations. You agree not to misuse AI features or upload prohibited malicious content.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">3. Intellectual Property &amp; User Content</h3>
+                  <p>
+                    You retain full ownership of all study decks, notes, and PDF materials you upload or create on efIQo. By sharing sets to the public community library, you grant other scholars permission to view and study them.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">4. Privacy &amp; Data Protection</h3>
+                  <p>
+                    We collect and store account details (name, email, study decks, preferences) strictly to provide, synchronize, and improve your study workspace. We never sell your personal data. You retain the right to export or permanently delete your account at any time.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">5. Contact Information</h3>
+                  <p>
+                    For legal enquiries, support, or billing assistance, please contact Tender Luxe Tech Enterprises at{" "}
                     <a
                       href="mailto:tenderluxetechenterprises@gmail.com"
-                      className="text-blue-600 dark:text-blue-400 underline break-all"
+                      className="text-blue-600 dark:text-blue-400 underline break-all font-medium"
                     >
                       tenderluxetechenterprises@gmail.com
                     </a>
@@ -997,6 +1015,26 @@ export function EfiGeneratorModal({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {(() => {
+          const today = new Date().toISOString().slice(0, 10);
+          const guestDate = typeof window !== "undefined" ? localStorage.getItem("efiqo_guest_ai_date") : null;
+          const guestCount = typeof window !== "undefined" ? Number(localStorage.getItem("efiqo_guest_ai_count") || 0) : 0;
+          const used = profile?.isPremiumUser
+            ? 0
+            : profile
+            ? (profile.aiUsageDate === today ? (profile.aiUsageCount || 0) : 0)
+            : (guestDate === today ? guestCount : 0);
+          const remaining = profile?.isPremiumUser ? "Unlimited" : Math.max(0, 3 - used);
+          return (
+            <div className="mb-4 p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 flex items-center justify-between text-xs font-medium text-blue-900 dark:text-blue-300">
+              <span>Efi Daily Quota</span>
+              <span className="font-bold font-mono">
+                {profile?.isPremiumUser ? "Unlimited Pro" : `${remaining} of 3 free left today`}
+              </span>
+            </div>
+          );
+        })()}
 
         <div className="grid grid-cols-2 gap-1 p-1 rounded-lg bg-slate-100 dark:bg-slate-800 mb-5">
           <button

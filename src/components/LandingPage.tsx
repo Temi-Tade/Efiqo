@@ -580,6 +580,10 @@ export function LandingPage() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>3 AI generations per day with Efi</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-blue-600 shrink-0" />
                   <span>5 MB max PDF upload for Efi AI synthesis</span>
                 </li>
                 <li className="flex items-center gap-2.5">

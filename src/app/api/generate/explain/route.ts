@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
           }.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
         systemInstruction: "You are Efi, an elite, encouraging academic study tutor optimized for the Nigerian and global education markets. Provide a crystal-clear, memorable real-world analogy or study breakdown to help the student master the concept. Keep explanations crisp, accurate, and under 80 words.",

@@ -495,6 +495,26 @@ function CreateStudioContent() {
               </div>
             </div>
 
+            {(() => {
+              const today = new Date().toISOString().slice(0, 10);
+              const guestDate = typeof window !== "undefined" ? localStorage.getItem("efiqo_guest_ai_date") : null;
+              const guestCount = typeof window !== "undefined" ? Number(localStorage.getItem("efiqo_guest_ai_count") || 0) : 0;
+              const used = profile?.isPremiumUser
+                ? 0
+                : profile
+                ? (profile.aiUsageDate === today ? (profile.aiUsageCount || 0) : 0)
+                : (guestDate === today ? guestCount : 0);
+              const remaining = profile?.isPremiumUser ? "Unlimited" : Math.max(0, 3 - used);
+              return (
+                <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 flex items-center justify-between text-xs font-medium text-blue-900 dark:text-blue-300">
+                  <span>Efi Daily Quota</span>
+                  <span className="font-bold font-mono">
+                    {profile?.isPremiumUser ? "Unlimited Pro" : `${remaining} of 3 free left today`}
+                  </span>
+                </div>
+              );
+            })()}
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">

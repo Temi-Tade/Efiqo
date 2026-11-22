@@ -73,6 +73,10 @@ export default function PricingPage() {
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>3 AI generations per day with Efi</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-blue-600 shrink-0" />
                   <span>5 MB max PDF upload for Efi AI synthesis</span>
                 </li>
                 <li className="flex items-center gap-2.5">
@@ -126,6 +130,10 @@ export default function PricingPage() {
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Max 50 flashcards or quiz questions per set</span>
+                </li>
+                <li className="flex items-center gap-2.5">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Unlimited AI generations with Efi</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -234,6 +242,11 @@ export default function PricingPage() {
                   <td className="py-3 px-6 font-medium">Max Flashcards or Questions per Set</td>
                   <td className="py-3 px-6 tabular-nums">20 per set</td>
                   <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white tabular-nums">50 per set</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-6 font-medium">Efi AI Generations Limit</td>
+                  <td className="py-3 px-6 tabular-nums">3 per day</td>
+                  <td className="py-3 px-6 font-semibold text-slate-900 dark:text-white">Unlimited</td>
                 </tr>
                 <tr>
                   <td className="py-3 px-6 font-medium">Max PDF Upload (Efi AI Synthesis)</td>
