@@ -34,17 +34,17 @@ import {
   type UserProfile,
 } from "@/types/efiqo";
 
-let firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
+const firebaseConfig = {
+  apiKey: "AIzaSyC5Asd569nYv3Izm0Rbf1vebuaspmDyi-k",
+  authDomain: "efiqo-app.firebaseapp.com",
+  projectId: "efiqo-app",
+  storageBucket: "efiqo-app.firebasestorage.app",
+  messagingSenderId: "516937865681",
+  appId: "1:516937865681:web:c91acfd07f1783d194a8f0",
+  measurementId: "G-LL86ZK79Z7",
 };
 
-export let isFirebaseConfigured = Boolean(
+export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId
 );
 
@@ -53,18 +53,14 @@ let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 let provider: GoogleAuthProvider | null = null;
 let lastInitError = "";
-let initPromise: Promise<boolean> | null = null;
 
-function initFirebaseWithConfig(cfg: typeof firebaseConfig): boolean {
+function initFirebaseClient(): boolean {
   if (typeof window === "undefined") return false;
-  if (!cfg.apiKey || !cfg.authDomain || !cfg.projectId) {
-    return false;
-  }
+  if (auth && provider && firestore) return true;
+  if (!isFirebaseConfigured) return false;
   try {
-    firebaseConfig = cfg;
-    isFirebaseConfigured = true;
     lastInitError = "";
-    app = getApps().length ? getApps()[0] : initializeApp(cfg);
+    app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     auth = getAuth(app);
     setPersistence(auth, browserLocalPersistence).catch(() => {
       // Persistence may fall back to session/memory in strict browser modes
@@ -83,36 +79,12 @@ function initFirebaseWithConfig(cfg: typeof firebaseConfig): boolean {
   }
 }
 
-if (typeof window !== "undefined" && isFirebaseConfigured) {
-  initFirebaseWithConfig(firebaseConfig);
+if (typeof window !== "undefined") {
+  initFirebaseClient();
 }
 
 export async function ensureFirebaseInitialized(): Promise<boolean> {
-  if (auth && provider && firestore) return true;
-  if (initFirebaseWithConfig(firebaseConfig)) return true;
-  if (typeof window === "undefined") return false;
-
-  if (!initPromise) {
-    initPromise = (async () => {
-      try {
-        const res = await fetch("/api/firebase-config", { cache: "no-store" });
-        if (!res.ok) {
-          lastInitError = `Could not load Firebase configuration (HTTP ${res.status}).`;
-          return false;
-        }
-        const runtimeCfg = (await res.json()) as typeof firebaseConfig;
-        return initFirebaseWithConfig(runtimeCfg);
-      } catch (err) {
-        lastInitError =
-          err instanceof Error ? err.message : "Could not load Firebase configuration.";
-        return false;
-      } finally {
-        initPromise = null;
-      }
-    })();
-  }
-
-  return initPromise;
+  return initFirebaseClient();
 }
 
 export const STORAGE_KEY = "efiqo user data";
@@ -456,10 +428,7 @@ export async function signInWithGoogleAccount(): Promise<{
 }> {
   await ensureFirebaseInitialized();
   if (!auth || !provider) {
-    throw new Error(
-      lastInitError ||
-        "Firebase Authentication is not configured. Ensure NEXT_PUBLIC_FIREBASE_* values are set in .env (and restart the server) or your deployment environment variables."
-    );
+    throw new Error(lastInitError || "Firebase Authentication could not be initialized.");
   }
 
   try {
